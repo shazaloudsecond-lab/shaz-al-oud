@@ -1,0 +1,618 @@
+@import "tailwindcss";
+
+@theme {
+  --font-primary: 'Anek Expanded', 'Noto Sans Arabic', sans-serif;
+  --font-secondary: 'Montserrat', 'Noto Sans Arabic', sans-serif;
+  --font-arabic: 'Noto Sans Arabic', sans-serif;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .font-primary {
+  font-family: 'Anek Expanded', sans-serif;
+}
+
+.font-secondary {
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Arabic RTL Typography */
+[dir="rtl"],
+[dir="rtl"] body,
+[dir="rtl"] input,
+[dir="rtl"] textarea,
+[dir="rtl"] select,
+[dir="rtl"] button {
+  font-family: 'Noto Sans Arabic', 'Montserrat', sans-serif !important;
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6,
+[dir="rtl"] .font-primary,
+[dir="rtl"] .font-secondary {
+  font-family: 'Noto Sans Arabic', sans-serif !important;
+}
+
+/* Hide scrollbars globally across all browsers while retaining scroll functionality */
+* {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;     /* Firefox */
+}
+
+*::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none !important;             /* Chrome, Safari, Opera */
+  width: 0px !important;
+  height: 0px !important;
+}
+
+.scrollbar-hide,
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+.scrollbar-hide::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  height: 0px !important;
+}
+
+/* ==========================================================================
+   ADMIN PANEL THEME (Pure White & Pure Black, Zero Border Radius, White Sidebar)
+   ========================================================================== */
+.admin-theme,
+.admin-theme * {
+  border-radius: 0px !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.admin-theme .font-mono,
+.admin-theme [class*="font-mono"] {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+}
+
+.admin-theme {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.admin-theme main {
+  background-color: #f8fafc !important;
+  color: #000000 !important;
+}
+
+/* Headings & Texts in admin */
+.admin-theme h1,
+.admin-theme h2,
+.admin-theme h3,
+.admin-theme h4,
+.admin-theme h5,
+.admin-theme h6 {
+  color: #000000 !important;
+}
+
+.admin-theme p,
+.admin-theme span:not([class*="bg-black"]):not([class*="text-white"]):not([class*="text-emerald"]):not([class*="text-green"]):not([class*="text-red"]):not([class*="text-orange"]):not([class*="text-yellow"]):not([class*="text-amber"]):not([class*="text-blue"]) {
+  color: #1f2937;
+}
+
+.admin-theme .text-orange-500,
+.admin-theme [class*="text-orange"] {
+  color: #f97316 !important;
+}
+
+.admin-theme .text-yellow-500,
+.admin-theme [class*="text-yellow"] {
+  color: #eab308 !important;
+}
+
+.admin-theme .text-emerald-600,
+.admin-theme [class*="text-emerald"],
+.admin-theme [class*="text-green"] {
+  color: #059669 !important;
+}
+
+.admin-theme .text-red-600,
+.admin-theme [class*="text-red"] {
+  color: #dc2626 !important;
+}
+
+.admin-theme label:not([class*="cursor-pointer"]):not([class*="bg-"]):not(:has(input[type="file"])) {
+  color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+/* Upload Buttons & File Input Action Labels across all admin components */
+.admin-theme label:has(input[type="file"]),
+.admin-theme label[class*="bg-neutral-800"],
+.admin-theme label[class*="bg-neutral-900"],
+.admin-theme label[class*="bg-black"],
+.admin-theme label[class*="cursor-pointer"]:not(:has(input[type="checkbox"])):not(:has(input[type="radio"])) {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+.admin-theme label:has(input[type="file"]) *,
+.admin-theme label[class*="bg-neutral-800"] *,
+.admin-theme label[class*="bg-neutral-900"] *,
+.admin-theme label[class*="bg-black"] *,
+.admin-theme label[class*="cursor-pointer"]:not(:has(input[type="checkbox"])):not(:has(input[type="radio"])) * {
+  color: #ffffff !important;
+}
+
+.admin-theme label:has(input[type="file"]) svg,
+.admin-theme label[class*="bg-neutral-800"] svg,
+.admin-theme label[class*="bg-neutral-900"] svg,
+.admin-theme label[class*="bg-black"] svg,
+.admin-theme label[class*="cursor-pointer"]:not(:has(input[type="checkbox"])):not(:has(input[type="radio"])) svg {
+  color: #fbbf24 !important;
+}
+
+.admin-theme label:has(input[type="file"]):hover,
+.admin-theme label[class*="bg-neutral-800"]:hover,
+.admin-theme label[class*="bg-neutral-900"]:hover,
+.admin-theme label[class*="bg-black"]:hover,
+.admin-theme label[class*="cursor-pointer"]:not(:has(input[type="checkbox"])):not(:has(input[type="radio"])):hover {
+  background-color: #262626 !important;
+  color: #ffffff !important;
+}
+
+/* Sidebar styling (White background, Black selected item) */
+.admin-theme aside {
+  background-color: #ffffff !important;
+  border-color: #e5e7eb !important;
+  color: #000000 !important;
+}
+
+.admin-theme aside .admin-sidebar-brand,
+.admin-theme aside div.admin-sidebar-brand {
+  background-color: #000000 !important;
+  border-bottom-color: #171717 !important;
+}
+
+.admin-theme aside p,
+.admin-theme aside span,
+.admin-theme aside svg {
+  color: #374151;
+}
+
+.admin-theme aside nav a,
+.admin-theme aside nav button {
+  background-color: transparent;
+  color: #374151;
+}
+
+.admin-theme aside nav a *,
+.admin-theme aside nav button * {
+  background-color: transparent !important;
+}
+
+/* Inactive nav hover in sidebar */
+.admin-theme aside nav a:not([class*="bg-black"]):hover,
+.admin-theme aside nav button:not([class*="bg-black"]):hover {
+  background-color: #f3f4f6 !important;
+  color: #000000 !important;
+}
+
+.admin-theme aside nav a:not([class*="bg-black"]):hover *,
+.admin-theme aside nav button:not([class*="bg-black"]):hover * {
+  background-color: transparent !important;
+  color: #000000 !important;
+}
+
+/* Active black nav item in sidebar */
+.admin-theme aside nav a[class*="bg-black"],
+.admin-theme aside nav button[class*="bg-black"] {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+.admin-theme aside nav a[class*="bg-black"] *,
+.admin-theme aside nav button[class*="bg-black"] * {
+  background-color: transparent !important;
+  color: #ffffff !important;
+}
+
+/* Pure white text on ANY black background / badge / button across entire admin */
+.admin-theme button[class*="bg-black"],
+.admin-theme a[class*="bg-black"],
+.admin-theme span[class*="bg-black"],
+.admin-theme div[class*="bg-black"] {
+  color: #ffffff !important;
+}
+
+/* Top Header (Black Background Theme) */
+.admin-theme header {
+  background-color: #000000 !important;
+  border-bottom: 1px solid #262626 !important;
+  color: #ffffff !important;
+}
+
+.admin-theme header h1 {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.admin-theme header a,
+.admin-theme header a * {
+  color: #ffffff !important;
+}
+
+.admin-theme header a:hover,
+.admin-theme header a:hover * {
+  color: #fbbf24 !important;
+}
+
+.admin-theme aside .admin-sidebar-brand {
+  background-color: #000000 !important;
+  border-bottom: 1px solid #262626 !important;
+  border-right: 1px solid #262626 !important;
+}
+
+/* All Cards, Boxes, Panels */
+.admin-theme div[class*="bg-neutral-900"]:not(.admin-stat-card),
+.admin-theme div[class*="bg-neutral-950"]:not(.admin-stat-card),
+.admin-theme div[class*="bg-neutral-800"]:not(.admin-stat-card),
+.admin-theme section[class*="bg-neutral-900"],
+.admin-theme section[class*="bg-neutral-950"] {
+  background-color: #ffffff !important;
+  border-color: #e5e7eb !important;
+  color: #000000 !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05) !important;
+}
+
+/* Metric Stats Cards (Distinct Visible Box Colors) */
+.admin-theme .admin-stat-card-emerald {
+  background-color: #d1fae5 !important;
+  border: 1px solid #6ee7b7 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+}
+.admin-theme .admin-stat-card-emerald p:first-child {
+  color: #065f46 !important;
+  font-weight: 700 !important;
+}
+.admin-theme .admin-stat-card-emerald p[class*="text-2xl"],
+.admin-theme .admin-stat-card-emerald p[class*="text-xl"] {
+  color: #047857 !important;
+  font-weight: 800 !important;
+}
+.admin-theme .admin-stat-card-emerald span {
+  color: #065f46 !important;
+  font-weight: 600 !important;
+}
+
+.admin-theme .admin-stat-card-blue {
+  background-color: #dbeafe !important;
+  border: 1px solid #93c5fd !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+}
+.admin-theme .admin-stat-card-blue p:first-child {
+  color: #1e40af !important;
+  font-weight: 700 !important;
+}
+.admin-theme .admin-stat-card-blue p[class*="text-2xl"],
+.admin-theme .admin-stat-card-blue p[class*="text-xl"] {
+  color: #1d4ed8 !important;
+  font-weight: 800 !important;
+}
+.admin-theme .admin-stat-card-blue span {
+  color: #1e40af !important;
+  font-weight: 600 !important;
+}
+
+.admin-theme .admin-stat-card-purple {
+  background-color: #ede9fe !important;
+  border: 1px solid #c4b5fd !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+}
+.admin-theme .admin-stat-card-purple p:first-child {
+  color: #5b21b6 !important;
+  font-weight: 700 !important;
+}
+.admin-theme .admin-stat-card-purple p[class*="text-2xl"],
+.admin-theme .admin-stat-card-purple p[class*="text-xl"] {
+  color: #6d28d9 !important;
+  font-weight: 800 !important;
+}
+.admin-theme .admin-stat-card-purple span {
+  color: #5b21b6 !important;
+  font-weight: 600 !important;
+}
+
+.admin-theme .admin-stat-card-amber {
+  background-color: #fef3c7 !important;
+  border: 1px solid #fcd34d !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+}
+.admin-theme .admin-stat-card-amber p:first-child {
+  color: #92400e !important;
+  font-weight: 700 !important;
+}
+.admin-theme .admin-stat-card-amber p[class*="text-2xl"],
+.admin-theme .admin-stat-card-amber p[class*="text-xl"] {
+  color: #b45309 !important;
+  font-weight: 800 !important;
+}
+.admin-theme .admin-stat-card-amber span {
+  color: #92400e !important;
+  font-weight: 600 !important;
+}
+
+/* Link Type Segmented Tabs in Admin (Banner Click Action, etc.) */
+.admin-theme .admin-tab-btn-active,
+.admin-theme button.admin-tab-btn-active {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+  font-weight: 700 !important;
+}
+
+.admin-theme .admin-tab-btn-inactive,
+.admin-theme button.admin-tab-btn-inactive {
+  background-color: transparent !important;
+  color: #4b5563 !important;
+  border-color: transparent !important;
+  font-weight: 600 !important;
+}
+
+.admin-theme .admin-tab-btn-inactive:hover,
+.admin-theme button.admin-tab-btn-inactive:hover {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #d1d5db !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08) !important;
+  font-weight: 700 !important;
+}
+
+/* Form Inputs, Selects, Textareas */
+.admin-theme input:not([type="checkbox"]):not([type="radio"]),
+.admin-theme select,
+.admin-theme textarea {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #d1d5db !important;
+}
+
+.admin-theme input:focus,
+.admin-theme select:focus,
+.admin-theme textarea:focus {
+  border-color: #000000 !important;
+  outline: 2px solid #000000 !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.admin-theme input::placeholder,
+.admin-theme textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Primary Action Buttons (Black Button Box) */
+.admin-theme button[class*="bg-amber"],
+.admin-theme a[class*="bg-amber"],
+.admin-theme button[class*="bg-black"],
+.admin-theme a[class*="bg-black"],
+.admin-theme button[type="submit"]:not(aside button) {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+.admin-theme button[class*="bg-amber"] *,
+.admin-theme a[class*="bg-amber"] *,
+.admin-theme button[class*="bg-black"] *,
+.admin-theme a[class*="bg-black"] *,
+.admin-theme button[type="submit"]:not(aside button) * {
+  color: #ffffff !important;
+}
+
+.admin-theme button[class*="bg-amber"]:hover,
+.admin-theme a[class*="bg-amber"]:hover,
+.admin-theme button[class*="bg-black"]:hover,
+.admin-theme a[class*="bg-black"]:hover,
+.admin-theme button[type="submit"]:not(aside button):hover {
+  background-color: #262626 !important;
+  color: #ffffff !important;
+}
+
+.admin-theme button[class*="bg-amber"] svg,
+.admin-theme a[class*="bg-amber"] svg,
+.admin-theme button[class*="bg-black"] svg,
+.admin-theme a[class*="bg-black"] svg,
+.admin-theme button[type="submit"] svg {
+  color: #ffffff !important;
+}
+
+/* Secondary / Border Buttons */
+.admin-theme button[class*="border"]:not([class*="bg-amber"]):not([class*="bg-red"]):not([class*="bg-black"]):not(aside button) {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+.admin-theme button[class*="border"]:not([class*="bg-amber"]):not([class*="bg-red"]):not([class*="bg-black"]):not(aside button):hover {
+  background-color: #f3f4f6 !important;
+}
+
+/* Tables */
+.admin-theme table {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.admin-theme table thead,
+.admin-theme table thead tr,
+.admin-theme table thead th {
+  background-color: #f9fafb !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+}
+
+.admin-theme table tbody tr {
+  background-color: #ffffff !important;
+  border-color: #f3f4f6 !important;
+  color: #000000 !important;
+}
+
+.admin-theme table tbody tr:hover {
+  background-color: #f9fafb !important;
+}
+
+.admin-theme table td {
+  color: #000000 !important;
+}
+
+/* Country Pill Button in Admin Header */
+.admin-theme header button[aria-label="Select Country"] {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+.admin-theme header button[aria-label="Select Country"] span,
+.admin-theme header button[aria-label="Select Country"] svg {
+  color: #ffffff !important;
+}
+
+/* Modals & Popups in Admin */
+.admin-theme div[class*="fixed"][class*="inset-0"] > div[class*="bg-neutral-900"],
+.admin-theme div[class*="fixed"][class*="inset-0"] > div[class*="bg-neutral-950"] {
+  background-color: #ffffff !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
+}
+
+/* ==========================================================================
+   ADMIN TOAST / POPUP NOTIFICATIONS (Top Slide-Down Alert with Auto-Hide)
+   ========================================================================== */
+@keyframes adminToastSlideInOut {
+  0% {
+    transform: translate(-50%, -35px);
+    opacity: 0;
+  }
+  8% {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+  88% {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  98% {
+    transform: translate(-50%, -35px);
+    opacity: 0;
+    visibility: visible;
+  }
+  100% {
+    transform: translate(-50%, -35px);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+.admin-theme div[class*="bg-emerald-950"],
+.admin-theme div[class*="bg-red-950"] {
+  position: fixed !important;
+  top: 24px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 999999 !important;
+  min-width: 360px !important;
+  max-width: min(560px, calc(100vw - 32px)) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: 14px 20px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.35), 0 10px 15px -5px rgba(0, 0, 0, 0.2) !important;
+  animation: adminToastSlideInOut 4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.admin-theme div[class*="bg-emerald-950"]:hover,
+.admin-theme div[class*="bg-red-950"]:hover {
+  animation-play-state: paused !important;
+}
+
+.admin-theme div[class*="bg-emerald-950"] {
+  background-color: #064e3b !important;
+  border: 1px solid #10b981 !important;
+  color: #ffffff !important;
+}
+
+.admin-theme div[class*="bg-emerald-950"] * {
+  color: #ffffff !important;
+  font-weight: 500 !important;
+}
+
+.admin-theme div[class*="bg-red-950"] {
+  background-color: #7f1d1d !important;
+  border: 1px solid #ef4444 !important;
+  color: #ffffff !important;
+}
+
+.admin-theme div[class*="bg-red-950"] * {
+  color: #ffffff !important;
+  font-weight: 500 !important;
+}
+
+.admin-theme div[class*="bg-emerald-950"] button,
+.admin-theme div[class*="bg-red-950"] button {
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  opacity: 0.8 !important;
+  cursor: pointer !important;
+  padding: 2px 6px !important;
+  font-size: 14px !important;
+}
+
+.admin-theme div[class*="bg-emerald-950"] button:hover,
+.admin-theme div[class*="bg-red-950"] button:hover {
+  opacity: 1 !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* ==========================================================================
+   COUNTRY SELECTOR BUTTON (Pure White Background, Solid Jet Black Text)
+   ========================================================================== */
+.admin-theme header button.admin-country-btn,
+.admin-theme header button[aria-label="Select Country"],
+html .admin-theme header button.admin-country-btn,
+html .admin-theme header .admin-country-btn {
+  background-color: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  color: #000000 !important;
+}
+
+.admin-theme header button.admin-country-btn span,
+.admin-theme header button[aria-label="Select Country"] span,
+html .admin-theme header button.admin-country-btn span,
+html .admin-theme header .admin-country-btn span {
+  color: #000000 !important;
+  background-color: transparent !important;
+  font-weight: 800 !important;
+}
+
+.admin-theme header button.admin-country-btn svg,
+.admin-theme header button[aria-label="Select Country"] svg,
+html .admin-theme header button.admin-country-btn svg,
+html .admin-theme header .admin-country-btn svg {
+  color: #000000 !important;
+  stroke: #000000 !important;
+  fill: none !important;
+}
