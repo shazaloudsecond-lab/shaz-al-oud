@@ -242,8 +242,7 @@ export default function CheckoutPage() {
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder={t("checkout.full_name_placeholder", "Nasser Al-Thani")}
-                      className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors"
+                      className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors rounded-[10px] sm:rounded-none"
                     />
                   </div>
 
@@ -256,8 +255,7 @@ export default function CheckoutPage() {
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
-                      placeholder={t("checkout.phone_placeholder", "+974 5555 1234")}
-                      className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors"
+                      className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors rounded-[10px] sm:rounded-none"
                     />
                   </div>
                 </div>
@@ -270,8 +268,7 @@ export default function CheckoutPage() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t("checkout.email_placeholder", "name@example.com")}
-                    className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors"
+                    className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors rounded-[10px] sm:rounded-none"
                   />
                 </div>
 
@@ -284,8 +281,7 @@ export default function CheckoutPage() {
                     required
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    placeholder={t("checkout.address_placeholder", "House/Flat no., Street, Area")}
-                    className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors"
+                    className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors rounded-[10px] sm:rounded-none"
                   />
                 </div>
 
@@ -299,8 +295,7 @@ export default function CheckoutPage() {
                       required
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      placeholder={t("checkout.city_placeholder", "Doha, West Bay, Lusail")}
-                      className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors"
+                      className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors rounded-[10px] sm:rounded-none"
                     />
                   </div>
 
@@ -312,8 +307,7 @@ export default function CheckoutPage() {
                       type="text"
                       value={state}
                       onChange={(e) => setState(e.target.value)}
-                      placeholder={t("checkout.state_placeholder", "Region / State")}
-                      className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors"
+                      className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors rounded-[10px] sm:rounded-none"
                     />
                   </div>
 
@@ -325,8 +319,7 @@ export default function CheckoutPage() {
                       type="text"
                       value={postalCode}
                       onChange={(e) => setPostalCode(e.target.value)}
-                      placeholder={t("checkout.postal_code_placeholder", "00000")}
-                      className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors"
+                      className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors rounded-[10px] sm:rounded-none"
                     />
                   </div>
                 </div>
@@ -341,10 +334,10 @@ export default function CheckoutPage() {
                     <button
                       type="button"
                       onClick={() => setDeliverySlot("morning")}
-                      className={`py-3.5 px-3 text-center transition-all cursor-pointer text-xs font-mono ${
+                      className={`py-3.5 px-3 text-center transition-all cursor-pointer text-xs font-mono rounded-[10px] sm:rounded-none ${
                         deliverySlot === "morning"
-                          ? "bg-amber-500/15 text-amber-300 shadow-lg shadow-amber-950/30 ring-1 ring-amber-400/50"
-                          : "bg-neutral-900 text-neutral-300 hover:border-neutral-700 hover:text-white"
+                          ? "bg-white text-black font-semibold shadow-lg"
+                          : "bg-neutral-900 text-neutral-300 hover:text-white"
                       }`}
                     >
                       {t("checkout.slot_morning", "9:00 AM – 1:00 PM")}
@@ -353,10 +346,10 @@ export default function CheckoutPage() {
                     <button
                       type="button"
                       onClick={() => setDeliverySlot("evening")}
-                      className={`py-3.5 px-3 text-center transition-all cursor-pointer text-xs font-mono ${
+                      className={`py-3.5 px-3 text-center transition-all cursor-pointer text-xs font-mono rounded-[10px] sm:rounded-none ${
                         deliverySlot === "evening"
-                          ? "border-amber-400 bg-amber-500/15 text-amber-300 shadow-lg shadow-amber-950/30 ring-1 ring-amber-400/50"
-                          : "border-neutral-800 bg-neutral-900 text-neutral-300 hover:border-neutral-700 hover:text-white"
+                          ? "bg-white text-black font-semibold shadow-lg"
+                          : "bg-neutral-900 text-neutral-300 hover:text-white"
                       }`}
                     >
                       {t("checkout.slot_evening", "6:00 PM – 10:00 PM")}
@@ -365,10 +358,10 @@ export default function CheckoutPage() {
                     <button
                       type="button"
                       onClick={() => setDeliverySlot("custom")}
-                      className={`py-3.5 px-3 text-center transition-all cursor-pointer text-xs ${
+                      className={`py-3.5 px-3 text-center transition-all cursor-pointer text-xs rounded-[10px] sm:rounded-none ${
                         deliverySlot === "custom"
-                          ? "border-amber-400 bg-amber-500/15 text-amber-300 shadow-lg shadow-amber-950/30 ring-1 ring-amber-400/50"
-                          : "border-neutral-800 bg-neutral-900 text-neutral-300 hover:border-neutral-700 hover:text-white"
+                          ? "bg-white text-black font-semibold shadow-lg"
+                          : "bg-neutral-900 text-neutral-300 hover:text-white"
                       }`}
                     >
                       {t("checkout.slot_anytime", "Anytime (Standard Delivery)")}
@@ -383,8 +376,7 @@ export default function CheckoutPage() {
                         required={deliverySlot === "custom"}
                         value={customTime}
                         onChange={(e) => setCustomTime(e.target.value)}
-                        placeholder="Enter preferred time (5:30 PM, After 7 PM)"
-                        className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors font-mono"
+                        className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors font-mono rounded-[10px] sm:rounded-none"
                       />
                     </div>
                   )}
@@ -397,9 +389,8 @@ export default function CheckoutPage() {
                   <textarea
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    placeholder={t("checkout.order_notes_placeholder", "Gate code, call upon arrival, gift note...")}
                     rows={3}
-                    className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors resize-none"
+                    className="w-full px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 text-sm transition-colors resize-none rounded-[10px] sm:rounded-none"
                   />
                 </div>
               </div>
@@ -410,7 +401,7 @@ export default function CheckoutPage() {
                   {t("checkout.payment_title", "Payment Method")}
                 </h2>
 
-                <div className="flex items-center gap-4 p-4 bg-[#f0d5c8]/5">
+                <div className="flex items-center gap-4 p-4 bg-[#f0d5c8]/5 rounded-[10px] sm:rounded-none">
                   <div className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center flex-shrink-0">
                     <svg className="w-5 h-5 text-[#f0d5c8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.6">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -438,7 +429,7 @@ export default function CheckoutPage() {
 
             {/* Right: Order Summary */}
             <div className="space-y-4 lg:sticky lg:top-28">
-              <div className="border-0 sm:border sm:border-neutral-800 p-0 sm:p-6 space-y-4 sm:space-y-5">
+              <div className="p-0 sm:p-6 bg-black/10 space-y-4 sm:space-y-5">
                 <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-white pb-2 sm:pb-4">
                   {t("checkout.summary_title", "Order Summary")} ({cartItems.length} {cartItems.length === 1 ? t("common.item", "item") : t("common.items", "items")})
                 </h2>
@@ -503,11 +494,11 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {/* Place Order Button (Desktop) */}
+                {/* Place Order Button */}
                 <button
                   type="submit"
                   disabled={submitting || cartItems.length === 0}
-                  className="w-full py-4 bg-white hover:bg-[#f0d5c8] disabled:opacity-60 text-black font-semibold text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg hidden sm:flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-white hover:bg-[#f0d5c8] disabled:opacity-60 text-black font-semibold text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg flex items-center justify-center gap-2"
                 >
                   {submitting ? (
                     <>

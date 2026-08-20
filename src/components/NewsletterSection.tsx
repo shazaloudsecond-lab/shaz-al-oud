@@ -79,7 +79,7 @@ export default function NewsletterSection() {
   };
 
   return (
-    <section className="w-full bg-black py-16 sm:pt-10 sm:pb-24px-4 sm:px-6 lg:px-12 select-none">
+    <section className="w-full bg-black py-16 sm:pt-10 sm:pb-24px-4 px-4 sm:px-6 lg:px-12 select-none">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         {/* Left Side — Image */}
         {newsletterConfig.image_url ? (
@@ -121,12 +121,12 @@ export default function NewsletterSection() {
                 placeholder={t("newsletter.placeholder", "Enter your email address")}
                 disabled={submitting}
                 required
-                className="flex-1 px-4 py-3.5 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 focus:bg-neutral-950 transition-all text-sm"
+                className="w-full sm:flex-1 px-4 py-3.5 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 focus:bg-neutral-950 transition-all text-sm rounded-[10px] sm:rounded-none"
               />
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-8 py-3.5 bg-white hover:bg-[#f0d5c8] disabled:opacity-50 text-black text-xs font-semibold uppercase tracking-widest transition-all shadow-md flex items-center justify-center cursor-pointer flex-shrink-0"
+                className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-[#f0d5c8] disabled:opacity-50 text-black text-xs font-semibold uppercase tracking-widest transition-all shadow-md flex items-center justify-center cursor-pointer flex-shrink-0 rounded-[10px] sm:rounded-none"
               >
                 {submitting ? (
                   <span className="flex items-center gap-2">

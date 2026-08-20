@@ -80,7 +80,7 @@ export default function ProductSlider() {
         <div className="flex gap-8 overflow-hidden">
           {[1, 2, 3].map((i) => (
             <div key={i} className="min-w-[350px] space-y-4 animate-pulse">
-              <div className="aspect-square bg-neutral-900 rounded-sm" />
+              <div className="aspect-[4/5] bg-neutral-900 rounded-sm" />
               <div className="h-4 bg-neutral-900 rounded w-full" />
             </div>
           ))}
@@ -138,7 +138,7 @@ export default function ProductSlider() {
                 <Link href={`/products/${product.id}`} className="block w-full h-full" draggable={false}>
                   {/* Image Container */}
                   <div
-                    className="aspect-square relative overflow-hidden mb-2.5 sm:mb-4 transition-transform duration-500 group-hover:-translate-y-2 border border-neutral-800"
+                    className="aspect-[4/5] relative overflow-hidden mb-2.5 sm:mb-4 transition-transform duration-500 group-hover:-translate-y-2 border border-neutral-800"
                     style={{ backgroundColor: item.bg_color || "#121212" }}
                   >
                     {product.image_url ? (
@@ -172,7 +172,7 @@ export default function ProductSlider() {
                             volume: pr.volume,
                           });
                         }}
-                        className="w-full py-2.5 px-3 bg-white hover:bg-[#f0d5c8] text-black text-xs font-semibold uppercase tracking-widest text-center shadow-lg transition-colors cursor-pointer"
+                        className="w-full py-2.5 px-3 bg-black hover:bg-neutral-900 text-white text-xs font-semibold uppercase tracking-widest text-center shadow-lg transition-colors cursor-pointer"
                       >
                         {t("products.add_to_bag", "Add to Cart")}
                       </button>

@@ -34,15 +34,15 @@ export default function FeaturedBanner() {
 
   return (
     <section className="relative w-full bg-black py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-12 select-none overflow-hidden">
-      {/* Optional Section Background Image (Solid black if empty) */}
-      {featuredBanner.background_image_url && (
+      {/* Section Background Image */}
+      {(featuredBanner.background_image_url || featuredBanner.image_url) && (
         <div className="absolute inset-0 pointer-events-none z-0">
           <img
-            src={featuredBanner.background_image_url}
+            src={featuredBanner.background_image_url || featuredBanner.image_url}
             alt="Background"
             className="w-full h-full object-cover opacity-85 sm:opacity-90"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/15 to-black/45" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/55 sm:from-black/35 sm:via-black/15 sm:to-black/45" />
         </div>
       )}
 
