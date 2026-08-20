@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { CountryProvider } from "@/context/CountryContext";
@@ -9,6 +9,12 @@ import CartDrawer from "@/components/CartDrawer";
 export const metadata: Metadata = {
   title: "Shaz Al Oud | Luxury Fragrances & Perfumes",
   description: "Exquisite and luxury Arabian fragrances, oud, and perfumes.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({

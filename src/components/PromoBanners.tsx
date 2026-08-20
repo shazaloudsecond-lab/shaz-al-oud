@@ -43,7 +43,7 @@ export default function PromoBanners() {
     const hasLink = linkUrl && linkUrl !== "#";
 
     const CardInner = (
-      <div className="group relative w-full aspect-[16/10] sm:rounded-3xl overflow-hidden border border-[#dfc3b4]/20 bg-neutral-950 shadow-2xl transition-all duration-500 hover:border-[#dfc3b4]/40 hover:shadow-black/70">
+      <div className="group relative w-full aspect-[16/10] sm:rounded-3xl overflow-hidden bg-neutral-950 shadow-[0_0_45px_rgba(255,255,255,0.18)] hover:shadow-[0_0_65px_rgba(255,255,255,0.30)] transition-all duration-500">
         {/* Background Image with subtle zoom */}
         <img
           src={imageUrl}
@@ -56,14 +56,14 @@ export default function PromoBanners() {
         <div
           className={`absolute inset-0 transition-opacity duration-500 ${
             position === "left"
-              ? "bg-gradient-to-r from-black/85 via-black/45 to-transparent"
-              : "bg-gradient-to-l from-black/85 via-black/45 to-transparent"
+              ? "bg-gradient-to-tr from-black/90 via-black/40 to-transparent"
+              : "bg-gradient-to-tl from-black/90 via-black/40 to-transparent"
           }`}
         />
 
-        {/* Floating Text & Icon Badge */}
+        {/* Floating Text & Icon Badge (Aligned to bottom) */}
         <div
-          className={`absolute inset-0 p-6 sm:p-8 flex flex-col justify-center ${
+          className={`absolute inset-0 p-6 sm:p-8 flex flex-col justify-end ${
             position === "left"
               ? "items-start text-left rtl:items-end rtl:text-right"
               : "items-end text-right rtl:items-start rtl:text-left"
