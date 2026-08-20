@@ -118,6 +118,13 @@ TO authenticated
 USING (true)
 WITH CHECK (true);
 
+ALTER TABLE promo_banners ADD COLUMN IF NOT EXISTS subheading TEXT;
+ALTER TABLE promo_banners ADD COLUMN IF NOT EXISTS background_image_url TEXT;
+ALTER TABLE promo_banners ADD COLUMN IF NOT EXISTS left_heading TEXT;
+ALTER TABLE promo_banners ADD COLUMN IF NOT EXISTS left_subheading TEXT;
+ALTER TABLE promo_banners ADD COLUMN IF NOT EXISTS right_heading TEXT;
+ALTER TABLE promo_banners ADD COLUMN IF NOT EXISTS right_subheading TEXT;
+
 
 
 
@@ -170,6 +177,9 @@ ON featured_banner FOR ALL
 TO authenticated
 USING (true)
 WITH CHECK (true);
+
+ALTER TABLE featured_banner ADD COLUMN IF NOT EXISTS background_image_url TEXT;
+ALTER TABLE featured_banner ADD COLUMN IF NOT EXISTS features JSONB;
 
 
 -- 7. PRODUCT SLIDER

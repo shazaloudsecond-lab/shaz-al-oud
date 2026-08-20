@@ -208,7 +208,7 @@ export default function Navbar() {
 
             {/* Country Selector Dropdown */}
             {activeCountries.length > 0 && (
-              <div className="relative" ref={countryDropdownRef}>
+              <div className="relative hidden sm:block" ref={countryDropdownRef}>
                 <button
                   type="button"
                   aria-label="Select Country"
@@ -297,7 +297,7 @@ export default function Navbar() {
               type="button"
               aria-label={t("nav.account", "User Account")}
               onClick={() => setIsAccountOpen(true)}
-              className="p-1.5 text-white/90 hover:text-white transition-colors focus:outline-none cursor-pointer"
+              className="hidden sm:block p-1.5 text-white/90 hover:text-white transition-colors focus:outline-none cursor-pointer"
             >
               <svg
                 className="w-5 h-5"
@@ -482,6 +482,29 @@ export default function Navbar() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    setIsAccountOpen(true);
+                  }}
+                  className="w-full group flex items-center justify-between py-3.5 text-sm sm:text-base font-light tracking-wide text-neutral-300 hover:text-white transition-all cursor-pointer text-left rtl:text-right"
+                >
+                  <span className="group-hover:text-[#f0d5c8] group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-all duration-200">
+                    {t("nav.account", "Account")}
+                  </span>
+                  <svg
+                    className="w-3.5 h-3.5 text-neutral-600 group-hover:text-[#f0d5c8] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 rtl:rotate-180 transition-all opacity-0 group-hover:opacity-100"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.8"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </li>
             </ul>
           </nav>
         </div>

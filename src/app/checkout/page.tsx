@@ -208,27 +208,27 @@ export default function CheckoutPage() {
     <main className="min-h-screen bg-black text-white font-sans">
       <Navbar />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-24 relative z-10">
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-32 sm:pb-24 relative z-10">
         {/* Page Header */}
-        <div className="mb-8">
-          <Link href="/" className="text-[13px] text-neutral-400 hover:text-white transition-colors flex items-center gap-2 w-fit mb-4">
+        <div className="mb-6 sm:mb-8">
+          <Link href="/" className="text-[13px] text-neutral-400 hover:text-white transition-colors flex items-center gap-2 w-fit mb-3 sm:mb-4">
             <svg className={`w-4 h-4 transform ${isRTL ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
             </svg>
             <span>{t("common.continue_shopping", "Back to Shopping")}</span>
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-semibold uppercase tracking-wider text-white font-primary">
+          <h1 className="text-xl sm:text-3xl font-semibold uppercase tracking-wider text-white font-primary">
             {t("checkout.title", "Checkout")}
           </h1>
         </div>
 
-        <form onSubmit={handlePlaceOrder}>
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 items-start">
+        <form id="checkout-form" onSubmit={handlePlaceOrder}>
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6 sm:gap-8 items-start">
             {/* Left: Delivery Information */}
-            <div className="space-y-6">
+            <div className="space-y-5 sm:space-y-6">
               {/* Contact Info */}
-              <div className=" border border-neutral-800 p-6 sm:p-8 space-y-5">
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-white pb-4">
+              <div className=" p-0 space-y-4 sm:space-y-5">
+                <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-white pb-2 sm:pb-4">
                   {t("checkout.contact_title", "Contact & Delivery Information")}
                 </h2>
 
@@ -405,8 +405,8 @@ export default function CheckoutPage() {
               </div>
 
               {/* Payment Method */}
-              <div className="bg-neutral-950 border border-neutral-800 p-6 sm:p-8">
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-white pb-4 mb-5">
+              <div className="bg-transparent">
+                <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-white pb-2 sm:pb-4 mb-3 sm:mb-5">
                   {t("checkout.payment_title", "Payment Method")}
                 </h2>
 
@@ -438,8 +438,8 @@ export default function CheckoutPage() {
 
             {/* Right: Order Summary */}
             <div className="space-y-4 lg:sticky lg:top-28">
-              <div className="border border-neutral-800 p-6 space-y-5">
-                <h2 className="text-sm font-semibold uppercase tracking-wider text-white pb-4">
+              <div className="border-0 sm:border sm:border-neutral-800 p-0 sm:p-6 space-y-4 sm:space-y-5">
+                <h2 className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-white pb-2 sm:pb-4">
                   {t("checkout.summary_title", "Order Summary")} ({cartItems.length} {cartItems.length === 1 ? t("common.item", "item") : t("common.items", "items")})
                 </h2>
 
@@ -503,11 +503,11 @@ export default function CheckoutPage() {
                   </div>
                 )}
 
-                {/* Place Order Button */}
+                {/* Place Order Button (Desktop) */}
                 <button
                   type="submit"
                   disabled={submitting || cartItems.length === 0}
-                  className="w-full py-4 bg-white hover:bg-[#f0d5c8] disabled:opacity-60 text-black font-semibold text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-white hover:bg-[#f0d5c8] disabled:opacity-60 text-black font-semibold text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg hidden sm:flex items-center justify-center gap-2"
                 >
                   {submitting ? (
                     <>
@@ -525,6 +525,34 @@ export default function CheckoutPage() {
             </div>
           </div>
         </form>
+      </div>
+
+      {/* Mobile Fixed Bottom Confirm & Place Order Bar (Only on Checkout Page) */}
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-neutral-950/95 backdrop-blur-md px-4 py-3 sm:hidden shadow-[0_-10px_25px_rgba(0,0,0,0.8)]">
+        <div className="flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] uppercase tracking-wider text-neutral-400 font-mono">{t("cart.order_total", "Total")}</p>
+            <p className="text-sm font-bold text-white font-mono truncate">{formatPrice(dynamicTotalPrice)}</p>
+          </div>
+          <button
+            form="checkout-form"
+            type="submit"
+            disabled={submitting || cartItems.length === 0}
+            className="py-3.5 px-5 bg-white hover:bg-[#f0d5c8] disabled:opacity-60 text-black font-semibold text-xs uppercase tracking-widest text-center shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-sans"
+          >
+            {submitting ? (
+              <>
+                <svg className="animate-spin h-3.5 w-3.5 text-black" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span>{t("checkout.processing_order", "Placing...")}</span>
+              </>
+            ) : (
+              <span>{t("checkout.place_order_btn", "Place Order")}</span>
+            )}
+          </button>
+        </div>
       </div>
 
       <Footer />
