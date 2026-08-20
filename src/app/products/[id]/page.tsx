@@ -269,10 +269,10 @@ export default function ProductDetailsPage() {
                         key={vIdx}
                         type="button"
                         onClick={() => setSelectedVariantIdx(vIdx)}
-                        className={`px-5 py-3 border text-xs font-semibold tracking-wider uppercase transition-all cursor-pointer flex items-center gap-2 ${
+                        className={`px-5 py-3 text-xs font-semibold tracking-wider uppercase transition-all cursor-pointer flex items-center gap-2 ${
                           isSelected
-                            ? "bg-white text-black border-white shadow-xl shadow-white/10 scale-105"
-                            : "bg-neutral-900/90 text-neutral-300 border-neutral-800 hover:border-neutral-600 hover:text-white"
+                            ? "bg-white text-black shadow-xl shadow-white/10 scale-105"
+                            : "bg-neutral-900/90 text-neutral-300 hover:text-white"
                         }`}
                       >
                         <span className="">{tDynamic(v.volume)}</span>
@@ -305,7 +305,7 @@ export default function ProductDetailsPage() {
 
             {/* Quantity Selector & Action Buttons */}
             <div className="mt-8 flex flex-wrap sm:flex-nowrap items-center gap-4">
-              <div className="flex items-center border border-neutral-800 overflow-hidden h-[52px] bg-neutral-950 w-fit flex-shrink-0">
+              <div className="flex items-center overflow-hidden h-[52px] bg-neutral-950 w-fit flex-shrink-0">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="w-12 h-full flex items-center justify-center text-neutral-300 bg-neutral-900 hover:bg-neutral-800 transition-colors text-lg cursor-pointer"
@@ -338,7 +338,7 @@ export default function ProductDetailsPage() {
                 type="button"
                 disabled={!isCurrentlyInStock || !isAvailableInCountry}
                 onClick={handleAddToCart}
-                className="w-full py-4 px-6 border border-neutral-700 hover:border-white hover:bg-white/5 font-semibold text-white bg-transparent transition-all disabled:opacity-40 disabled:cursor-not-allowed text-[15px] cursor-pointer"
+                className="w-full py-4 px-6  hover:bg-[#61472F]/70 font-semibold text-white bg-[#61472F] transition-all disabled:opacity-40 disabled:cursor-not-allowed text-[15px] cursor-pointer"
               >
                 {t("products.add_to_bag", "Add to Cart")}
               </button>
@@ -431,7 +431,7 @@ export default function ProductDetailsPage() {
             type="button"
             disabled={!isCurrentlyInStock || !isAvailableInCountry}
             onClick={handleAddToCart}
-            className="w-full py-3.5 px-3 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs uppercase tracking-wider text-center transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer font-sans truncate"
+            className="w-full py-3 px-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-[11px] uppercase tracking-wider text-center transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer font-sans truncate"
           >
             <span>{t("products.add_to_bag", "Add to Bag")}</span>
           </button>
@@ -440,7 +440,7 @@ export default function ProductDetailsPage() {
             type="button"
             disabled={!isCurrentlyInStock || !isAvailableInCountry}
             onClick={handleBuyNow}
-            className="w-full py-3.5 px-3 bg-white hover:bg-[#f0d5c8] disabled:opacity-40 disabled:cursor-not-allowed text-black font-semibold text-xs uppercase tracking-widest text-center shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-sans truncate"
+            className="w-full py-3 px-2.5 bg-white hover:bg-[#f0d5c8] disabled:opacity-40 disabled:cursor-not-allowed text-black font-semibold text-[11px] uppercase tracking-wider text-center shadow-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans truncate"
           >
             <span>{t("cart.checkout", "Proceed to Checkout")}</span>
           </button>

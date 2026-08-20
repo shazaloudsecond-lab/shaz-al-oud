@@ -26,7 +26,7 @@ export default function ProductCard({ product, className = "" }: ProductCardProp
       className={`group flex flex-col items-center text-center ${className}`}
     >
       {/* Image Card Container */}
-      <div className="w-full aspect-[4/4.5] sm:aspect-square bg-neutral-900/90 overflow-hidden relative flex items-center justify-center p-3 sm:p-6 transition-all duration-300 group-hover:border-neutral-700 group-hover:shadow-lg group-hover:shadow-black/50">
+      <div className="w-full aspect-[4/4.5] sm:aspect-square bg-[#ffff] overflow-hidden relative flex items-center justify-center p-3 sm:p-6 transition-all duration-300 group-hover:border-neutral-700 group-hover:shadow-lg group-hover:shadow-black/50">
         <img
           src={product.image_url}
           alt={displayName}
@@ -60,7 +60,7 @@ export default function ProductCard({ product, className = "" }: ProductCardProp
                   1
                 );
               }}
-              className="w-full py-2.5 px-4 bg-white hover:bg-[#f0d5c8] text-black text-xs font-semibold uppercase tracking-widest text-center shadow-lg transition-colors cursor-pointer"
+              className="w-full py-2.5 px-4 bg-black hover:bg-neutral-900 text-white text-xs font-semibold uppercase tracking-widest text-center shadow-lg transition-colors cursor-pointer"
             >
               {t("products.add_to_bag", "Add to Cart")}
             </button>
