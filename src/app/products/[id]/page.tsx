@@ -284,7 +284,7 @@ export default function ProductDetailsPage() {
             )}
 
             {/* Description Accordion */}
-            <div className="mt-8 border border-neutral-800 overflow-hidden bg-neutral-950/60">
+            <div className="mt-8 overflow-hidden bg-neutral-950/60">
               <button 
                 onClick={() => setIsDescOpen(!isDescOpen)}
                 className="w-full flex items-center justify-between p-5 text-start hover:bg-white/5 transition-colors cursor-pointer"
@@ -353,7 +353,7 @@ export default function ProductDetailsPage() {
             </div>
 
             {/* Delivery Options Accordion */}
-            <div className="mt-10 border border-neutral-800 overflow-hidden bg-neutral-950/60">
+            <div className="mt-10 overflow-hidden bg-neutral-950/60">
               <button 
                 onClick={() => setIsDeliveryOpen(!isDeliveryOpen)}
                 className="w-full flex items-center justify-between p-5 text-start hover:bg-white/5 transition-colors cursor-pointer"
@@ -423,6 +423,30 @@ export default function ProductDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* Mobile Sticky Bottom Action Bar (Only on Product Details page on mobile) */}
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-neutral-950/95 backdrop-blur-md px-4 py-3 sm:hidden shadow-[0_-10px_25px_rgba(0,0,0,0.8)]">
+        <div className="grid grid-cols-2 gap-3 w-full">
+          <button
+            type="button"
+            disabled={!isCurrentlyInStock || !isAvailableInCountry}
+            onClick={handleAddToCart}
+            className="w-full py-3.5 px-3 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-xs uppercase tracking-wider text-center transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer font-sans truncate"
+          >
+            <span>{t("products.add_to_bag", "Add to Bag")}</span>
+          </button>
+
+          <button
+            type="button"
+            disabled={!isCurrentlyInStock || !isAvailableInCountry}
+            onClick={handleBuyNow}
+            className="w-full py-3.5 px-3 bg-white hover:bg-[#f0d5c8] disabled:opacity-40 disabled:cursor-not-allowed text-black font-semibold text-xs uppercase tracking-widest text-center shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-sans truncate"
+          >
+            <span>{t("cart.checkout", "Proceed to Checkout")}</span>
+          </button>
+        </div>
+      </div>
+
       <Footer />
     </main>
   );
