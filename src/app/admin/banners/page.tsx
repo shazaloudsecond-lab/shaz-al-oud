@@ -8,6 +8,8 @@ type LinkType = "product" | "category" | "custom" | "none";
 
 interface BannerConfig {
   imageUrl: string;
+  heading: string;
+  subheading: string;
   linkType: LinkType;
   selectedId: string;
   customUrl: string;
@@ -18,14 +20,22 @@ export default function AdminBannersPage() {
 
   const [bannerId, setBannerId] = useState<string | null>(null);
   const [heading, setHeading] = useState("");
+  const [subheading, setSubheading] = useState("");
+  const [backgroundImageUrl, setBackgroundImageUrl] = useState("");
+
   const [leftBanner, setLeftBanner] = useState<BannerConfig>({
     imageUrl: "",
+    heading: "",
+    subheading: "",
     linkType: "none",
     selectedId: "",
     customUrl: "",
   });
+
   const [rightBanner, setRightBanner] = useState<BannerConfig>({
     imageUrl: "",
+    heading: "",
+    subheading: "",
     linkType: "none",
     selectedId: "",
     customUrl: "",
@@ -33,6 +43,7 @@ export default function AdminBannersPage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingBg, setUploadingBg] = useState(false);
   const [uploadingLeft, setUploadingLeft] = useState(false);
   const [uploadingRight, setUploadingRight] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -71,30 +82,53 @@ export default function AdminBannersPage() {
     const fetchBanners = async () => {
       try {
         const supabase = createClient();
-        const { data, error } = await supabase
-          .from("promo_banners")
-          .select("*")
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle();
+        const [bannerRes, settingsRes] = await Promise.all([
+          supabase
+            .from("promo_banners")
+            .select("*")
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle(),
+          supabase
+            .from("admin_settings")
+            .select("key, value")
+            .eq("key", "promo_banner_extended")
+            .maybeSingle(),
+        ]);
 
-        if (error) {
-          console.error("Error loading promotional banners:", error);
+        if (bannerRes.error) {
+          console.error("Error loading promotional banners:", bannerRes.error);
         }
 
-        if (data) {
-          setBannerId(data.id);
-          setHeading(data.heading || "");
-          const leftParsed = parseStoredLink(data.left_link);
-          const rightParsed = parseStoredLink(data.right_link);
+        let extendedData: any = {};
+        if (settingsRes.data?.value) {
+          try {
+            extendedData = JSON.parse(settingsRes.data.value);
+          } catch (e) {
+            console.error("Error parsing promo_banner_extended:", e);
+          }
+        }
+
+        if (bannerRes.data) {
+          setBannerId(bannerRes.data.id);
+          setHeading(bannerRes.data.heading || "");
+          const leftParsed = parseStoredLink(bannerRes.data.left_link);
+          const rightParsed = parseStoredLink(bannerRes.data.right_link);
+
+          setSubheading(extendedData.subheading || (bannerRes.data as any).subheading || "");
+          setBackgroundImageUrl(extendedData.background_image_url || (bannerRes.data as any).background_image_url || "");
 
           setLeftBanner({
-            imageUrl: data.left_image_url || "",
+            imageUrl: bannerRes.data.left_image_url || "",
+            heading: extendedData.left_heading || (bannerRes.data as any).left_heading || "",
+            subheading: extendedData.left_subheading || (bannerRes.data as any).left_subheading || "",
             ...leftParsed,
           });
 
           setRightBanner({
-            imageUrl: data.right_image_url || "",
+            imageUrl: bannerRes.data.right_image_url || "",
+            heading: extendedData.right_heading || (bannerRes.data as any).right_heading || "",
+            subheading: extendedData.right_subheading || (bannerRes.data as any).right_subheading || "",
             ...rightParsed,
           });
         }
@@ -108,9 +142,10 @@ export default function AdminBannersPage() {
     fetchBanners();
   }, []);
 
-  const handleImageUpload = async (file: File, isLeft: boolean) => {
-    const setUploading = isLeft ? setUploadingLeft : setUploadingRight;
-    setUploading(true);
+  const handleImageUpload = async (file: File, target: "bg" | "left" | "right") => {
+    if (target === "bg") setUploadingBg(true);
+    if (target === "left") setUploadingLeft(true);
+    if (target === "right") setUploadingRight(true);
     setStatusMsg(null);
 
     const formData = new FormData();
@@ -125,17 +160,22 @@ export default function AdminBannersPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Upload failed");
 
-      if (isLeft) {
+      if (target === "bg") {
+        setBackgroundImageUrl(data.url);
+        setStatusMsg({ type: "success", text: "Background image uploaded successfully!" });
+      } else if (target === "left") {
         setLeftBanner((prev) => ({ ...prev, imageUrl: data.url }));
+        setStatusMsg({ type: "success", text: "Left banner image uploaded successfully!" });
       } else {
         setRightBanner((prev) => ({ ...prev, imageUrl: data.url }));
+        setStatusMsg({ type: "success", text: "Right banner image uploaded successfully!" });
       }
-
-      setStatusMsg({ type: "success", text: `${isLeft ? "Left" : "Right"} banner image uploaded successfully!` });
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to upload image." });
     } finally {
-      setUploading(false);
+      if (target === "bg") setUploadingBg(false);
+      if (target === "left") setUploadingLeft(false);
+      if (target === "right") setUploadingRight(false);
     }
   };
 
@@ -165,16 +205,23 @@ export default function AdminBannersPage() {
         updated_at: new Date().toISOString(),
       };
 
+      const extendedPayload = {
+        subheading: subheading.trim() || null,
+        background_image_url: backgroundImageUrl.trim() || null,
+        left_heading: leftBanner.heading.trim() || null,
+        left_subheading: leftBanner.subheading.trim() || null,
+        right_heading: rightBanner.heading.trim() || null,
+        right_subheading: rightBanner.subheading.trim() || null,
+      };
+
+      // 1. Save base row to promo_banners
       if (bannerId) {
-        // Update existing row
         const { error } = await supabase
           .from("promo_banners")
           .update(payload)
           .eq("id", bannerId);
         if (error) throw error;
-        setStatusMsg({ type: "success", text: "Promotional banners updated successfully!" });
       } else {
-        // Create new row
         const { data, error } = await supabase
           .from("promo_banners")
           .insert([payload])
@@ -182,8 +229,25 @@ export default function AdminBannersPage() {
           .single();
         if (error) throw error;
         if (data) setBannerId(data.id);
-        setStatusMsg({ type: "success", text: "Promotional banners published successfully!" });
       }
+
+      // 2. Save extended fields in admin_settings key promo_banner_extended
+      const { error: settingsError } = await supabase
+        .from("admin_settings")
+        .upsert(
+          {
+            key: "promo_banner_extended",
+            value: JSON.stringify(extendedPayload),
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "key" }
+        );
+
+      if (settingsError) {
+        console.error("Warning saving extended settings:", settingsError);
+      }
+
+      setStatusMsg({ type: "success", text: "Promotional banners published successfully!" });
     } catch (err: any) {
       console.error("Save promo banners error:", err);
       setStatusMsg({ type: "error", text: err.message || "Failed to save promotional banners." });
@@ -217,7 +281,7 @@ export default function AdminBannersPage() {
         <div>
           <h2 className="text-xl font-medium text-white tracking-wide">Promotional 2-Image Banners</h2>
           <p className="text-sm text-neutral-400">
-            Configure side-by-side promotional highlight banners for your homepage.
+            Configure section title, subtitle, background image, and side-by-side promotional highlight banners.
           </p>
         </div>
       </div>
@@ -245,26 +309,105 @@ export default function AdminBannersPage() {
       {/* Main Form */}
       <form onSubmit={handleSave} className="space-y-8">
 
-        {/* Section Heading */}
-        <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-6 space-y-3">
+        {/* Section Heading & Subheading & Background */}
+        <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-6 sm:p-7 space-y-6">
           <div className="flex items-center gap-2 pb-3 border-b border-neutral-800">
             <span className="w-2 h-2 rounded-full bg-amber-400" />
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-200">Section Heading</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-200">
+              Section Header & Background
+            </h3>
           </div>
-          <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
-            Banner Section Title
-          </label>
-          <input
-            type="text"
-            value={heading}
-            onChange={(e) => setHeading(e.target.value)}
-            placeholder="e.g. Our Signature Collections"
-            className="w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm"
-          />
-          <p className="text-[11px] text-neutral-500">This heading appears centered above the two banners on the homepage. Leave empty to show no heading.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Section Heading */}
+            <div className="space-y-2">
+              <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+                Section Heading
+              </label>
+              <input
+                type="text"
+                value={heading}
+                onChange={(e) => setHeading(e.target.value)}
+                placeholder="e.g. Craft Your Signature Essence"
+                className="w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+              />
+              <p className="text-[11px] text-neutral-500">Main section title displayed centered at the top.</p>
+            </div>
+
+            {/* Section Subheading */}
+            <div className="space-y-2">
+              <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+                Section Subheading
+              </label>
+              <textarea
+                rows={2}
+                value={subheading}
+                onChange={(e) => setSubheading(e.target.value)}
+                placeholder="e.g. A fragrance is more than a scent — it's an expression of who you are. Curated with precision, blended with passion."
+                className="w-full px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs resize-none"
+              />
+              <p className="text-[11px] text-neutral-500">Descriptive subtitle shown beneath the heading.</p>
+            </div>
+          </div>
+
+          {/* Section Background Image Upload */}
+          <div className="space-y-3 pt-4 border-t border-neutral-800/80">
+            <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+              Section Background Image (Optional)
+            </label>
+
+            <div className="flex flex-col sm:flex-row gap-3 items-start">
+              <label className="px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors cursor-pointer border border-neutral-700 flex items-center gap-2 flex-shrink-0">
+                <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+                <span>{uploadingBg ? "Uploading..." : "Upload Background"}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  disabled={uploadingBg}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleImageUpload(file, "bg");
+                    e.target.value = "";
+                  }}
+                  className="hidden"
+                />
+              </label>
+
+              <input
+                type="url"
+                value={backgroundImageUrl}
+                onChange={(e) => setBackgroundImageUrl(e.target.value)}
+                placeholder="or paste direct background image URL https://..."
+                className="flex-1 w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
+              />
+
+              {backgroundImageUrl && (
+                <button
+                  type="button"
+                  onClick={() => setBackgroundImageUrl("")}
+                  className="px-3 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white rounded-lg text-xs transition-colors cursor-pointer"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+
+            {backgroundImageUrl && (
+              <div className="relative h-20 w-full max-w-md rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800 mt-2">
+                <img src={backgroundImageUrl} alt="Section Background Preview" className="w-full h-full object-cover opacity-70" />
+                <span className="absolute bottom-1 right-2 text-[10px] text-neutral-400 bg-black/60 px-1.5 py-0.5 rounded">
+                  Background Preview
+                </span>
+              </div>
+            )}
+          </div>
         </div>
 
+        {/* BANNERS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
           {/* LEFT BANNER CARD */}
           <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-6 sm:p-7 space-y-6 flex flex-col justify-between">
             <div className="space-y-5">
@@ -272,7 +415,7 @@ export default function AdminBannersPage() {
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-amber-400" />
                   <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-200">
-                    Left Banner Image
+                    Left Banner Card
                   </h3>
                 </div>
                 <span className="text-[11px] text-neutral-500 font-mono">1/2</span>
@@ -296,7 +439,7 @@ export default function AdminBannersPage() {
                       disabled={uploadingLeft}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
-                        if (file) handleImageUpload(file, true);
+                        if (file) handleImageUpload(file, "left");
                         e.target.value = "";
                       }}
                       className="hidden"
@@ -309,6 +452,35 @@ export default function AdminBannersPage() {
                     onChange={(e) => setLeftBanner((prev) => ({ ...prev, imageUrl: e.target.value }))}
                     placeholder="or paste direct image URL https://..."
                     className="flex-1 w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* Card Heading & Subheading */}
+              <div className="space-y-3 pt-3 border-t border-neutral-800/80">
+                <div className="space-y-1.5">
+                  <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+                    Card Heading
+                  </label>
+                  <input
+                    type="text"
+                    value={leftBanner.heading}
+                    onChange={(e) => setLeftBanner((prev) => ({ ...prev, heading: e.target.value }))}
+                    placeholder="e.g. CRAFTED WITH CARE"
+                    className="w-full px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+                    Card Subheading
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={leftBanner.subheading}
+                    onChange={(e) => setLeftBanner((prev) => ({ ...prev, subheading: e.target.value }))}
+                    placeholder="e.g. Each note is carefully selected and blended to perfection."
+                    className="w-full px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs resize-none"
                   />
                 </div>
               </div>
@@ -393,10 +565,24 @@ export default function AdminBannersPage() {
 
             {/* Left Preview */}
             <div className="mt-4 pt-4 border-t border-neutral-800">
-              <span className="block text-[10px] uppercase tracking-wider text-neutral-500 mb-2">Live Preview:</span>
-              <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800 flex items-center justify-center p-1">
+              <span className="block text-[10px] uppercase tracking-wider text-neutral-500 mb-2">Live Card Preview:</span>
+              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-neutral-950 border border-neutral-800 flex items-center justify-center">
                 {leftBanner.imageUrl ? (
-                  <img src={leftBanner.imageUrl} alt="Left Banner" className="w-full h-full object-cover rounded-lg" />
+                  <>
+                    <img src={leftBanner.imageUrl} alt="Left Banner" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4">
+                      {leftBanner.heading && (
+                        <span className="text-xs font-semibold text-[#dfc3b4] uppercase tracking-wider">
+                          {leftBanner.heading}
+                        </span>
+                      )}
+                      {leftBanner.subheading && (
+                        <span className="text-[10px] text-neutral-300 line-clamp-2 mt-0.5">
+                          {leftBanner.subheading}
+                        </span>
+                      )}
+                    </div>
+                  </>
                 ) : (
                   <span className="text-xs text-neutral-600 italic">No image uploaded</span>
                 )}
@@ -411,7 +597,7 @@ export default function AdminBannersPage() {
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-amber-400" />
                   <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-200">
-                    Right Banner Image
+                    Right Banner Card
                   </h3>
                 </div>
                 <span className="text-[11px] text-neutral-500 font-mono">2/2</span>
@@ -435,7 +621,7 @@ export default function AdminBannersPage() {
                       disabled={uploadingRight}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
-                        if (file) handleImageUpload(file, false);
+                        if (file) handleImageUpload(file, "right");
                         e.target.value = "";
                       }}
                       className="hidden"
@@ -448,6 +634,35 @@ export default function AdminBannersPage() {
                     onChange={(e) => setRightBanner((prev) => ({ ...prev, imageUrl: e.target.value }))}
                     placeholder="or paste direct image URL https://..."
                     className="flex-1 w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
+                  />
+                </div>
+              </div>
+
+              {/* Card Heading & Subheading */}
+              <div className="space-y-3 pt-3 border-t border-neutral-800/80">
+                <div className="space-y-1.5">
+                  <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+                    Card Heading
+                  </label>
+                  <input
+                    type="text"
+                    value={rightBanner.heading}
+                    onChange={(e) => setRightBanner((prev) => ({ ...prev, heading: e.target.value }))}
+                    placeholder="e.g. ELEGANCE IN EVERY DROP"
+                    className="w-full px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+                    Card Subheading
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={rightBanner.subheading}
+                    onChange={(e) => setRightBanner((prev) => ({ ...prev, subheading: e.target.value }))}
+                    placeholder="e.g. Timeless blends designed to leave a lasting impression."
+                    className="w-full px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs resize-none"
                   />
                 </div>
               </div>
@@ -532,10 +747,24 @@ export default function AdminBannersPage() {
 
             {/* Right Preview */}
             <div className="mt-4 pt-4 border-t border-neutral-800">
-              <span className="block text-[10px] uppercase tracking-wider text-neutral-500 mb-2">Live Preview:</span>
-              <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800 flex items-center justify-center p-1">
+              <span className="block text-[10px] uppercase tracking-wider text-neutral-500 mb-2">Live Card Preview:</span>
+              <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-neutral-950 border border-neutral-800 flex items-center justify-center">
                 {rightBanner.imageUrl ? (
-                  <img src={rightBanner.imageUrl} alt="Right Banner" className="w-full h-full object-cover rounded-lg" />
+                  <>
+                    <img src={rightBanner.imageUrl} alt="Right Banner" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4">
+                      {rightBanner.heading && (
+                        <span className="text-xs font-semibold text-[#dfc3b4] uppercase tracking-wider">
+                          {rightBanner.heading}
+                        </span>
+                      )}
+                      {rightBanner.subheading && (
+                        <span className="text-[10px] text-neutral-300 line-clamp-2 mt-0.5">
+                          {rightBanner.subheading}
+                        </span>
+                      )}
+                    </div>
+                  </>
                 ) : (
                   <span className="text-xs text-neutral-600 italic">No image uploaded</span>
                 )}
@@ -548,8 +777,8 @@ export default function AdminBannersPage() {
         <div className="flex justify-end gap-3 pt-4 border-t border-neutral-800">
           <button
             type="submit"
-            disabled={saving || uploadingLeft || uploadingRight}
-            className="px-8 py-3 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-black text-xs font-semibold uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-amber-950/40 flex items-center gap-2 cursor-pointer"
+            disabled={saving || uploadingBg || uploadingLeft || uploadingRight}
+            className="px-8 py-3 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-black text-xs font-semibold uppercase tracking-wider rounded-xl transition-all shadow-lg shadow-amber-950/40 flex items-center gap-2 cursor-pointer font-medium"
           >
             {saving ? "Saving Banners..." : "Publish Banners to Store"}
           </button>

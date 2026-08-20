@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
@@ -8,8 +8,15 @@ import { useStore } from "@/context/StoreContext";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const { t } = useLanguage();
+  const { t, isRTL } = useLanguage();
   const { categories, companyDetails } = useStore();
+
+  // Mobile Accordion state: track open state per section key
+  const [openSection, setOpenSection] = useState<string | null>(null);
+
+  const toggleAccordion = (key: string) => {
+    setOpenSection((prev) => (prev === key ? null : key));
+  };
 
   const footerLinks = {
     shop: [
@@ -30,7 +37,7 @@ export default function Footer() {
       { id: "help-account", name: t("nav.account", "My Account"), href: "/account" },
       { id: "help-contact", name: t("nav.contact", "Contact Us"), href: "/contact" },
       { id: "help-shipping", name: t("footer.shipping_returns", "Shipping & Delivery"), href: "/#badges" },
-    ]
+    ],
   };
 
   const hasCompanyDetails =
@@ -49,7 +56,13 @@ export default function Footer() {
           } gap-8 sm:gap-10 lg:gap-12 pb-5`}
         >
           {/* Brand Column with Logo & Social Media Icons (Left Side) */}
-          <div className={`${hasCompanyDetails ? "col-span-1 sm:col-span-2 md:col-span-3" : "col-span-1 sm:col-span-2 md:col-span-2"} flex flex-col justify-between space-y-6`}>
+          <div
+            className={`${
+              hasCompanyDetails
+                ? "col-span-1 sm:col-span-2 md:col-span-3"
+                : "col-span-1 sm:col-span-2 md:col-span-2"
+            } flex flex-col justify-between space-y-6`}
+          >
             <div>
               <Link href="/" className="inline-block group w-fit">
                 <Image
@@ -60,7 +73,7 @@ export default function Footer() {
                   className="h-10 sm:h-12 w-auto object-contain brightness-0 invert opacity-95 group-hover:opacity-100 transition-opacity"
                 />
               </Link>
-              <p className="mt-4 text-xs sm:text-sm text-neutral-400 max-w-sm leading-relaxed">
+              <p className="mt-4 text-xs sm:text-sm text-neutral-400 max-w-sm leading-relaxed font-secondary font-light">
                 {companyDetails?.tagline ||
                   t(
                     "footer.tagline",
@@ -125,8 +138,230 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* SHOP Column */}
-          <div className={`${hasCompanyDetails ? "col-span-1 md:col-span-2" : "col-span-1"} space-y-4`}>
+          {/* ======================================================== */}
+          {/* MOBILE ACCORDION (Visible on Mobile screens only: sm:hidden) */}
+          {/* ======================================================== */}
+          <div className="block sm:hidden col-span-1 divide-y divide-neutral-900 border-y border-neutral-900 mt-2">
+            {/* SHOP Accordion */}
+            <div>
+              <button
+                type="button"
+                onClick={() => toggleAccordion("shop")}
+                className="w-full py-4 flex items-center justify-between text-start text-[12px] font-semibold uppercase tracking-[0.2em] text-[#f0d5c8] focus:outline-none cursor-pointer"
+              >
+                <span>{t("nav.collection", "SHOP")}</span>
+                <svg
+                  className={`w-3.5 h-3.5 text-neutral-400 transition-transform duration-300 ${
+                    openSection === "shop" ? "rotate-180 text-white" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {openSection === "shop" && (
+                <ul className="pb-4 space-y-2.5 pl-1 animate-fadeIn">
+                  {footerLinks.shop.map((link) => (
+                    <li key={link.id}>
+                      <Link
+                        href={link.href}
+                        className="text-xs text-neutral-400 hover:text-white transition-colors block py-0.5"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* ABOUT Accordion */}
+            <div>
+              <button
+                type="button"
+                onClick={() => toggleAccordion("about")}
+                className="w-full py-4 flex items-center justify-between text-start text-[12px] font-semibold uppercase tracking-[0.2em] text-[#f0d5c8] focus:outline-none cursor-pointer"
+              >
+                <span>{t("nav.about", "ABOUT US")}</span>
+                <svg
+                  className={`w-3.5 h-3.5 text-neutral-400 transition-transform duration-300 ${
+                    openSection === "about" ? "rotate-180 text-white" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {openSection === "about" && (
+                <ul className="pb-4 space-y-2.5 pl-1 animate-fadeIn">
+                  {footerLinks.about.map((link) => (
+                    <li key={link.id}>
+                      <Link
+                        href={link.href}
+                        className="text-xs text-neutral-400 hover:text-white transition-colors block py-0.5"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* CUSTOMER CARE Accordion */}
+            <div>
+              <button
+                type="button"
+                onClick={() => toggleAccordion("help")}
+                className="w-full py-4 flex items-center justify-between text-start text-[12px] font-semibold uppercase tracking-[0.2em] text-[#f0d5c8] focus:outline-none cursor-pointer"
+              >
+                <span>{t("footer.customer_care", "CUSTOMER CARE")}</span>
+                <svg
+                  className={`w-3.5 h-3.5 text-neutral-400 transition-transform duration-300 ${
+                    openSection === "help" ? "rotate-180 text-white" : ""
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {openSection === "help" && (
+                <ul className="pb-4 space-y-2.5 pl-1 animate-fadeIn">
+                  {footerLinks.help.map((link) => (
+                    <li key={link.id}>
+                      <Link
+                        href={link.href}
+                        className="text-xs text-neutral-400 hover:text-white transition-colors block py-0.5"
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            {/* LOCATION Accordion */}
+            {hasCompanyDetails && (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => toggleAccordion("location")}
+                  className="w-full py-4 flex items-center justify-between text-start text-[12px] font-semibold uppercase tracking-[0.2em] text-[#f0d5c8] focus:outline-none cursor-pointer"
+                >
+                  <span>{t("footer.store_location", "LOCATION")}</span>
+                  <svg
+                    className={`w-3.5 h-3.5 text-neutral-400 transition-transform duration-300 ${
+                      openSection === "location" ? "rotate-180 text-white" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {openSection === "location" && (
+                  <div className="pb-4 space-y-3 pl-1 text-xs text-neutral-400 animate-fadeIn">
+                    {companyDetails?.name && (
+                      <p className="font-semibold text-neutral-200 text-xs">
+                        {companyDetails.name}
+                      </p>
+                    )}
+
+                    {companyDetails?.address && (
+                      <div className="flex items-start gap-2.5 leading-relaxed">
+                        <svg
+                          className="w-3.5 h-3.5 text-neutral-400 mt-0.5 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.8"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        <span className="break-words">{companyDetails.address}</span>
+                      </div>
+                    )}
+
+                    {companyDetails?.phone && (
+                      <div className="flex items-center gap-2.5">
+                        <svg
+                          className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.8"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                          />
+                        </svg>
+                        <a
+                          href={`tel:${companyDetails.phone.replace(/\s+/g, "")}`}
+                          className="hover:text-white transition-colors whitespace-nowrap"
+                        >
+                          {companyDetails.phone}
+                        </a>
+                      </div>
+                    )}
+
+                    {companyDetails?.email && (
+                      <div className="flex items-center gap-2.5">
+                        <svg
+                          className="w-3.5 h-3.5 text-neutral-400 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.8"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                          />
+                        </svg>
+                        <a
+                          href={`mailto:${companyDetails.email}`}
+                          className="hover:text-white transition-colors whitespace-nowrap"
+                        >
+                          {companyDetails.email}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* ======================================================== */}
+          {/* DESKTOP COLUMNS (Visible on Tablet and Desktop: hidden sm:block) */}
+          {/* ======================================================== */}
+
+          {/* SHOP Column (Desktop) */}
+          <div className={`hidden sm:block ${hasCompanyDetails ? "col-span-1 md:col-span-2" : "col-span-1"} space-y-4`}>
             <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f0d5c8]">
               {t("nav.collection", "SHOP")}
             </h4>
@@ -144,8 +379,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* ABOUT Column */}
-          <div className={`${hasCompanyDetails ? "col-span-1 md:col-span-2" : "col-span-1"} space-y-4`}>
+          {/* ABOUT Column (Desktop) */}
+          <div className={`hidden sm:block ${hasCompanyDetails ? "col-span-1 md:col-span-2" : "col-span-1"} space-y-4`}>
             <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f0d5c8]">
               {t("nav.about", "ABOUT US")}
             </h4>
@@ -163,8 +398,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* HELP Column */}
-          <div className={`${hasCompanyDetails ? "col-span-1 md:col-span-2" : "col-span-1"} space-y-4`}>
+          {/* HELP Column (Desktop) */}
+          <div className={`hidden sm:block ${hasCompanyDetails ? "col-span-1 md:col-span-2" : "col-span-1"} space-y-4`}>
             <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f0d5c8]">
               {t("footer.customer_care", "CUSTOMER CARE")}
             </h4>
@@ -182,9 +417,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* STORE LOCATION / COMPANY DETAILS (Right Side End) */}
+          {/* STORE LOCATION / COMPANY DETAILS (Desktop) */}
           {hasCompanyDetails && (
-            <div className="col-span-1 sm:col-span-2 md:col-span-3 space-y-4">
+            <div className="hidden sm:block col-span-1 sm:col-span-2 md:col-span-3 space-y-4">
               <h4 className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f0d5c8]">
                 {t("footer.store_location", "LOCATION")}
               </h4>

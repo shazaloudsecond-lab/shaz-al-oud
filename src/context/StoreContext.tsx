@@ -21,9 +21,15 @@ export interface HeroConfig {
 export interface PromoBanner {
   id: string;
   heading?: string | null;
+  subheading?: string | null;
+  background_image_url?: string | null;
   left_image_url: string;
+  left_heading?: string | null;
+  left_subheading?: string | null;
   left_link?: string | null;
   right_image_url: string;
+  right_heading?: string | null;
+  right_subheading?: string | null;
   right_link?: string | null;
   is_active: boolean;
 }
@@ -36,12 +42,19 @@ export interface Badge {
   description?: string | null;
 }
 
+export interface FeaturedBannerItem {
+  icon_url: string;
+  heading: string;
+}
+
 export interface FeaturedBanner {
   id: string;
   image_url: string;
+  background_image_url?: string | null;
   heading?: string | null;
   subheading?: string | null;
   is_active: boolean;
+  features?: FeaturedBannerItem[];
 }
 
 export interface NewsletterConfig {
@@ -318,9 +331,52 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
 
       if (!catResult.error && catResult.data) setCategories(catResult.data);
       if (!prodResult.error && prodResult.data) setProducts(prodResult.data);
-      if (!bannerResult.error && bannerResult.data) setPromoBanner(bannerResult.data);
+      if (!bannerResult.error && bannerResult.data) {
+        let mergedBanner = { ...bannerResult.data };
+        if (settingsResult.data) {
+          const extSetting = settingsResult.data.find((s: { key: string }) => s.key === "promo_banner_extended");
+          if (extSetting?.value) {
+            try {
+              const parsed = JSON.parse(extSetting.value);
+              mergedBanner = { ...mergedBanner, ...parsed };
+            } catch (e) {
+              console.error("Error parsing promo_banner_extended:", e);
+            }
+          }
+        }
+        setPromoBanner(mergedBanner);
+      }
       if (!badgeResult.error && badgeResult.data) setBadges(badgeResult.data);
-      if (!featuredResult.error && featuredResult.data) setFeaturedBanner(featuredResult.data);
+      if (!featuredResult.error && featuredResult.data) {
+        let mergedFeatured = { ...featuredResult.data };
+        if (featuredResult.data.features) {
+          try {
+            mergedFeatured.features =
+              typeof featuredResult.data.features === "string"
+                ? JSON.parse(featuredResult.data.features)
+                : featuredResult.data.features;
+          } catch (e) {
+            console.error("Error parsing direct features:", e);
+          }
+        }
+        if (settingsResult.data) {
+          const bgSetting = settingsResult.data.find((s: { key: string }) => s.key === "featured_banner_background");
+          if (bgSetting?.value && !mergedFeatured.background_image_url) {
+            mergedFeatured.background_image_url = bgSetting.value;
+          }
+
+          const featSetting = settingsResult.data.find((s: { key: string }) => s.key === "featured_banner_features");
+          if (featSetting?.value && (!mergedFeatured.features || mergedFeatured.features.length === 0)) {
+            try {
+              const parsed = JSON.parse(featSetting.value);
+              mergedFeatured.features = parsed;
+            } catch (e) {
+              console.error("Error parsing featured_banner_features:", e);
+            }
+          }
+        }
+        setFeaturedBanner(mergedFeatured);
+      }
       if (!sliderConfigResult.error && sliderConfigResult.data) setProductSliderConfig(sliderConfigResult.data);
       if (!sliderItemsResult.error && sliderItemsResult.data) setProductSliderItems(sliderItemsResult.data);
       if (!newsletterResult.error && newsletterResult.data) setNewsletterConfig(newsletterResult.data);

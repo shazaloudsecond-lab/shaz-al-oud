@@ -37,11 +37,11 @@ export default function Hero() {
   // Loading skeleton
   if (loading) {
     return (
-      <section className="relative w-full h-[100dvh] min-h-[100dvh] flex items-end sm:items-center justify-start overflow-hidden bg-black text-white font-primary select-none">
+      <section className="relative w-full h-[78dvh] min-h-[520px] sm:h-[100dvh] sm:min-h-[100dvh] flex items-end sm:items-center justify-start overflow-hidden bg-black text-white font-primary select-none">
         <div className="absolute inset-0 bg-neutral-950 animate-pulse" />
         <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-12 lg:px-10 w-full flex flex-col items-start text-left pb-24 sm:pb-20 space-y-4">
           <div className="h-10 sm:h-14 w-64 sm:w-96 bg-neutral-900 rounded-2xl animate-pulse" />
-          <div className="h-4 sm:h-5 w-48 sm:w-72 bg-neutral-900 rounded-lg animate-pulse" />
+          <div className="hidden sm:block h-4 sm:h-5 w-48 sm:w-72 bg-neutral-900 rounded-lg animate-pulse" />
         </div>
       </section>
     );
@@ -57,7 +57,7 @@ export default function Hero() {
     const videoSrc = heroConfig?.video_url || "";
 
     return (
-      <section className="relative w-full h-[100dvh] min-h-[100dvh] flex items-end sm:items-center justify-start overflow-hidden bg-black text-white font-primary select-none">
+      <section className="relative w-full h-[78dvh] min-h-[520px] sm:h-[100dvh] sm:min-h-[100dvh] flex items-end sm:items-center justify-start overflow-hidden bg-black text-white font-primary select-none">
         {/* Fullscreen video background */}
         {videoSrc ? (
           <video
@@ -90,12 +90,12 @@ export default function Hero() {
 
         {/* Hero Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-12 lg:px-10 w-full flex flex-col items-start text-start pb-24 sm:pb-20">
-          <div className="max-w-lg md:max-w-xl space-y-4">
+          <div className="max-w-lg md:max-w-xl space-y-3 sm:space-y-4">
             <motion.h1
               initial={{ opacity: 0, y: 25, filter: "blur(4px)" }}
               animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-3xl md:text-4xl lg:text-5xl font-medium uppercase tracking-wide md:tracking-wider font-primary leading-tight text-[#f0d5c8] drop-shadow-md break-words"
+              className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-medium uppercase tracking-wide md:tracking-wider font-primary leading-tight text-[#f0d5c8] drop-shadow-md break-words"
             >
               {tDynamic(activeSlide.main_heading)}
             </motion.h1>
@@ -105,7 +105,7 @@ export default function Hero() {
                 initial={{ opacity: 0, y: 20, filter: "blur(3px)" }}
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 transition={{ duration: 0.8, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-                className="text-xs sm:text-sm text-[#dfc3b4]/85 font-light tracking-wide sm:tracking-wider uppercase leading-relaxed font-primary max-w-md break-words"
+                className="hidden sm:block text-xs sm:text-sm text-[#dfc3b4]/85 font-light tracking-wide sm:tracking-wider uppercase leading-relaxed font-primary max-w-md break-words"
               >
                 {tDynamic(activeSlide.sub_heading)}
               </motion.p>
@@ -165,7 +165,7 @@ export default function Hero() {
 
   // ─── IMAGE CAROUSEL MODE ──────────────────────────────────────────
   return (
-    <section className="relative w-full h-[100dvh] min-h-[100dvh] flex items-end sm:items-center justify-start overflow-hidden bg-black text-white font-primary select-none">
+    <section className="relative w-full h-[78dvh] min-h-[520px] sm:h-[100dvh] sm:min-h-[100dvh] flex items-end sm:items-center justify-start overflow-hidden bg-black text-white font-primary select-none">
       {/* Background Image Smooth Crossfade & Subtle Zoom Animation */}
       <AnimatePresence mode="sync">
         <motion.div
@@ -193,7 +193,7 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             exit="exit"
-            className="max-w-lg md:max-w-xl space-y-4"
+            className="max-w-lg md:max-w-xl space-y-3 sm:space-y-4"
           >
             {/* Main Heading */}
             <motion.h1
@@ -203,7 +203,7 @@ export default function Hero() {
                 exit: { opacity: 0, y: -20, filter: "blur(4px)" },
               }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-3xl md:text-4xl lg:text-5xl font-medium uppercase tracking-wide md:tracking-wider font-primary leading-tight text-[#f0d5c8] drop-shadow-md break-words"
+              className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-medium uppercase tracking-wide md:tracking-wider font-primary leading-tight text-[#f0d5c8] drop-shadow-md break-words"
             >
               {tDynamic(activeSlide.main_heading)}
             </motion.h1>
@@ -217,7 +217,7 @@ export default function Hero() {
                   exit: { opacity: 0, y: -12, filter: "blur(3px)" },
                 }}
                 transition={{ duration: 0.8, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-                className="text-xs sm:text-sm text-[#dfc3b4]/85 font-light tracking-wide sm:tracking-wider uppercase leading-relaxed font-primary max-w-md break-words"
+                className="hidden sm:block text-xs sm:text-sm text-[#dfc3b4]/85 font-light tracking-wide sm:tracking-wider uppercase leading-relaxed font-primary max-w-md break-words"
               >
                 {tDynamic(activeSlide.sub_heading)}
               </motion.p>
