@@ -510,7 +510,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar — Centered Copyright */}
-        <div className="border-t border-neutral-900 pt-8 flex items-center justify-center text-[11px] text-neutral-500 font-mono">
+        <div className="sm:border-t border-neutral-900 pt-8 flex items-center justify-center text-[11px] text-neutral-500 font-mono">
           <p className="uppercase tracking-wider text-center">
             © {currentYear} SHAZ AL OUD. {t("footer.all_rights", "ALL RIGHTS RESERVED.")}
           </p>
