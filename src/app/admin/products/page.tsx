@@ -3,6 +3,10 @@
 import React, { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAdminContext, Product, ProductVariant, ProductVariantPrice, Country } from "@/context/AdminContext";
+import { deleteCloudinaryAsset } from "@/lib/cloudinaryClient";
+import AdminDeleteModal from "@/components/admin/AdminDeleteModal";
+import AdminUploadProgress from "@/components/admin/AdminUploadProgress";
+import { uploadWithProgress } from "@/lib/uploadWithProgress";
 
 interface CountryPriceFormItem {
   price: string;
@@ -48,6 +52,7 @@ export default function AdminProductsPage() {
 
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Filter & Search
@@ -56,6 +61,10 @@ export default function AdminProductsPage() {
 
   // View Details Modal State
   const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
+
+  // Delete Confirmation Modal State
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string; name: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   // Form State
   const [isEditing, setIsEditing] = useState(false);
@@ -290,22 +299,21 @@ export default function AdminProductsPage() {
     if (!file) return;
 
     setUploading(true);
+    setUploadProgress(0);
     setStatusMsg(null);
 
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
+      const data = await uploadWithProgress("/api/upload", formData, (pct) => {
+        setUploadProgress(pct);
       });
 
-      const data = await res.json();
       if (data.url) {
         setImageUrls((prev) => {
-          const next = [...prev, data.url];
-          if (!mainImage) setMainImage(data.url);
+          const next = [...prev, data.url as string];
+          if (!mainImage) setMainImage(data.url as string);
           return next;
         });
         setStatusMsg({ type: "success", text: "Image uploaded successfully!" });
@@ -316,17 +324,36 @@ export default function AdminProductsPage() {
       setStatusMsg({ type: "error", text: err.message || "Failed to upload image." });
     } finally {
       setUploading(false);
+      setUploadProgress(0);
+      e.target.value = "";
     }
   };
 
-  const handleRemoveImage = (url: string) => {
-    setImageUrls((prev) => {
-      const updated = prev.filter((u) => u !== url);
-      if (mainImage === url) {
-        setMainImage(updated[0] || "");
+  const handleRemoveImage = async (url: string) => {
+    await deleteCloudinaryAsset(url);
+    const updated = imageUrls.filter((u) => u !== url);
+    const nextMain = mainImage === url ? (updated[0] || "") : mainImage;
+    setImageUrls(updated);
+    if (mainImage === url) {
+      setMainImage(nextMain);
+    }
+
+    // If editing existing product, immediately persist image removal to database
+    if (selectedId) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("products")
+          .update({
+            image_url: nextMain,
+            images: updated,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", selectedId);
+      } catch (e) {
+        console.error("Error syncing image removal to DB:", e);
       }
-      return updated;
-    });
+    }
   };
 
   const handleAddImageUrl = (url: string) => {
@@ -481,28 +508,34 @@ export default function AdminProductsPage() {
     }
   };
 
-  const handleDelete = async (id: string, prodName: string) => {
-    if (!confirm(`Are you sure you want to delete product "${prodName}"?`)) {
-      return;
-    }
+  const handleConfirmDelete = async () => {
+    if (!deleteModal) return;
+    const { id, name: prodName } = deleteModal;
 
-    setSaving(true);
+    setDeleting(true);
     setStatusMsg(null);
 
     try {
+      const targetProd = products.find((p) => p.id === id);
       const supabase = createClient();
       const { error } = await supabase.from("products").delete().eq("id", id);
       if (error) throw error;
 
-      setStatusMsg({ type: "success", text: `Product "${prodName}" deleted.` });
+      if (targetProd) {
+        const imagesToDelete = [targetProd.image_url, ...(targetProd.images || [])].filter(Boolean);
+        await deleteCloudinaryAsset(imagesToDelete);
+      }
+
+      setStatusMsg({ type: "success", text: `Product "${prodName}" deleted successfully.` });
       if (selectedId === id) {
         resetForm();
       }
+      setDeleteModal(null);
       await fetchData();
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to delete product." });
     } finally {
-      setSaving(false);
+      setDeleting(false);
     }
   };
 
@@ -993,6 +1026,14 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
+              {/* Upload Progress Animation */}
+              <AdminUploadProgress
+                progress={uploadProgress}
+                isUploading={uploading}
+                title="Uploading Product Image"
+                className="mt-2"
+              />
+
               {/* Gallery */}
               {imageUrls.length > 0 && (
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 mt-2">
@@ -1255,7 +1296,7 @@ export default function AdminProductsPage() {
                             </button>
                             <button
                               type="button"
-                              onClick={() => handleDelete(p.id, p.name)}
+                              onClick={() => setDeleteModal({ isOpen: true, id: p.id, name: p.name })}
                               className="px-2.5 py-1 text-[11px] font-medium text-red-400 hover:text-red-300 bg-red-950/40 hover:bg-red-900/50 rounded-lg transition-colors cursor-pointer"
                             >
                               Delete
@@ -1507,6 +1548,18 @@ export default function AdminProductsPage() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <AdminDeleteModal
+        isOpen={!!deleteModal?.isOpen}
+        onClose={() => setDeleteModal(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Product"
+        message="Are you sure you want to delete this fragrance product? This will permanently remove its multi-country pricing and all product images from Cloudinary storage."
+        itemName={deleteModal?.name}
+        loading={deleting}
+        confirmText="Delete Product"
+      />
     </div>
   );
 }

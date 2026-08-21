@@ -3,11 +3,16 @@
 import React, { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAdminContext, Category } from "@/context/AdminContext";
+import { deleteCloudinaryAsset } from "@/lib/cloudinaryClient";
+import AdminDeleteModal from "@/components/admin/AdminDeleteModal";
+import AdminUploadProgress from "@/components/admin/AdminUploadProgress";
+import { uploadWithProgress } from "@/lib/uploadWithProgress";
 
 export default function AdminCategoriesPage() {
   const { categories, loadingCategories: loading, fetchCategories } = useAdminContext();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Form state
@@ -19,6 +24,10 @@ export default function AdminCategoriesPage() {
   const [imageUrl, setImageUrl] = useState("");
   const [displayOrder, setDisplayOrder] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Delete modal state
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; id: string; name: string } | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const generateSlug = (val: string) => {
     return val
@@ -68,26 +77,29 @@ export default function AdminCategoriesPage() {
     if (!file) return;
 
     setUploading(true);
+    setUploadProgress(0);
     setStatusMsg(null);
 
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
+      const data = await uploadWithProgress("/api/upload", formData, (pct) => {
+        setUploadProgress(pct);
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-
-      setImageUrl(data.url);
-      setStatusMsg({ type: "success", text: "Category image uploaded successfully!" });
+      if (data.url) {
+        setImageUrl(data.url as string);
+        setStatusMsg({ type: "success", text: "Category image uploaded successfully!" });
+      } else {
+        throw new Error(data.error || "Upload failed");
+      }
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to upload image." });
     } finally {
       setUploading(false);
+      setUploadProgress(0);
+      e.target.value = "";
     }
   };
 
@@ -141,28 +153,51 @@ export default function AdminCategoriesPage() {
     }
   };
 
-  const handleDelete = async (id: string, catName: string) => {
-    if (!confirm(`Are you sure you want to delete category "${catName}"? Any products assigned to this category will have their category unassigned.`)) {
-      return;
+  const handleDeleteImage = async () => {
+    if (!imageUrl) return;
+    await deleteCloudinaryAsset(imageUrl);
+    setImageUrl("");
+    if (selectedId) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("categories")
+          .update({ image_url: null, updated_at: new Date().toISOString() })
+          .eq("id", selectedId);
+        await fetchCategories();
+      } catch (e) {
+        console.error("Error updating category image:", e);
+      }
     }
+  };
 
-    setSaving(true);
+  const handleConfirmDelete = async () => {
+    if (!deleteModal) return;
+    const { id, name: catName } = deleteModal;
+
+    setDeleting(true);
     setStatusMsg(null);
 
     try {
+      const targetCat = categories.find((c) => c.id === id);
       const supabase = createClient();
       const { error } = await supabase.from("categories").delete().eq("id", id);
       if (error) throw error;
 
-      setStatusMsg({ type: "success", text: `Category "${catName}" deleted.` });
+      if (targetCat?.image_url) {
+        await deleteCloudinaryAsset(targetCat.image_url);
+      }
+
+      setStatusMsg({ type: "success", text: `Category "${catName}" deleted successfully.` });
       if (selectedId === id) {
         resetForm();
       }
+      setDeleteModal(null);
       await fetchCategories();
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to delete category." });
     } finally {
-      setSaving(false);
+      setDeleting(false);
     }
   };
 
@@ -331,15 +366,27 @@ export default function AdminCategoriesPage() {
                 />
               </div>
 
+              {/* Upload Progress */}
+              <AdminUploadProgress
+                progress={uploadProgress}
+                isUploading={uploading}
+                title="Uploading Category Image"
+                className="mt-2 max-w-md"
+              />
+
               {imageUrl && (
                 <div className="mt-3 relative w-32 h-32 rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950">
                   <img src={imageUrl} alt="Category preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
-                    onClick={() => setImageUrl("")}
-                    className="absolute top-1 right-1 p-1 bg-black/80 hover:bg-black text-neutral-300 hover:text-white rounded text-[10px]"
+                    onClick={handleDeleteImage}
+                    className="absolute top-1.5 right-1.5 px-2 py-1 bg-red-950/85 hover:bg-red-900 text-red-300 border border-red-800/80 rounded-md text-[11px] flex items-center gap-1 cursor-pointer shadow-md transition-colors"
+                    title="Delete Image"
                   >
-                    ✕
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Delete
                   </button>
                 </div>
               )}
@@ -472,7 +519,7 @@ export default function AdminCategoriesPage() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => handleDelete(cat.id, cat.name)}
+                          onClick={() => setDeleteModal({ isOpen: true, id: cat.id, name: cat.name })}
                           className="px-3 py-1.5 text-xs font-medium text-red-400 hover:text-red-300 bg-red-950/40 hover:bg-red-900/50 rounded-lg transition-colors cursor-pointer"
                         >
                           Delete
@@ -486,6 +533,18 @@ export default function AdminCategoriesPage() {
           </div>
         )}
       </div>
+
+      {/* Delete Category Confirmation Modal */}
+      <AdminDeleteModal
+        isOpen={!!deleteModal?.isOpen}
+        onClose={() => setDeleteModal(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Category"
+        message="Are you sure you want to delete this category? Any products assigned to this category will have their category unassigned, and the category image will be deleted from Cloudinary."
+        itemName={deleteModal?.name}
+        loading={deleting}
+        confirmText="Delete Category"
+      />
     </div>
   );
 }

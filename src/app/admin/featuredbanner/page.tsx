@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { deleteCloudinaryAsset } from "@/lib/cloudinaryClient";
+import AdminUploadProgress from "@/components/admin/AdminUploadProgress";
+import { uploadWithProgress } from "@/lib/uploadWithProgress";
 
 interface FeatureItem {
   icon_url: string;
@@ -26,8 +29,11 @@ export default function AdminFeaturedBannerPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingMain, setUploadingMain] = useState(false);
+  const [mainProgress, setMainProgress] = useState(0);
   const [uploadingBg, setUploadingBg] = useState(false);
+  const [bgProgress, setBgProgress] = useState(0);
   const [uploadingItemIndex, setUploadingItemIndex] = useState<number | null>(null);
+  const [itemProgress, setItemProgress] = useState(0);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
@@ -79,10 +85,13 @@ export default function AdminFeaturedBannerPage() {
   const handleImageUpload = async (file: File, target: "main" | "bg" | number) => {
     if (target === "main") {
       setUploadingMain(true);
+      setMainProgress(0);
     } else if (target === "bg") {
       setUploadingBg(true);
+      setBgProgress(0);
     } else {
       setUploadingItemIndex(target);
+      setItemProgress(0);
     }
     setStatusMsg(null);
 
@@ -90,31 +99,40 @@ export default function AdminFeaturedBannerPage() {
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
+      const data = await uploadWithProgress("/api/upload", formData, (pct) => {
+        if (target === "main") setMainProgress(pct);
+        else if (target === "bg") setBgProgress(pct);
+        else setItemProgress(pct);
+      });
 
-      if (target === "main") {
-        setImageUrl(data.url);
-      } else if (target === "bg") {
-        setBackgroundImageUrl(data.url);
+      if (data.url) {
+        if (target === "main") {
+          setImageUrl(data.url as string);
+        } else if (target === "bg") {
+          setBackgroundImageUrl(data.url as string);
+        } else {
+          setFeatures((prev) => {
+            const updated = [...prev];
+            updated[target] = { ...updated[target], icon_url: data.url as string };
+            return updated;
+          });
+        }
+        setStatusMsg({ type: "success", text: "Image uploaded successfully!" });
       } else {
-        setFeatures((prev) => {
-          const updated = [...prev];
-          updated[target] = { ...updated[target], icon_url: data.url };
-          return updated;
-        });
+        throw new Error(data.error || "Upload failed");
       }
-      setStatusMsg({ type: "success", text: "Image uploaded successfully!" });
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to upload image." });
     } finally {
       if (target === "main") {
         setUploadingMain(false);
+        setMainProgress(0);
       } else if (target === "bg") {
         setUploadingBg(false);
+        setBgProgress(0);
       } else {
         setUploadingItemIndex(null);
+        setItemProgress(0);
       }
     }
   };
@@ -125,6 +143,60 @@ export default function AdminFeaturedBannerPage() {
       updated[index] = { ...updated[index], [field]: val };
       return updated;
     });
+  };
+
+  const handleDeleteBgImage = async () => {
+    if (!backgroundImageUrl) return;
+    await deleteCloudinaryAsset(backgroundImageUrl);
+    setBackgroundImageUrl("");
+    if (bannerId) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("featured_banner")
+          .update({ background_image_url: null, updated_at: new Date().toISOString() })
+          .eq("id", bannerId);
+      } catch (e) {
+        console.error("Error deleting bg image in DB:", e);
+      }
+    }
+  };
+
+  const handleDeleteMainImage = async () => {
+    if (!imageUrl) return;
+    await deleteCloudinaryAsset(imageUrl);
+    setImageUrl("");
+    if (bannerId) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("featured_banner")
+          .update({ image_url: "", updated_at: new Date().toISOString() })
+          .eq("id", bannerId);
+      } catch (e) {
+        console.error("Error deleting main image in DB:", e);
+      }
+    }
+  };
+
+  const handleDeleteFeatureIcon = async (idx: number) => {
+    const targetIcon = features[idx]?.icon_url;
+    if (!targetIcon) return;
+    await deleteCloudinaryAsset(targetIcon);
+    const updatedFeatures = [...features];
+    updatedFeatures[idx] = { ...updatedFeatures[idx], icon_url: "" };
+    setFeatures(updatedFeatures);
+    if (bannerId) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("featured_banner")
+          .update({ features: updatedFeatures, updated_at: new Date().toISOString() })
+          .eq("id", bannerId);
+      } catch (e) {
+        console.error("Error deleting feature icon in DB:", e);
+      }
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -224,10 +296,13 @@ export default function AdminFeaturedBannerPage() {
               {backgroundImageUrl && (
                 <button
                   type="button"
-                  onClick={() => setBackgroundImageUrl("")}
-                  className="text-xs text-red-400 hover:text-red-300 font-medium"
+                  onClick={handleDeleteBgImage}
+                  className="px-2.5 py-1 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1 cursor-pointer transition-colors"
                 >
-                  Clear Background
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete Background
                 </button>
               )}
             </div>
@@ -257,6 +332,14 @@ export default function AdminFeaturedBannerPage() {
                 className="flex-1 w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
               />
             </div>
+
+            {/* Background Upload Progress */}
+            <AdminUploadProgress
+              progress={bgProgress}
+              isUploading={uploadingBg}
+              title="Uploading Section Background"
+              className="mt-2 max-w-md"
+            />
             {backgroundImageUrl && (
               <div className="mt-4 relative h-36 rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800">
                 <img src={backgroundImageUrl} alt="Background Preview" className="w-full h-full object-cover" />
@@ -297,7 +380,28 @@ export default function AdminFeaturedBannerPage() {
                 placeholder="or paste image URL..."
                 className="flex-1 w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
               />
+              {imageUrl && (
+                <button
+                  type="button"
+                  onClick={handleDeleteMainImage}
+                  className="px-3 py-2.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-md transition-colors flex-shrink-0"
+                  title="Delete Banner Image"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete Image
+                </button>
+              )}
             </div>
+
+            {/* Main Banner Upload Progress */}
+            <AdminUploadProgress
+              progress={mainProgress}
+              isUploading={uploadingMain}
+              title="Uploading Main Banner Image"
+              className="mt-2"
+            />
             {imageUrl && (
               <div className="mt-4 relative h-48 sm:h-64 rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800">
                 <img src={imageUrl} alt="Banner Preview" className="w-full h-full object-cover" />
@@ -409,6 +513,16 @@ export default function AdminFeaturedBannerPage() {
                     />
                   </div>
 
+                  {/* Feature Icon Upload Progress */}
+                  {uploadingItemIndex === idx && (
+                    <AdminUploadProgress
+                      progress={itemProgress}
+                      isUploading={true}
+                      title={`Uploading Quadrant ${idx + 1} Icon`}
+                      className="mt-1.5"
+                    />
+                  )}
+
                   {/* Icon Preview */}
                   {item.icon_url && (
                     <div className="mt-2 flex items-center gap-3 p-2 rounded-lg bg-neutral-900 border border-neutral-800">
@@ -418,8 +532,9 @@ export default function AdminFeaturedBannerPage() {
                       <span className="text-[11px] text-neutral-400 truncate flex-1">{item.icon_url}</span>
                       <button
                         type="button"
-                        onClick={() => updateFeatureItem(idx, "icon_url", "")}
-                        className="text-xs text-neutral-500 hover:text-red-400 px-1"
+                        onClick={() => handleDeleteFeatureIcon(idx)}
+                        className="text-xs text-neutral-500 hover:text-red-400 p-1 cursor-pointer"
+                        title="Delete Icon"
                       >
                         ✕
                       </button>

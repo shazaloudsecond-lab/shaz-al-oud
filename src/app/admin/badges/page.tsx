@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { deleteCloudinaryAsset } from "@/lib/cloudinaryClient";
+import AdminUploadProgress from "@/components/admin/AdminUploadProgress";
+import { uploadWithProgress } from "@/lib/uploadWithProgress";
 
 interface BadgeForm {
   id: string | null;
@@ -9,7 +12,8 @@ interface BadgeForm {
   iconUrl: string;
   heading: string;
   description: string;
-  uploading: boolean;
+  uploading?: boolean;
+  progress?: number;
 }
 
 const POSITIONS = [1, 2, 3, 4] as const;
@@ -73,7 +77,7 @@ export default function AdminBadgesPage() {
 
   const handleIconUpload = async (file: File, position: number) => {
     setBadges((prev) =>
-      prev.map((b) => (b.position === position ? { ...b, uploading: true } : b))
+      prev.map((b) => (b.position === position ? { ...b, uploading: true, progress: 0 } : b))
     );
     setStatusMsg(null);
 
@@ -81,18 +85,26 @@ export default function AdminBadgesPage() {
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
+      const data = await uploadWithProgress("/api/upload", formData, (pct) => {
+        setBadges((prev) =>
+          prev.map((b) => (b.position === position ? { ...b, progress: pct } : b))
+        );
+      });
 
-      setBadges((prev) =>
-        prev.map((b) => (b.position === position ? { ...b, iconUrl: data.url, uploading: false } : b))
-      );
-      setStatusMsg({ type: "success", text: `Badge ${position} icon uploaded!` });
+      if (data.url) {
+        setBadges((prev) =>
+          prev.map((b) =>
+            b.position === position ? { ...b, iconUrl: data.url as string, uploading: false, progress: 0 } : b
+          )
+        );
+        setStatusMsg({ type: "success", text: `Badge ${position} icon uploaded!` });
+      } else {
+        throw new Error(data.error || "Upload failed");
+      }
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Upload failed." });
       setBadges((prev) =>
-        prev.map((b) => (b.position === position ? { ...b, uploading: false } : b))
+        prev.map((b) => (b.position === position ? { ...b, uploading: false, progress: 0 } : b))
       );
     }
   };
@@ -101,6 +113,24 @@ export default function AdminBadgesPage() {
     setBadges((prev) =>
       prev.map((b) => (b.position === position ? { ...b, [field]: value } : b))
     );
+  };
+
+  const handleDeleteBadgeIcon = async (position: number) => {
+    const badge = badges.find((b) => b.position === position);
+    if (!badge || !badge.iconUrl) return;
+    await deleteCloudinaryAsset(badge.iconUrl);
+    updateField(position, "iconUrl", "");
+    if (badge.id) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("badges")
+          .update({ icon_url: null, updated_at: new Date().toISOString() })
+          .eq("id", badge.id);
+      } catch (e) {
+        console.error("Error deleting badge icon in DB:", e);
+      }
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -235,13 +265,35 @@ export default function AdminBadgesPage() {
                       />
                     </label>
 
-                    <input
-                      type="url"
-                      value={badge.iconUrl}
-                      onChange={(e) => updateField(badge.position, "iconUrl", e.target.value)}
-                      placeholder="or paste image URL..."
-                      className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
-                    />
+                    <div className="flex gap-2">
+                      <input
+                        type="url"
+                        value={badge.iconUrl}
+                        onChange={(e) => updateField(badge.position, "iconUrl", e.target.value)}
+                        placeholder="or paste image URL..."
+                        className="flex-1 w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
+                      />
+                      {badge.iconUrl && (
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteBadgeIcon(badge.position)}
+                          className="px-2.5 py-2 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs transition-colors cursor-pointer flex items-center justify-center shadow-xs"
+                          title="Delete Icon"
+                        >
+                          ✕
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Badge Icon Upload Progress */}
+                    {badge.uploading && (
+                      <AdminUploadProgress
+                        progress={badge.progress || 0}
+                        isUploading={true}
+                        title={`Uploading Badge ${badge.position} Icon`}
+                        className="mt-1.5"
+                      />
+                    )}
                   </div>
                 </div>
               </div>
