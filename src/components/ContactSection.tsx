@@ -77,7 +77,7 @@ export default function ContactSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Company Details (Second on mobile, First on Desktop) */}
           <div className="order-2 lg:order-1 lg:col-span-5 space-y-6">
-            <div className="bg-neutral-950 sm:border border-neutral-900 rounded-none sm:p-6 sm:p-8 space-y-6">
+            <div className="sm:bg-neutral-950 rounded-none sm:p-6 sm:p-8 space-y-6">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-white font-mono border-b border-neutral-900 pb-3">
                 {companyDetails?.name ? tDynamic(companyDetails.name) : "Shaz Al Oud"}
               </h3>
@@ -87,7 +87,7 @@ export default function ContactSection() {
                 {/* Physical Store Address */}
                 {companyDetails?.address && (
                   <div className="flex items-start gap-3.5 text-neutral-300">
-                    <div className="w-9 h-9 bg-neutral-900 border border-neutral-800 rounded-none flex items-center justify-center text-[#f0d5c8] flex-shrink-0">
+                    <div className="w-9 h-9  rounded-none flex items-center justify-center text-[#f0d5c8] flex-shrink-0">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -107,7 +107,7 @@ export default function ContactSection() {
                 {/* Contact Phone */}
                 {companyDetails?.phone && (
                   <div className="flex items-start gap-3.5 text-neutral-300">
-                    <div className="w-9 h-9 bg-neutral-900 border border-neutral-800 rounded-none flex items-center justify-center text-[#f0d5c8] flex-shrink-0">
+                    <div className="w-9 h-9  rounded-none flex items-center justify-center text-[#f0d5c8] flex-shrink-0">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
@@ -130,7 +130,7 @@ export default function ContactSection() {
                 {/* Support Email */}
                 {companyDetails?.email && (
                   <div className="flex items-start gap-3.5 text-neutral-300">
-                    <div className="w-9 h-9 bg-neutral-900 border border-neutral-800 rounded-none flex items-center justify-center text-[#f0d5c8] flex-shrink-0">
+                    <div className="w-9 h-9  rounded-none flex items-center justify-center text-[#f0d5c8] flex-shrink-0">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                       </svg>
@@ -154,7 +154,7 @@ export default function ContactSection() {
 
           {/* Send Message Form (First on mobile, Second on Desktop) */}
           <div className="order-1 lg:order-2 lg:col-span-7">
-            <div className="bg-neutral-950 sm:border border-neutral-900 rounded-none sm:p-6 sm:p-8 space-y-6 shadow-2xl">
+            <div className="sm:bg-neutral-950 rounded-none sm:p-6 sm:p-8 space-y-6 shadow-2xl">
               <div className="border-b border-neutral-900 pb-3">
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-white font-mono">
                   {t("contact.form_title", "Send Us a Message")}
@@ -168,8 +168,8 @@ export default function ContactSection() {
               {status && (
                 <div
                   className={`p-3.5 rounded-none text-xs flex items-center justify-between border ${status.type === "success"
-                      ? "bg-emerald-950/50 border-emerald-800 text-emerald-300"
-                      : "bg-red-950/50 border-red-800 text-red-300"
+                    ? "bg-emerald-950/50 border-emerald-800 text-emerald-300"
+                    : "bg-red-950/50 border-red-800 text-red-300"
                     }`}
                 >
                   <span>{status.message}</span>
@@ -196,7 +196,7 @@ export default function ContactSection() {
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder={t("contact.name_placeholder", "Your Name")}
-                      className="w-full px-4 py-3 bg-neutral-900 sm:border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors"
+                      className="w-full px-4 py-3 bg-neutral-900 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors"
                     />
                   </div>
 
@@ -211,7 +211,7 @@ export default function ContactSection() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder={t("contact.email_placeholder", "name@example.com")}
-                      className="w-full px-4 py-3 bg-neutral-900 sm:border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors"
+                      className="w-full px-4 py-3 bg-neutral-900 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors"
                     />
                   </div>
                 </div>
@@ -227,7 +227,7 @@ export default function ContactSection() {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder={t("contact.phone_placeholder", "+974 5555 1234")}
                     dir="ltr"
-                    className="w-full px-4 py-3 bg-neutral-900 sm:border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors font-mono"
+                    className="w-full px-4 py-3 bg-neutral-900 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors font-mono"
                   />
                 </div>
 
@@ -242,7 +242,7 @@ export default function ContactSection() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder={t("contact.message_placeholder", "How can we assist you with our bespoke fragrance collection?")}
-                    className="w-full px-4 py-3 bg-neutral-900 sm:border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors resize-none"
+                    className="w-full px-4 py-3 bg-neutral-900 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors resize-none"
                   />
                 </div>
 

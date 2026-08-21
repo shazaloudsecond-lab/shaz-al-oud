@@ -441,7 +441,7 @@ export default function CheckoutPage() {
 
                     return (
                       <div key={product.id} className="flex items-center gap-3">
-                        <div className="w-14 h-14 bg-neutral-900 flex-shrink-0 flex items-center justify-center p-2 overflow-hidden">
+                        <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center p-2 overflow-hidden">
                           {product.image_url ? (
                             <img src={product.image_url} alt={product.name} className="w-full h-full object-contain" />
                           ) : (
