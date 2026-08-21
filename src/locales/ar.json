@@ -33,7 +33,8 @@
     "best_seller": "الأكثر مبيعاً",
     "new_arrival": "وصل حديثاً",
     "exclusive": "حصري",
-    "signature": "مميز"
+    "signature": "مميز",
+    "discover_scent": "اكتشف عِطرك الخاص"
   },
   "hero": {
     "subtitle": "عطور راقية وخلاصات العود النقي",
@@ -226,6 +227,24 @@
     "gift_sets": "مجموعات الهدايا",
     "souq_asiery": "سوق العسيري",
     "manila_store": "فرع مانيلا",
-    "get_directions": "الاتجاهات"
+    "get_directions": "الاتجاهات",
+    "store_location": "موقعنا"
+  },
+  "contact": {
+    "heading": "تواصل معنا",
+    "subtitle": "هل لديك استفسار حول تشكيلة عطورنا الفاخرة أو تحتاج إلى مساعدة؟ فريق خدمة العملاء في خدمتكم دائماً.",
+    "form_title": "أرسل لنا رسالة",
+    "form_desc": "يرجى ملء النموذج أدناه وسنقوم بالرد عليكم في أقرب وقت.",
+    "full_name": "الاسم الكامل",
+    "name_placeholder": "الاسم الكريم",
+    "whatsapp_phone": "رقم الهاتف / الواتساب",
+    "phone_placeholder": "1234 5555 974+",
+    "email": "البريد الإلكتروني",
+    "email_placeholder": "name@example.com",
+    "message": "رسالتك",
+    "message_placeholder": "كيف يمكننا مساعدتك في اختيار عطرك المميز؟",
+    "send_button": "إرسال الرسالة",
+    "success": "شكراً لتواصلكم معنا! سنقوم بالرد عليكم في أقرب وقت.",
+    "phone": "الهاتف / الخط المباشر"
   }
 }

@@ -53,16 +53,10 @@ export default function AdminLoginPage() {
             className="h-12 w-auto object-contain"
           />
         </div>
-        <h2 className="text-2xl font-semibold tracking-widest uppercase text-neutral-900 font-primary">
-          Admin Portal
-        </h2>
-        <p className="mt-2 text-sm text-neutral-600 font-mono">
-          Sign in to manage fragrances, orders, and store inventory
-        </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-        <div className="bg-white border-2 border-black py-8 px-6 shadow-xl sm:px-10">
+        <div className="bg-white py-8 px-6 shadow-xl sm:px-10">
           {errorMsg && (
             <div className="mb-6 bg-red-50 border border-red-300 text-red-700 text-sm p-3.5 flex items-center gap-2">
               <svg className="w-5 h-5 flex-shrink-0 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,18 +68,21 @@ export default function AdminLoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleLogin} autoComplete="off" className="space-y-6">
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-neutral-800 mb-2 font-mono">
                 Admin Email
               </label>
               <input
                 type="email"
+                name="admin_login_email"
+                autoComplete="off"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@shazaloud.com"
-                className="w-full px-4 py-3 bg-white border border-neutral-300 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors text-sm font-mono"
+                style={{ outline: "none", boxShadow: "none" }}
+                className="w-full px-4 py-3 bg-white border border-neutral-300 text-neutral-900 placeholder-neutral-400 outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 focus-visible:ring-0 focus:border-neutral-300 transition-colors text-sm font-mono"
               />
             </div>
 
@@ -95,11 +92,14 @@ export default function AdminLoginPage() {
               </label>
               <input
                 type="password"
+                name="admin_login_password"
+                autoComplete="new-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full px-4 py-3 bg-white border border-neutral-300 text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-colors text-sm font-mono"
+                style={{ outline: "none", boxShadow: "none" }}
+                className="w-full px-4 py-3 bg-white border border-neutral-300 text-neutral-900 placeholder-neutral-400 outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 focus-visible:ring-0 focus:border-neutral-300 transition-colors text-sm font-mono"
               />
             </div>
 
