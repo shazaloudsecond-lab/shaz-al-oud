@@ -43,7 +43,7 @@ export default function PromoBanners() {
     const hasLink = linkUrl && linkUrl !== "#";
 
     const CardInner = (
-      <div className="group relative w-full aspect-[16/10] sm:rounded-3xl overflow-hidden bg-neutral-950 shadow-[0_0_45px_rgba(255,255,255,0.18)] hover:shadow-[0_0_65px_rgba(255,255,255,0.30)] transition-all duration-500">
+      <div className="group relative w-full aspect-[16/10] sm:rounded-3xl overflow-hidden  shadow-[0_0_45px_rgba(255,255,255,0.18)] hover:shadow-[0_0_65px_rgba(255,255,255,0.30)] transition-all duration-500">
         {/* Background Image with subtle zoom */}
         <img
           src={imageUrl}
@@ -53,13 +53,13 @@ export default function PromoBanners() {
         />
 
         {/* Gradient Overlay for Text Readability */}
-        <div
+        {/* <div
           className={`absolute inset-0 transition-opacity duration-500 ${
             position === "left"
               ? "bg-gradient-to-tr from-black/90 via-black/40 to-transparent"
               : "bg-gradient-to-tl from-black/90 via-black/40 to-transparent"
           }`}
-        />
+        /> */}
 
         {/* Floating Text & Icon Badge (Aligned to bottom) */}
         <div
@@ -115,7 +115,7 @@ export default function PromoBanners() {
       {/* Background Image with subtle atmospheric overlay */}
       {promoBanner.background_image_url && (
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-25 pointer-events-none"
+          className="absolute inset-0 bg-cover bg-center pointer-events-none"
           style={{ backgroundImage: `url(${promoBanner.background_image_url})` }}
         />
       )}

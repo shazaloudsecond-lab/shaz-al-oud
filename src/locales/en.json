@@ -33,7 +33,8 @@
     "best_seller": "Best Seller",
     "new_arrival": "New Arrival",
     "exclusive": "Exclusive",
-    "signature": "Signature"
+    "signature": "Signature",
+    "discover_scent": "DISCOVER YOUR SCENT"
   },
   "hero": {
     "subtitle": "Haute Parfumerie & Pure Oud",
@@ -226,6 +227,24 @@
     "gift_sets": "Gift Sets",
     "souq_asiery": "Souq Asiery",
     "manila_store": "Manila Store",
-    "get_directions": "Get Directions"
+    "get_directions": "Get Directions",
+    "store_location": "Location"
+  },
+  "contact": {
+    "heading": "Contact Us",
+    "subtitle": "Have a question about our bespoke fragrances or need assistance? Reach out to our concierge.",
+    "form_title": "Send Us a Message",
+    "form_desc": "Fill out the form below and we will respond promptly.",
+    "full_name": "Full Name",
+    "name_placeholder": "Your Name",
+    "whatsapp_phone": "Phone / WhatsApp Number",
+    "phone_placeholder": "+974 5555 1234",
+    "email": "Email Address",
+    "email_placeholder": "name@example.com",
+    "message": "Your Message",
+    "message_placeholder": "How can we assist you with our bespoke fragrance collection?",
+    "send_button": "Send Message",
+    "success": "Thank you for reaching out! We will get back to you shortly.",
+    "phone": "Phone / Direct Line"
   }
 }

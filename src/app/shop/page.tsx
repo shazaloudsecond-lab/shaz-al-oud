@@ -292,9 +292,9 @@ export default function ShopPage() {
               </span>
               {[
                 { label: t("products.all_sizes", "All Sizes"), value: "all" },
-                { label: isRTL ? "30 مل" : "30ml", value: "30ml" },
-                { label: isRTL ? "50 مل" : "50ml", value: "50ml" },
-                { label: isRTL ? "100 مل" : "100ml", value: "100ml" },
+                { label: tDynamic("30ml"), value: "30ml" },
+                { label: tDynamic("50ml"), value: "50ml" },
+                { label: tDynamic("100ml"), value: "100ml" },
               ].map((vol) => (
                 <button
                   key={vol.value}
@@ -431,9 +431,9 @@ export default function ShopPage() {
                   <div className="grid grid-cols-2 gap-2.5">
                     {[
                       { label: t("products.all_sizes", "All Sizes"), value: "all" },
-                      { label: isRTL ? "30 مل" : "30ml", value: "30ml" },
-                      { label: isRTL ? "50 مل" : "50ml", value: "50ml" },
-                      { label: isRTL ? "100 مل" : "100ml", value: "100ml" },
+                      { label: tDynamic("30ml"), value: "30ml" },
+                      { label: tDynamic("50ml"), value: "50ml" },
+                      { label: tDynamic("100ml"), value: "100ml" },
                     ].map((vol) => (
                       <button
                         key={vol.value}

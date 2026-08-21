@@ -40,7 +40,7 @@ export default function FeaturedBanner() {
           <img
             src={featuredBanner.background_image_url || featuredBanner.image_url}
             alt="Background"
-            className="w-full h-full object-cover opacity-85 sm:opacity-90"
+            className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/55 sm:from-black/35 sm:via-black/15 sm:to-black/45" />
         </div>

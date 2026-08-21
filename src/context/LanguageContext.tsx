@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import enTranslations from "@/locales/en.json";
 import arTranslations from "@/locales/ar.json";
-import { translateDynamic } from "@/lib/dynamicTranslator";
+import { translateDynamic, subscribeToTranslations } from "@/lib/dynamicTranslator";
 
 export type Language = "en" | "ar";
 export type Direction = "ltr" | "rtl";
@@ -30,6 +30,15 @@ const translations: Record<Language, any> = {
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
   const [language, setLanguageState] = useState<Language>("en");
   const [isMounted, setIsMounted] = useState(false);
+  const [translationVersion, setTranslationVersion] = useState(0);
+
+  // Subscribe to real-time dynamic translation updates
+  useEffect(() => {
+    const unsubscribe = subscribeToTranslations(() => {
+      setTranslationVersion((v) => v + 1);
+    });
+    return unsubscribe;
+  }, []);
 
   // Initialize from localStorage (default: English)
   useEffect(() => {
@@ -106,9 +115,11 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
 
   const tDynamic = useCallback(
     (text: string | null | undefined): string => {
+      // translationVersion dependency ensures reactive re-evaluations
+      if (translationVersion < 0) return "";
       return translateDynamic(text, language);
     },
-    [language]
+    [language, translationVersion]
   );
 
   const dir: Direction = language === "ar" ? "rtl" : "ltr";
