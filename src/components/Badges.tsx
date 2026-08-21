@@ -39,11 +39,11 @@ export default function Badges() {
         <div className="relative bg-gradient-to-b from-[#23160c] via-[#170e08] to-[#100905] shadow-[0_0_50px_rgba(0,0,0,0.9)] overflow-hidden rounded-xl sm:rounded-none">
           
           {/* Subtle Ambient Radial Light in Center */}
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.08)_0%,rgba(0,0,0,0.6)_80%)] pointer-events-none" />
+          {/* <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.08)_0%,rgba(0,0,0,0.6)_80%)] pointer-events-none" /> */}
 
           {/* Decorative Corner Ambient Glow / Golden Shimmer Ribbons */}
-          <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-gradient-to-tr from-[#d4af37]/15 to-transparent rounded-full blur-2xl pointer-events-none" />
-          <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-gradient-to-tl from-[#d4af37]/15 to-transparent rounded-full blur-2xl pointer-events-none" />
+          {/* <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-gradient-to-tr from-[#d4af37]/15 to-transparent rounded-full blur-2xl pointer-events-none" /> */}
+          <div className="absolute -bottom-10 -right-10 w-48 h-48  rounded-full blur-2xl pointer-events-none" />
 
           {/* Grid of 4 Badges (2 columns on mobile, 4 on desktop) */}
           <div className="relative z-10 grid grid-cols-2 lg:grid-cols-4 py-2 sm:py-6">
