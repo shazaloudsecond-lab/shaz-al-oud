@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { deleteCloudinaryAsset } from "@/lib/cloudinaryClient";
+import AdminUploadProgress from "@/components/admin/AdminUploadProgress";
+import { uploadWithProgress } from "@/lib/uploadWithProgress";
 
 export default function AdminVisionPage() {
   const [configId, setConfigId] = useState<string | null>(null);
@@ -12,6 +15,7 @@ export default function AdminVisionPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
@@ -43,19 +47,42 @@ export default function AdminVisionPage() {
 
   const handleImageUpload = async (file: File) => {
     setUploading(true);
+    setUploadProgress(0);
     setStatusMsg(null);
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-      setImageUrl(data.url);
-      setStatusMsg({ type: "success", text: "Image uploaded successfully!" });
+      const data = await uploadWithProgress("/api/upload", formData, (pct) => {
+        setUploadProgress(pct);
+      });
+      if (data.url) {
+        setImageUrl(data.url as string);
+        setStatusMsg({ type: "success", text: "Image uploaded successfully!" });
+      } else {
+        throw new Error(data.error || "Upload failed");
+      }
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to upload image." });
     } finally {
       setUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    if (!imageUrl) return;
+    await deleteCloudinaryAsset(imageUrl);
+    setImageUrl("");
+    if (configId) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("vision_section")
+          .update({ image_url: null, updated_at: new Date().toISOString() })
+          .eq("id", configId);
+      } catch (e) {
+        console.error("Error deleting vision image in DB:", e);
+      }
     }
   };
 
@@ -175,7 +202,28 @@ export default function AdminVisionPage() {
                 placeholder="or paste image URL..."
                 className="flex-1 w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
               />
+              {imageUrl && (
+                <button
+                  type="button"
+                  onClick={handleDeleteImage}
+                  className="px-3 py-2.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-md transition-colors flex-shrink-0"
+                  title="Delete Image"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete Image
+                </button>
+              )}
             </div>
+
+            {/* Upload Progress */}
+            <AdminUploadProgress
+              progress={uploadProgress}
+              isUploading={uploading}
+              title="Uploading Vision Image"
+              className="mt-2 max-w-md"
+            />
             {imageUrl && (
               <div className="mt-3 relative w-full aspect-[16/6] rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800">
                 <img src={imageUrl} alt="Vision Preview" className="w-full h-full object-cover" />

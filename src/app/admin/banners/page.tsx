@@ -3,6 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAdminContext } from "@/context/AdminContext";
+import { deleteCloudinaryAsset } from "@/lib/cloudinaryClient";
+import AdminUploadProgress from "@/components/admin/AdminUploadProgress";
+import { uploadWithProgress } from "@/lib/uploadWithProgress";
 
 type LinkType = "product" | "category" | "custom" | "none";
 
@@ -44,8 +47,11 @@ export default function AdminBannersPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingBg, setUploadingBg] = useState(false);
+  const [bgProgress, setBgProgress] = useState(0);
   const [uploadingLeft, setUploadingLeft] = useState(false);
+  const [leftProgress, setLeftProgress] = useState(0);
   const [uploadingRight, setUploadingRight] = useState(false);
+  const [rightProgress, setRightProgress] = useState(0);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   // Helper to determine link URL from config
@@ -143,40 +149,89 @@ export default function AdminBannersPage() {
   }, []);
 
   const handleImageUpload = async (file: File, target: "bg" | "left" | "right") => {
-    if (target === "bg") setUploadingBg(true);
-    if (target === "left") setUploadingLeft(true);
-    if (target === "right") setUploadingRight(true);
+    if (target === "bg") {
+      setUploadingBg(true);
+      setBgProgress(0);
+    }
+    if (target === "left") {
+      setUploadingLeft(true);
+      setLeftProgress(0);
+    }
+    if (target === "right") {
+      setUploadingRight(true);
+      setRightProgress(0);
+    }
     setStatusMsg(null);
 
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
+      const data = await uploadWithProgress("/api/upload", formData, (pct) => {
+        if (target === "bg") setBgProgress(pct);
+        if (target === "left") setLeftProgress(pct);
+        if (target === "right") setRightProgress(pct);
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-
-      if (target === "bg") {
-        setBackgroundImageUrl(data.url);
-        setStatusMsg({ type: "success", text: "Background image uploaded successfully!" });
-      } else if (target === "left") {
-        setLeftBanner((prev) => ({ ...prev, imageUrl: data.url }));
-        setStatusMsg({ type: "success", text: "Left banner image uploaded successfully!" });
+      if (data.url) {
+        if (target === "bg") {
+          setBackgroundImageUrl(data.url as string);
+          setStatusMsg({ type: "success", text: "Background image uploaded successfully!" });
+        } else if (target === "left") {
+          setLeftBanner((prev) => ({ ...prev, imageUrl: data.url as string }));
+          setStatusMsg({ type: "success", text: "Left banner image uploaded successfully!" });
+        } else {
+          setRightBanner((prev) => ({ ...prev, imageUrl: data.url as string }));
+          setStatusMsg({ type: "success", text: "Right banner image uploaded successfully!" });
+        }
       } else {
-        setRightBanner((prev) => ({ ...prev, imageUrl: data.url }));
-        setStatusMsg({ type: "success", text: "Right banner image uploaded successfully!" });
+        throw new Error(data.error || "Upload failed");
       }
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to upload image." });
     } finally {
-      if (target === "bg") setUploadingBg(false);
-      if (target === "left") setUploadingLeft(false);
-      if (target === "right") setUploadingRight(false);
+      if (target === "bg") {
+        setUploadingBg(false);
+        setBgProgress(0);
+      }
+      if (target === "left") {
+        setUploadingLeft(false);
+        setLeftProgress(0);
+      }
+      if (target === "right") {
+        setUploadingRight(false);
+        setRightProgress(0);
+      }
     }
+  };
+
+  const handleDeleteBgImage = async () => {
+    if (!backgroundImageUrl) return;
+    await deleteCloudinaryAsset(backgroundImageUrl);
+    setBackgroundImageUrl("");
+    if (bannerId) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("promotional_banners")
+          .update({ background_image_url: null, updated_at: new Date().toISOString() })
+          .eq("id", bannerId);
+      } catch (e) {
+        console.error("Error updating banner bg in DB:", e);
+      }
+    }
+  };
+
+  const handleDeleteLeftImage = async () => {
+    if (!leftBanner.imageUrl) return;
+    await deleteCloudinaryAsset(leftBanner.imageUrl);
+    setLeftBanner((prev) => ({ ...prev, imageUrl: "" }));
+  };
+
+  const handleDeleteRightImage = async () => {
+    if (!rightBanner.imageUrl) return;
+    await deleteCloudinaryAsset(rightBanner.imageUrl);
+    setRightBanner((prev) => ({ ...prev, imageUrl: "" }));
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -386,13 +441,25 @@ export default function AdminBannersPage() {
               {backgroundImageUrl && (
                 <button
                   type="button"
-                  onClick={() => setBackgroundImageUrl("")}
-                  className="px-3 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-400 hover:text-white rounded-lg text-xs transition-colors cursor-pointer"
+                  onClick={handleDeleteBgImage}
+                  className="px-3 py-2.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-md transition-colors"
+                  title="Delete Background Image"
                 >
-                  Clear
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete Image
                 </button>
               )}
             </div>
+
+            {/* Background Upload Progress */}
+            <AdminUploadProgress
+              progress={bgProgress}
+              isUploading={uploadingBg}
+              title="Uploading Section Background"
+              className="mt-2 max-w-md"
+            />
 
             {backgroundImageUrl && (
               <div className="relative h-20 w-full max-w-md rounded-xl overflow-hidden bg-neutral-950 border border-neutral-800 mt-2">
@@ -453,7 +520,28 @@ export default function AdminBannersPage() {
                     placeholder="or paste direct image URL https://..."
                     className="flex-1 w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
                   />
+                  {leftBanner.imageUrl && (
+                    <button
+                      type="button"
+                      onClick={handleDeleteLeftImage}
+                      className="px-3 py-2.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-md transition-colors flex-shrink-0"
+                      title="Delete Left Image"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete
+                    </button>
+                  )}
                 </div>
+
+                {/* Left Upload Progress */}
+                <AdminUploadProgress
+                  progress={leftProgress}
+                  isUploading={uploadingLeft}
+                  title="Uploading Left Banner"
+                  className="mt-2"
+                />
               </div>
 
               {/* Card Heading & Subheading */}
@@ -635,7 +723,28 @@ export default function AdminBannersPage() {
                     placeholder="or paste direct image URL https://..."
                     className="flex-1 w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
                   />
+                  {rightBanner.imageUrl && (
+                    <button
+                      type="button"
+                      onClick={handleDeleteRightImage}
+                      className="px-3 py-2.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-md transition-colors flex-shrink-0"
+                      title="Delete Right Image"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete
+                    </button>
+                  )}
                 </div>
+
+                {/* Right Upload Progress */}
+                <AdminUploadProgress
+                  progress={rightProgress}
+                  isUploading={uploadingRight}
+                  title="Uploading Right Banner"
+                  className="mt-2"
+                />
               </div>
 
               {/* Card Heading & Subheading */}

@@ -2,12 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import { Country } from "@/lib/countries";
+import AdminDeleteModal from "@/components/admin/AdminDeleteModal";
 
 export default function AdminCountriesPage() {
   const [countries, setCountries] = useState<Country[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Delete modal state
+  const [deleteCountryModal, setDeleteCountryModal] = useState<{ isOpen: boolean; country: Country } | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -182,15 +187,11 @@ export default function AdminCountriesPage() {
     }
   };
 
-  const handleDelete = async (country: Country) => {
-    if (
-      !window.confirm(
-        `Are you sure you want to delete ${country.name} (${country.code})? This will remove country-specific pricing for this country.`
-      )
-    ) {
-      return;
-    }
+  const handleConfirmDelete = async () => {
+    if (!deleteCountryModal) return;
+    const country = deleteCountryModal.country;
 
+    setDeleting(true);
     try {
       const res = await fetch(`/api/admin/countries?id=${country.id}`, {
         method: "DELETE",
@@ -198,12 +199,15 @@ export default function AdminCountriesPage() {
       if (res.ok) {
         setCountries((prev) => prev.filter((c) => c.id !== country.id));
         setStatusMsg({ type: "success", text: "Country deleted successfully." });
+        setDeleteCountryModal(null);
       } else {
         const d = await res.json();
         throw new Error(d.error || "Failed to delete.");
       }
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to delete country." });
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -351,7 +355,7 @@ export default function AdminCountriesPage() {
                           </svg>
                         </button>
                         <button
-                          onClick={() => handleDelete(c)}
+                          onClick={() => setDeleteCountryModal({ isOpen: true, country: c })}
                           disabled={c.is_default}
                           className={`p-1 rounded-lg transition-colors cursor-pointer ${
                             c.is_default
@@ -548,6 +552,18 @@ export default function AdminCountriesPage() {
           </div>
         </div>
       )}
+
+      {/* Delete Country Confirmation Modal */}
+      <AdminDeleteModal
+        isOpen={!!deleteCountryModal?.isOpen}
+        onClose={() => setDeleteCountryModal(null)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Country"
+        message="Are you sure you want to delete this country? This will remove country-specific pricing for this country across all products."
+        itemName={deleteCountryModal?.country ? `${deleteCountryModal.country.name} (${deleteCountryModal.country.code})` : undefined}
+        loading={deleting}
+        confirmText="Delete Country"
+      />
     </div>
   );
 }

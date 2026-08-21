@@ -3,6 +3,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAdminContext, HeroSlide, HeroConfig } from "@/context/AdminContext";
+import { deleteCloudinaryAsset } from "@/lib/cloudinaryClient";
+import AdminDeleteModal from "@/components/admin/AdminDeleteModal";
+import AdminUploadProgress from "@/components/admin/AdminUploadProgress";
+import { uploadWithProgress } from "@/lib/uploadWithProgress";
 
 type LinkType = "shop" | "category" | "product" | "none";
 
@@ -47,7 +51,11 @@ export default function AdminHeroPage() {
   const [mediaType, setMediaType] = useState<"image" | "video">("image");
   const [videoUrl, setVideoUrl] = useState("");
   const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [videoProgress, setVideoProgress] = useState(0);
   const [savingConfig, setSavingConfig] = useState(false);
+
+  // Delete slide confirmation modal
+  const [deleteSlideModal, setDeleteSlideModal] = useState<boolean>(false);
 
   // ─── Slide (image) state ──────────────────────────────────────────
   const [selectedSlideId, setSelectedSlideId] = useState<string | null>(null);
@@ -60,6 +68,7 @@ export default function AdminHeroPage() {
   const [selectedTargetId, setSelectedTargetId] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [imageProgress, setImageProgress] = useState(0);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const hasInitialized = useRef(false);
 
@@ -145,20 +154,26 @@ export default function AdminHeroPage() {
     if (!file) return;
 
     setUploadingVideo(true);
+    setVideoProgress(0);
     setStatusMsg(null);
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload-video", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-      setVideoUrl(data.url);
-      setStatusMsg({ type: "success", text: "Video uploaded! Click 'Save Video' to apply." });
+      const data = await uploadWithProgress("/api/upload-video", formData, (pct) => {
+        setVideoProgress(pct);
+      });
+      if (data.url) {
+        setVideoUrl(data.url);
+        setStatusMsg({ type: "success", text: "Video uploaded! Click 'Save Video' to apply." });
+      } else {
+        throw new Error(data.error || "Upload failed");
+      }
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to upload video." });
     } finally {
       setUploadingVideo(false);
+      setVideoProgress(0);
       e.target.value = "";
     }
   };
@@ -188,26 +203,74 @@ export default function AdminHeroPage() {
     }
   };
 
+  const handleDeleteVideo = async () => {
+    if (!videoUrl) return;
+    setSavingConfig(true);
+    setStatusMsg(null);
+    try {
+      await deleteCloudinaryAsset(videoUrl);
+      if (heroConfig?.id) {
+        const supabase = createClient();
+        await supabase
+          .from("hero_config")
+          .update({ video_url: null, updated_at: new Date().toISOString() })
+          .eq("id", heroConfig.id);
+        await fetchHeroConfig();
+      }
+      setVideoUrl("");
+      setStatusMsg({ type: "success", text: "Hero video deleted successfully." });
+    } catch (err: any) {
+      setStatusMsg({ type: "error", text: err.message || "Failed to delete video." });
+    } finally {
+      setSavingConfig(false);
+    }
+  };
+
+  const handleDeleteBackgroundImage = async () => {
+    if (!backgroundImage) return;
+    await deleteCloudinaryAsset(backgroundImage);
+    setBackgroundImage("");
+    if (selectedSlideId) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("hero_section")
+          .update({ background_image: "", updated_at: new Date().toISOString() })
+          .eq("id", selectedSlideId);
+        await fetchSlides();
+      } catch (e) {
+        console.error("Error syncing background image delete to DB:", e);
+      }
+    }
+  };
+
   // ─── Image upload ─────────────────────────────────────────────────
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
+    setImageProgress(0);
     setStatusMsg(null);
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-      setBackgroundImage(data.url);
-      setStatusMsg({ type: "success", text: "Background image uploaded successfully!" });
+      const data = await uploadWithProgress("/api/upload", formData, (pct) => {
+        setImageProgress(pct);
+      });
+      if (data.url) {
+        setBackgroundImage(data.url);
+        setStatusMsg({ type: "success", text: "Background image uploaded successfully!" });
+      } else {
+        throw new Error(data.error || "Upload failed");
+      }
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to upload image." });
     } finally {
       setUploading(false);
+      setImageProgress(0);
+      e.target.value = "";
     }
   };
 
@@ -254,17 +317,23 @@ export default function AdminHeroPage() {
   };
 
   // ─── Delete slide ─────────────────────────────────────────────────
-  const handleDelete = async () => {
+  const handleConfirmDeleteSlide = async () => {
     if (!selectedSlideId) return;
-    if (!confirm("Are you sure you want to delete this carousel slide?")) return;
 
     setSaving(true);
     try {
+      const targetSlide = slides.find((s) => s.id === selectedSlideId);
       const supabase = createClient();
       const { error } = await supabase.from("hero_section").delete().eq("id", selectedSlideId);
       if (error) throw error;
-      setStatusMsg({ type: "success", text: "Slide deleted." });
+
+      if (targetSlide?.background_image) {
+        await deleteCloudinaryAsset(targetSlide.background_image);
+      }
+
+      setStatusMsg({ type: "success", text: "Slide deleted successfully." });
       resetForm();
+      setDeleteSlideModal(false);
       await fetchSlides();
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to delete slide." });
@@ -425,6 +494,14 @@ export default function AdminHeroPage() {
               />
             </div>
 
+            {/* Video Upload Progress */}
+            <AdminUploadProgress
+              progress={videoProgress}
+              isUploading={uploadingVideo}
+              title="Uploading Hero Video"
+              className="mt-3"
+            />
+
             {/* Video preview */}
             {videoUrl && (
               <div className="mt-4 relative rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950 aspect-video max-h-64">
@@ -437,10 +514,13 @@ export default function AdminHeroPage() {
                 />
                 <button
                   type="button"
-                  onClick={() => setVideoUrl("")}
-                  className="absolute top-2 right-2 p-1.5 bg-black/70 hover:bg-black text-neutral-300 hover:text-white rounded-md text-xs cursor-pointer"
+                  onClick={handleDeleteVideo}
+                  className="absolute top-2 right-2 px-3 py-1.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-lg transition-colors"
                 >
-                  Clear Video
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete Video
                 </button>
               </div>
             )}
@@ -508,7 +588,7 @@ export default function AdminHeroPage() {
                 {selectedSlideId && (
                   <button
                     type="button"
-                    onClick={handleDelete}
+                    onClick={() => setDeleteSlideModal(true)}
                     disabled={saving}
                     className="text-xs text-red-400 hover:text-red-300 transition-colors uppercase font-medium cursor-pointer"
                   >
@@ -578,6 +658,14 @@ export default function AdminHeroPage() {
                   />
                 </div>
 
+                {/* Slide Image Upload Progress */}
+                <AdminUploadProgress
+                  progress={imageProgress}
+                  isUploading={uploading}
+                  title="Uploading Slide Background Image"
+                  className="mt-3"
+                />
+
                 {backgroundImage && (
                   <div className="mt-4 relative rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950 aspect-[21/9] max-h-56">
                     <img
@@ -587,10 +675,13 @@ export default function AdminHeroPage() {
                     />
                     <button
                       type="button"
-                      onClick={() => setBackgroundImage("")}
-                      className="absolute top-2 right-2 p-1.5 bg-black/70 hover:bg-black text-neutral-300 hover:text-white rounded-md text-xs cursor-pointer"
+                      onClick={handleDeleteBackgroundImage}
+                      className="absolute top-2 right-2 px-3 py-1.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-lg transition-colors"
                     >
-                      Clear Image
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Delete Image
                     </button>
                   </div>
                 )}
@@ -739,6 +830,18 @@ export default function AdminHeroPage() {
           </form>
         </>
       )}
+
+      {/* Delete Slide Confirmation Modal */}
+      <AdminDeleteModal
+        isOpen={deleteSlideModal}
+        onClose={() => setDeleteSlideModal(false)}
+        onConfirm={handleConfirmDeleteSlide}
+        title="Delete Carousel Slide"
+        message="Are you sure you want to delete this hero carousel slide? This will remove the slide and delete its background image from Cloudinary."
+        itemName={mainHeading || `Slide ${slides.findIndex((s) => s.id === selectedSlideId) + 1}`}
+        loading={saving}
+        confirmText="Delete Slide"
+      />
     </div>
   );
 }
