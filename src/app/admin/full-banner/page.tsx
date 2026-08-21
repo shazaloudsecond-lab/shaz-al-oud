@@ -3,6 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useAdminContext } from "@/context/AdminContext";
+import { deleteCloudinaryAsset } from "@/lib/cloudinaryClient";
+import AdminDeleteModal from "@/components/admin/AdminDeleteModal";
+import AdminUploadProgress from "@/components/admin/AdminUploadProgress";
+import { uploadWithProgress } from "@/lib/uploadWithProgress";
 
 type LinkType = "product" | "category" | "custom" | "none";
 
@@ -19,7 +23,11 @@ export default function AdminFullBannerPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Delete/Remove modal
+  const [removeModalOpen, setRemoveModalOpen] = useState(false);
 
   // Helper to determine link URL from config
   const computeLink = (): string => {
@@ -99,20 +107,26 @@ export default function AdminFullBannerPage() {
   // ─── Upload image ─────────────────────────────────────────────────
   const handleImageUpload = async (file: File) => {
     setUploading(true);
+    setUploadProgress(0);
     setStatusMsg(null);
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-      setImageUrl(data.url);
-      setStatusMsg({ type: "success", text: "Image uploaded successfully!" });
+      const data = await uploadWithProgress("/api/upload", formData, (pct) => {
+        setUploadProgress(pct);
+      });
+      if (data.url) {
+        setImageUrl(data.url as string);
+        setStatusMsg({ type: "success", text: "Image uploaded successfully!" });
+      } else {
+        throw new Error(data.error || "Upload failed");
+      }
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to upload image." });
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -159,10 +173,26 @@ export default function AdminFullBannerPage() {
     }
   };
 
+  const handleDeleteImage = async () => {
+    if (!imageUrl) return;
+    await deleteCloudinaryAsset(imageUrl);
+    setImageUrl("");
+    if (bannerId) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("full_banner")
+          .update({ image_url: "", updated_at: new Date().toISOString() })
+          .eq("id", bannerId);
+      } catch (e) {
+        console.error("Error deleting full banner image in DB:", e);
+      }
+    }
+  };
+
   // ─── Remove banner ────────────────────────────────────────────────
-  const handleRemove = async () => {
+  const handleConfirmRemove = async () => {
     if (!bannerId) return;
-    if (!confirm("Remove this banner from the storefront?")) return;
 
     setSaving(true);
     try {
@@ -170,6 +200,7 @@ export default function AdminFullBannerPage() {
       const { error } = await supabase.from("full_banner").update({ is_active: false }).eq("id", bannerId);
       if (error) throw error;
       setStatusMsg({ type: "success", text: "Banner hidden from storefront." });
+      setRemoveModalOpen(false);
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to remove banner." });
     } finally {
@@ -246,7 +277,29 @@ export default function AdminFullBannerPage() {
                 placeholder="or paste image URL…"
                 className="flex-1 w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-xs"
               />
+
+              {imageUrl && (
+                <button
+                  type="button"
+                  onClick={handleDeleteImage}
+                  className="px-3 py-2.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-md transition-colors flex-shrink-0"
+                  title="Delete Banner Image"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete Image
+                </button>
+              )}
             </div>
+
+            {/* Upload Progress */}
+            <AdminUploadProgress
+              progress={uploadProgress}
+              isUploading={uploading}
+              title="Uploading Banner Image"
+              className="mt-2"
+            />
           </div>
 
           {/* Button Settings Section */}
@@ -380,10 +433,14 @@ export default function AdminFullBannerPage() {
                 )}
                 <button
                   type="button"
-                  onClick={() => setImageUrl("")}
-                  className="absolute top-2 right-2 p-1.5 bg-black/70 hover:bg-black text-neutral-300 hover:text-white rounded-md text-xs cursor-pointer"
+                  onClick={handleDeleteImage}
+                  className="absolute top-2 right-2 px-2.5 py-1.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1 cursor-pointer shadow-lg transition-colors"
+                  title="Delete Image"
                 >
-                  Clear Image
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete Image
                 </button>
               </div>
             </div>
@@ -395,7 +452,7 @@ export default function AdminFullBannerPage() {
           {bannerId && (
             <button
               type="button"
-              onClick={handleRemove}
+              onClick={() => setRemoveModalOpen(true)}
               disabled={saving}
               className="text-xs text-red-400 hover:text-red-300 uppercase font-medium transition-colors cursor-pointer"
             >
@@ -413,6 +470,17 @@ export default function AdminFullBannerPage() {
           </div>
         </div>
       </form>
+
+      {/* Delete/Remove Banner Modal */}
+      <AdminDeleteModal
+        isOpen={removeModalOpen}
+        onClose={() => setRemoveModalOpen(false)}
+        onConfirm={handleConfirmRemove}
+        title="Hide Banner from Storefront"
+        message="Are you sure you want to hide this full banner from the storefront? You can re-enable and publish it anytime."
+        loading={saving}
+        confirmText="Hide Banner"
+      />
     </div>
   );
 }

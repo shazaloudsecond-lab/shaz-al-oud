@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { deleteCloudinaryAsset } from "@/lib/cloudinaryClient";
+import AdminUploadProgress from "@/components/admin/AdminUploadProgress";
+import { uploadWithProgress } from "@/lib/uploadWithProgress";
 
 export default function AdminAboutComp1Form() {
   const [configId, setConfigId] = useState<string | null>(null);
@@ -15,6 +18,7 @@ export default function AdminAboutComp1Form() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
@@ -48,19 +52,42 @@ export default function AdminAboutComp1Form() {
 
   const handleImageUpload = async (file: File) => {
     setUploading(true);
+    setUploadProgress(0);
     setStatusMsg(null);
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const res = await fetch("/api/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-      setImageUrl(data.url);
-      setStatusMsg({ type: "success", text: "Image uploaded successfully!" });
+      const data = await uploadWithProgress("/api/upload", formData, (pct) => {
+        setUploadProgress(pct);
+      });
+      if (data.url) {
+        setImageUrl(data.url as string);
+        setStatusMsg({ type: "success", text: "Image uploaded successfully!" });
+      } else {
+        throw new Error(data.error || "Upload failed");
+      }
     } catch (err: any) {
       setStatusMsg({ type: "error", text: err.message || "Failed to upload image." });
     } finally {
       setUploading(false);
+      setUploadProgress(0);
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    if (!imageUrl) return;
+    await deleteCloudinaryAsset(imageUrl);
+    setImageUrl("");
+    if (configId) {
+      try {
+        const supabase = createClient();
+        await supabase
+          .from("about_section")
+          .update({ image_url: null, updated_at: new Date().toISOString() })
+          .eq("id", configId);
+      } catch (e) {
+        console.error("Error deleting about image in DB:", e);
+      }
     }
   };
 
@@ -169,9 +196,9 @@ export default function AdminAboutComp1Form() {
                   <img src={imageUrl} alt="About 1 Preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
-                    onClick={() => setImageUrl("")}
-                    className="absolute top-2 right-2 bg-black/70 hover:bg-black text-white p-1 rounded-full text-xs"
-                    title="Remove Image"
+                    onClick={handleDeleteImage}
+                    className="absolute top-2 right-2 bg-red-900/90 hover:bg-red-800 text-white p-1 rounded-full text-xs cursor-pointer shadow-md"
+                    title="Delete Image"
                   >
                     ✕
                   </button>
@@ -202,6 +229,14 @@ export default function AdminAboutComp1Form() {
                     className="flex-1 px-3 py-2 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 text-xs focus:outline-none focus:border-black"
                   />
                 </div>
+
+                {/* Upload Progress */}
+                <AdminUploadProgress
+                  progress={uploadProgress}
+                  isUploading={uploading}
+                  title="Uploading About Image"
+                  className="mt-1"
+                />
               </div>
             </div>
           </div>
