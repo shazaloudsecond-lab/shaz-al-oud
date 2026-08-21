@@ -584,10 +584,10 @@ export default function Navbar() {
                       key={product.id}
                       href={`/products/${product.id}`}
                       onClick={() => setIsSearchOpen(false)}
-                      className="flex items-center gap-4 p-3.5 bg-neutral-950/80 border border-neutral-800/80 rounded-2xl hover:border-neutral-700 hover:bg-neutral-900 transition-all group cursor-pointer"
+                      className="flex items-center gap-4 p-3.5 bg-neutral-950/80 border border-neutral-800/80 rounded-xl hover:border-neutral-700 hover:bg-neutral-900 transition-all group cursor-pointer"
                     >
                       {/* Product Thumbnail */}
-                      <div className="w-16 h-16 rounded-xl bg-neutral-900 border border-neutral-800 flex-shrink-0 flex items-center justify-center p-2 overflow-hidden">
+                      <div className="w-16 h-16 flex-shrink-0 flex items-center justify-center p-2 overflow-hidden">
                         {product.image_url ? (
                           <img
                             src={product.image_url}
