@@ -121,7 +121,7 @@ export default function NewsletterSection() {
                 placeholder={t("newsletter.placeholder", "Enter your email address")}
                 disabled={submitting}
                 required
-                className="w-full sm:flex-1 px-4 py-3.5 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 focus:bg-neutral-950 transition-all text-sm rounded-[10px] sm:rounded-none"
+                className="w-full sm:flex-1 px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 focus:bg-neutral-950 transition-all text-sm rounded-[10px] sm:rounded-none"
               />
               <button
                 type="submit"

@@ -64,8 +64,9 @@ export default function ContactSection() {
             {t("contact.heading", "Contact Us")}
           </h1>
           <p className="text-xs sm:text-sm text-neutral-400 mt-1 font-secondary">
-            {companyDetails?.tagline ||
-              t(
+            {companyDetails?.tagline
+              ? tDynamic(companyDetails.tagline)
+              : t(
                 "contact.subtitle",
                 "Have a question about our bespoke fragrances or need assistance? Reach out to our concierge."
               )}
@@ -76,9 +77,9 @@ export default function ContactSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Company Details (Second on mobile, First on Desktop) */}
           <div className="order-2 lg:order-1 lg:col-span-5 space-y-6">
-            <div className="bg-neutral-950 border border-neutral-900 rounded-none p-6 sm:p-8 space-y-6">
+            <div className="bg-neutral-950 sm:border border-neutral-900 rounded-none sm:p-6 sm:p-8 space-y-6">
               <h3 className="text-sm font-semibold uppercase tracking-wider text-white font-mono border-b border-neutral-900 pb-3">
-                {companyDetails?.name || "Shaz Al Oud"}
+                {companyDetails?.name ? tDynamic(companyDetails.name) : "Shaz Al Oud"}
               </h3>
 
               {/* Detail Items */}
@@ -97,7 +98,7 @@ export default function ContactSection() {
                         {t("footer.store_location", "Store Location")}
                       </p>
                       <p className="font-medium text-neutral-200 leading-relaxed">
-                        {companyDetails.address}
+                        {tDynamic(companyDetails.address)}
                       </p>
                     </div>
                   </div>
@@ -117,7 +118,8 @@ export default function ContactSection() {
                       </p>
                       <a
                         href={`tel:${companyDetails.phone.replace(/\s+/g, "")}`}
-                        className="font-mono text-neutral-200 hover:text-white transition-colors block"
+                        dir="ltr"
+                        className="font-mono text-neutral-200 hover:text-white transition-colors inline-block"
                       >
                         {companyDetails.phone}
                       </a>
@@ -152,7 +154,7 @@ export default function ContactSection() {
 
           {/* Send Message Form (First on mobile, Second on Desktop) */}
           <div className="order-1 lg:order-2 lg:col-span-7">
-            <div className="bg-neutral-950 border border-neutral-900 rounded-none p-6 sm:p-8 space-y-6 shadow-2xl">
+            <div className="bg-neutral-950 sm:border border-neutral-900 rounded-none sm:p-6 sm:p-8 space-y-6 shadow-2xl">
               <div className="border-b border-neutral-900 pb-3">
                 <h3 className="text-sm font-semibold uppercase tracking-wider text-white font-mono">
                   {t("contact.form_title", "Send Us a Message")}
@@ -165,11 +167,10 @@ export default function ContactSection() {
               {/* Status Message */}
               {status && (
                 <div
-                  className={`p-3.5 rounded-none text-xs flex items-center justify-between border ${
-                    status.type === "success"
+                  className={`p-3.5 rounded-none text-xs flex items-center justify-between border ${status.type === "success"
                       ? "bg-emerald-950/50 border-emerald-800 text-emerald-300"
                       : "bg-red-950/50 border-red-800 text-red-300"
-                  }`}
+                    }`}
                 >
                   <span>{status.message}</span>
                   <button
@@ -187,30 +188,30 @@ export default function ContactSection() {
                   {/* Full Name */}
                   <div className="space-y-1.5">
                     <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-400">
-                      {t("auth.full_name", "Full Name")} *
+                      {t("contact.full_name", "Full Name")} *
                     </label>
                     <input
                       type="text"
                       required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      placeholder="Your Name"
-                      className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors"
+                      placeholder={t("contact.name_placeholder", "Your Name")}
+                      className="w-full px-4 py-3 bg-neutral-900 sm:border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors"
                     />
                   </div>
 
                   {/* Email Address */}
                   <div className="space-y-1.5">
                     <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-400">
-                      {t("auth.email", "Email Address")} *
+                      {t("contact.email", "Email Address")} *
                     </label>
                     <input
                       type="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="name@example.com"
-                      className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors"
+                      placeholder={t("contact.email_placeholder", "name@example.com")}
+                      className="w-full px-4 py-3 bg-neutral-900 sm:border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors"
                     />
                   </div>
                 </div>
@@ -218,14 +219,15 @@ export default function ContactSection() {
                 {/* Phone Number */}
                 <div className="space-y-1.5">
                   <label className="block text-[11px] font-mono uppercase tracking-wider text-neutral-400">
-                    {t("checkout.phone", "Phone / WhatsApp Number")}
+                    {t("contact.whatsapp_phone", "Phone / WhatsApp Number")}
                   </label>
                   <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+974 5555 1234"
-                    className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors font-mono"
+                    placeholder={t("contact.phone_placeholder", "+974 5555 1234")}
+                    dir="ltr"
+                    className="w-full px-4 py-3 bg-neutral-900 sm:border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors font-mono"
                   />
                 </div>
 
@@ -239,8 +241,8 @@ export default function ContactSection() {
                     required
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="How can we assist you with our bespoke fragrance collection?"
-                    className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors resize-none"
+                    placeholder={t("contact.message_placeholder", "How can we assist you with our bespoke fragrance collection?")}
+                    className="w-full px-4 py-3 bg-neutral-900 sm:border border-neutral-800 rounded-none text-white placeholder-neutral-500 text-sm focus:outline-none focus:border-[#f0d5c8] transition-colors resize-none"
                   />
                 </div>
 

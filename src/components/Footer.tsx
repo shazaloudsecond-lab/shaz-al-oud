@@ -8,7 +8,7 @@ import { useStore } from "@/context/StoreContext";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const { t, isRTL } = useLanguage();
+  const { t, tDynamic, isRTL } = useLanguage();
   const { categories, companyDetails } = useStore();
 
   // Mobile Accordion state: track open state per section key
@@ -24,7 +24,7 @@ export default function Footer() {
       ...(categories && categories.length > 0
         ? categories.slice(0, 3).map((cat) => ({
             id: `cat-${cat.id}`,
-            name: cat.name,
+            name: tDynamic(cat.name),
             href: `/shop?category=${encodeURIComponent(cat.name)}`,
           }))
         : []),
@@ -74,11 +74,12 @@ export default function Footer() {
                 />
               </Link>
               <p className="mt-4 text-xs sm:text-sm text-neutral-400 max-w-sm leading-relaxed font-secondary font-light">
-                {companyDetails?.tagline ||
-                  t(
-                    "footer.tagline",
-                    "Exquisite luxury fragrances and authentic pure oud crafted for timeless elegance."
-                  )}
+                {companyDetails?.tagline
+                  ? tDynamic(companyDetails.tagline)
+                  : t(
+                      "footer.tagline",
+                      "Exquisite luxury fragrances and authentic pure oud crafted for timeless elegance."
+                    )}
               </p>
             </div>
 
@@ -275,7 +276,7 @@ export default function Footer() {
                   <div className="pb-4 space-y-3 pl-1 text-xs text-neutral-400 animate-fadeIn">
                     {companyDetails?.name && (
                       <p className="font-semibold text-neutral-200 text-xs">
-                        {companyDetails.name}
+                        {tDynamic(companyDetails.name)}
                       </p>
                     )}
 
@@ -299,7 +300,7 @@ export default function Footer() {
                             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                           />
                         </svg>
-                        <span className="break-words">{companyDetails.address}</span>
+                        <span className="break-words">{tDynamic(companyDetails.address)}</span>
                       </div>
                     )}
 
@@ -320,7 +321,8 @@ export default function Footer() {
                         </svg>
                         <a
                           href={`tel:${companyDetails.phone.replace(/\s+/g, "")}`}
-                          className="hover:text-white transition-colors whitespace-nowrap"
+                          dir="ltr"
+                          className="hover:text-white transition-colors whitespace-nowrap inline-block"
                         >
                           {companyDetails.phone}
                         </a>
@@ -426,7 +428,7 @@ export default function Footer() {
               <div className="space-y-3 text-xs sm:text-sm text-neutral-400">
                 {companyDetails?.name && (
                   <p className="font-semibold text-neutral-200 text-sm">
-                    {companyDetails.name}
+                    {tDynamic(companyDetails.name)}
                   </p>
                 )}
 
@@ -450,7 +452,7 @@ export default function Footer() {
                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                       />
                     </svg>
-                    <span className="break-words">{companyDetails.address}</span>
+                    <span className="break-words">{tDynamic(companyDetails.address)}</span>
                   </div>
                 )}
 
@@ -471,7 +473,8 @@ export default function Footer() {
                     </svg>
                     <a
                       href={`tel:${companyDetails.phone.replace(/\s+/g, "")}`}
-                      className="hover:text-white transition-colors whitespace-nowrap"
+                      dir="ltr"
+                      className="hover:text-white transition-colors whitespace-nowrap inline-block"
                     >
                       {companyDetails.phone}
                     </a>
@@ -507,7 +510,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar — Centered Copyright */}
-        <div className="border-t border-neutral-900 pt-8 flex items-center justify-center text-[11px] text-neutral-500 font-mono">
+        <div className="sm:border-t border-neutral-900 pt-8 flex items-center justify-center text-[11px] text-neutral-500 font-mono">
           <p className="uppercase tracking-wider text-center">
             © {currentYear} SHAZ AL OUD. {t("footer.all_rights", "ALL RIGHTS RESERVED.")}
           </p>
