@@ -26,11 +26,11 @@ export default function ProductCard({ product, className = "" }: ProductCardProp
       className={`group flex flex-col items-center text-center ${className}`}
     >
       {/* Image Card Container */}
-      <div className="w-full aspect-[4/4.5] sm:aspect-square bg-gray-900 overflow-hidden relative flex items-center justify-center p-3 sm:p-6 transition-all duration-300 group-hover:border-neutral-700 group-hover:shadow-lg group-hover:shadow-black/50">
+      <div className="w-full aspect-[4/4.5] sm:aspect-square overflow-hidden relative flex items-center justify-center transition-all duration-300 group-hover:border-neutral-700">
         <img
           src={product.image_url}
           alt={displayName}
-          className="w-full h-full object-contain transition-transform duration-500 ease-out group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
           loading="lazy"
         />
 
