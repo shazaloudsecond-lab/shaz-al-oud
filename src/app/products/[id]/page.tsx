@@ -183,15 +183,12 @@ export default function ProductDetailsPage() {
           {/* Left Column: Image Area */}
           <div className="space-y-4">
             {/* Main Display Image */}
-            <div className="bg-neutral-950 aspect-square flex items-center justify-center p-8 overflow-hidden relative shadow-2xl">
-              <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+            <div className="aspect-square flex items-center justify-center overflow-hidden relative shadow-2xl">
               <img 
                 src={activeImage || product.image_url} 
                 alt={product.name} 
-                className="w-full h-full object-contain relative z-10 drop-shadow-2xl transition-opacity duration-300"
+                className="w-full h-full object-cover relative z-10 transition-opacity duration-300"
               />
-              <div className="absolute top-0 inset-x-0 h-1/3 bg-gradient-to-b from-white/10 to-transparent blur-2xl pointer-events-none"></div>
-              <div className="absolute bottom-0 inset-x-0 h-1/4 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
             </div>
 
             {/* Thumbnail Gallery */}
@@ -208,12 +205,12 @@ export default function ProductDetailsPage() {
                         isActive
                           ? "border-white shadow-lg"
                           : "border-neutral-800 opacity-60 hover:opacity-100 hover:border-neutral-600"
-                      } bg-neutral-950 flex items-center justify-center p-2 cursor-pointer`}
+                      } flex items-center justify-center cursor-pointer`}
                     >
                       <img
                         src={imgUrl}
                         alt={`${product.name} view ${idx + 1}`}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-cover"
                       />
                     </button>
                   );
