@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
   return (
     <div dir="ltr" className="admin-theme min-h-screen bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8 text-neutral-900">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center">
           <Image
             src="/logo/logo.png"
             alt="Shaz Al Oud"
