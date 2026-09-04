@@ -113,12 +113,12 @@ export default function PromoBanners() {
   return (
     <section className="relative w-full bg-black py-14 sm:py-20 px-4 sm:px-6 lg:px-12 select-none overflow-hidden">
       {/* Background Image with subtle atmospheric overlay */}
-      {promoBanner.background_image_url && (
+      {/* {promoBanner.background_image_url && (
         <div
           className="absolute inset-0 bg-cover bg-center pointer-events-none"
           style={{ backgroundImage: `url(${promoBanner.background_image_url})` }}
         />
-      )}
+      )} */}
 
       {/* Subtle Ambient Radial Glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(223,195,180,0.06),transparent_70%)] pointer-events-none" />
@@ -128,7 +128,7 @@ export default function PromoBanners() {
         {(promoBanner.heading || promoBanner.subheading) && (
           <div className="text-center max-w-3xl mx-auto space-y-3 px-2">
             {promoBanner.heading && (
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-primary text-white tracking-wide">
+              <h2 className="text-2xl sm:text-3xl font-primary text-white tracking-wide">
                 {tDynamic(promoBanner.heading)}
               </h2>
             )}
@@ -141,7 +141,7 @@ export default function PromoBanners() {
             </div>
 
             {promoBanner.subheading && (
-              <p className="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed max-w-xl mx-auto tracking-wide">
+              <p className="text-xs text-neutral-400 font-light leading-relaxed max-w-xl mx-auto tracking-wide">
                 {tDynamic(promoBanner.subheading)}
               </p>
             )}
@@ -172,11 +172,11 @@ export default function PromoBanners() {
         <div className="flex justify-center pt-2 sm:pt-4">
           <Link
             href="/shop"
-            className="inline-flex items-center gap-2.5 px-8 sm:px-10 py-3 sm:py-3.5 bg-gradient-to-r from-[#d8b08c] via-[#dfc3b4] to-[#c99a70] hover:from-[#e3be9c] hover:to-[#d8aa80] text-black font-semibold text-xs sm:text-sm tracking-[0.18em] uppercase transition-all duration-300 shadow-xl hover:shadow-[#dfc3b4]/20 hover:scale-105 cursor-pointer"
+            className="inline-flex items-center rounded-xl gap-2 px-5 sm:px-7 py-2.5 bg-gradient-to-r from-[#d8b08c] via-[#dfc3b4] to-[#c99a70] hover:from-[#e3be9c] hover:to-[#d8aa80] text-black font-semibold text-[11px] sm:text-xs tracking-[0.15em] uppercase transition-all duration-300 shadow-lg hover:shadow-[#dfc3b4]/20 hover:scale-105 cursor-pointer"
           >
             <span>{t("common.discover_scent", "DISCOVER YOUR SCENT")}</span>
             <svg
-              className={`w-4 h-4 ${isRTL ? "rotate-180" : ""}`}
+              className={`w-3.5 h-3.5 ${isRTL ? "rotate-180" : ""}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

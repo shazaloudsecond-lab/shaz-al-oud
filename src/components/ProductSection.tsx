@@ -8,10 +8,9 @@ import { useLanguage } from "@/context/LanguageContext";
 import ProductCard from "@/components/ProductCard";
 
 export default function ProductSection() {
-  const { categories, products, loadingStore: loading } = useStore();
+  const { products, loadingStore: loading } = useStore();
   const { country, resolvePrice } = useCountry();
-  const { t, tDynamic, isRTL } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const { t, isRTL } = useLanguage();
 
   // Filtered products (up to 8 for 2 rows of 4 on desktop, 2 rows of 2 on mobile)
   const displayedProducts = useMemo(() => {
@@ -22,13 +21,8 @@ export default function ProductSection() {
       list = list.filter((p) => resolvePrice(p).is_available);
     }
 
-    // Filter by Category
-    if (selectedCategory !== "all") {
-      list = list.filter((p) => p.category_id === selectedCategory);
-    }
-
     return list.slice(0, 8);
-  }, [products, resolvePrice, country, selectedCategory]);
+  }, [products, resolvePrice, country]);
 
   // If loading and no products exist yet, show skeleton grid
   if (loading) {
@@ -36,12 +30,8 @@ export default function ProductSection() {
       <section className="w-full bg-black text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-12 select-none">
         <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
           {/* Skeleton Header */}
-          <div className="flex items-center justify-between pb-4 border-b border-neutral-900">
-            <div className="flex items-center gap-6">
-              <div className="h-4 w-28 bg-neutral-900 animate-pulse" />
-              <div className="h-4 w-20 bg-neutral-900 animate-pulse" />
-              <div className="h-4 w-20 bg-neutral-900 animate-pulse" />
-            </div>
+          <div className="flex items-center justify-between">
+            <div className="h-8 w-48 sm:w-64 bg-neutral-900 animate-pulse" />
             <div className="h-4 w-20 bg-neutral-900 animate-pulse" />
           </div>
 
@@ -68,43 +58,15 @@ export default function ProductSection() {
   return (
     <section id="collection" className="w-full bg-black text-white py-16 sm:py-20 px-4 sm:px-6 lg:px-12 select-none">
       <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
-        {/* Header: Category Tabs & View More */}
+        {/* Header: Title & View All */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-6 sm:gap-8 overflow-x-auto no-scrollbar -mb-px">
-            <button
-              type="button"
-              onClick={() => setSelectedCategory("all")}
-              className={`pb-3.5 text-xs sm:text-sm font-semibold tracking-wider uppercase font-mono transition-all whitespace-nowrap cursor-pointer border-b-2 ${
-                selectedCategory === "all"
-                  ? "border-[#f0d5c8] text-white"
-                  : "border-transparent text-neutral-400 hover:text-white"
-              }`}
-            >
-              {t("products.all_categories", "ALL FRAGRANCES")}
-            </button>
-
-            {categories.map((cat) => {
-              const isSelected = selectedCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`pb-3.5 text-xs sm:text-sm font-semibold tracking-wider uppercase font-mono transition-all whitespace-nowrap cursor-pointer border-b-2 ${
-                    isSelected
-                      ? "border-[#f0d5c8] text-white"
-                      : "border-transparent text-neutral-400 hover:text-white"
-                  }`}
-                >
-                  {tDynamic(cat.name)}
-                </button>
-              );
-            })}
-          </div>
+          <h2 className="text-2xl sm:text-3xl font-primary text-white tracking-wider uppercase">
+            {t("products.all_categories", "ALL FRAGRANCES")}
+          </h2>
 
           <Link
             href="/shop"
-            className="pb-3.5 hover:text-neutral-100 text-neutral-400 text-xs font-semibold uppercase tracking-widest transition-colors flex items-center gap-1.5 flex-shrink-0"
+            className="hover:text-neutral-100 text-neutral-400 text-xs font-semibold uppercase tracking-widest transition-colors flex items-center gap-1.5 flex-shrink-0"
           >
             <span>{t("common.view_all", "View All")}</span>
             <svg className={`w-3 h-3 ${isRTL ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">

@@ -42,23 +42,23 @@ export default function FeaturedBanner() {
             alt="Background"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/55 sm:from-black/35 sm:via-black/15 sm:to-black/45" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/40 to-black/60 sm:from-black/50 sm:via-black/35 sm:to-black/55" />
         </div>
       )}
 
       <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
         {/* Left Side: Heading, Subheading & 2x2 "Plus" Feature Grid */}
-        <div className="lg:col-span-6 flex flex-col justify-center items-start text-start space-y-6 sm:space-y-8 order-2 lg:order-1 w-full">
+        <div className="lg:col-span-6 flex flex-col justify-center items-center text-center space-y-6 sm:space-y-8 order-2 lg:order-1 w-full">
           {/* Top Titles */}
-          <div className="space-y-3 sm:space-y-4 flex flex-col items-center">
+          <div className="w-full space-y-2 sm:space-y-3 flex flex-col items-center text-center">
             {featuredBanner.heading && (
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-secondary font-normal text-[#f0d5c8] leading-tight tracking-normal">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-secondary font-normal text-[#f0d5c8] leading-tight tracking-normal text-center w-full drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]">
                 {tDynamic(featuredBanner.heading)}
               </h2>
             )}
 
             {featuredBanner.subheading && (
-              <p className="text-sm sm:text-base font-secondary font-light text-neutral-300 leading-relaxed max-w-sm text-center">
+              <p className="text-xs sm:text-sm font-secondary font-light text-neutral-200 leading-relaxed max-w-sm text-center mx-auto drop-shadow-[0_1px_8px_rgba(0,0,0,0.85)]">
                 {tDynamic(featuredBanner.subheading)}
               </p>
             )}
@@ -121,7 +121,7 @@ export default function FeaturedBanner() {
                     </div>
                   )}
                   {features[0]?.heading && (
-                    <h4 className="text-xs sm:text-sm md:text-base font-secondary text-[#f0d5c8] leading-snug tracking-wide max-w-[140px]">
+                    <h4 className="text-[11px] sm:text-xs md:text-sm font-secondary text-[#f0d5c8] leading-snug tracking-wide max-w-[130px]">
                       {tDynamic(features[0].heading)}
                     </h4>
                   )}
@@ -139,7 +139,7 @@ export default function FeaturedBanner() {
                     </div>
                   )}
                   {features[1]?.heading && (
-                    <h4 className="text-xs sm:text-sm md:text-base font-secondary text-[#f0d5c8] leading-snug tracking-wide max-w-[140px]">
+                    <h4 className="text-[11px] sm:text-xs md:text-sm font-secondary text-[#f0d5c8] leading-snug tracking-wide max-w-[130px]">
                       {tDynamic(features[1].heading)}
                     </h4>
                   )}
@@ -148,7 +148,7 @@ export default function FeaturedBanner() {
                 {/* Q3: Bottom-Left (Heading on Top, Icon on Bottom) */}
                 <div className="flex flex-col items-center justify-center p-3 sm:p-5 text-center group/q3">
                   {features[2]?.heading && (
-                    <h4 className="text-xs sm:text-sm md:text-base font-secondary text-[#f0d5c8] leading-snug tracking-wide max-w-[140px] mb-2 sm:mb-3">
+                    <h4 className="text-[11px] sm:text-xs md:text-sm font-secondary text-[#f0d5c8] leading-snug tracking-wide max-w-[130px] mb-2 sm:mb-3">
                       {tDynamic(features[2].heading)}
                     </h4>
                   )}
@@ -166,7 +166,7 @@ export default function FeaturedBanner() {
                 {/* Q4: Bottom-Right (Heading on Top, Icon on Bottom) */}
                 <div className="flex flex-col items-center justify-center p-3 sm:p-5 text-center group/q4">
                   {features[3]?.heading && (
-                    <h4 className="text-xs sm:text-sm md:text-base font-secondary text-[#f0d5c8] leading-snug tracking-wide max-w-[140px] mb-2 sm:mb-3">
+                    <h4 className="text-[11px] sm:text-xs md:text-sm font-secondary text-[#f0d5c8] leading-snug tracking-wide max-w-[130px] mb-2 sm:mb-3">
                       {tDynamic(features[3].heading)}
                     </h4>
                   )}
