@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
+import CategorySection from "@/components/CategorySection";
 import PromoBanners from "@/components/PromoBanners";
 import ProductSection from "@/components/ProductSection";
 import Badges from "@/components/Badges";
@@ -15,6 +16,7 @@ export default function Home() {
     <main className="min-h-screen bg-black text-white">
       <Navbar />
       <Hero />
+      <CategorySection />
       <ProductSection />
       <PromoBanners />
       {/* <FullBanner /> */}

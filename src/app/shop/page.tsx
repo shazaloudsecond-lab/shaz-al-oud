@@ -60,7 +60,7 @@ function CustomSelect({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`bg-neutral-900 px-3.5 py-2 text-xs uppercase tracking-wider cursor-pointer font-mono flex items-center justify-between gap-3 transition-all select-none ${
+        className={`bg-neutral-900 px-3.5 py-2 text-xs uppercase tracking-wider cursor-pointer font-mono flex items-center justify-between gap-3 transition-all select-none rounded-sm ${
           isOpen ? "text-white" : "text-neutral-200"
         }`}
       >
@@ -80,7 +80,7 @@ function CustomSelect({
 
       {isOpen && (
         <div
-          className={`absolute ${dropdownPlacementClass} mt-1 w-56 bg-neutral-950 shadow-2xl z-50 py-1 max-h-64 overflow-y-auto no-scrollbar`}
+          className={`absolute ${dropdownPlacementClass} mt-1 w-56 bg-neutral-950 shadow-2xl z-50 py-1 max-h-64 overflow-y-auto no-scrollbar rounded-sm`}
         >
           {options.map((option) => {
             const isSelected = option.value === value;
@@ -214,6 +214,27 @@ export default function ShopPage() {
     return list;
   }, [products, country, selectedCategory, selectedVolume, priceRange, priceSort, resolvePrice]);
 
+  // Sync with URL query parameter (?category=...)
+  useEffect(() => {
+    if (typeof window === "undefined" || !categories.length) return;
+    const params = new URLSearchParams(window.location.search);
+    const catParam = params.get("category");
+    if (!catParam) return;
+
+    const matched = categories.find(
+      (c) =>
+        c.id.toLowerCase() === catParam.toLowerCase() ||
+        c.slug?.toLowerCase() === catParam.toLowerCase() ||
+        c.name.toLowerCase() === catParam.toLowerCase()
+    );
+
+    if (matched) {
+      setSelectedCategory(matched.id);
+    } else {
+      setSelectedCategory(catParam);
+    }
+  }, [categories]);
+
   // Reset pagination when filters change
   useEffect(() => {
     setVisibleCount(INITIAL_BATCH_SIZE);
@@ -266,13 +287,13 @@ export default function ShopPage() {
         <div className="max-w-7xl mx-auto space-y-8">
         
           {/* Breadcrumb & Top Bar */}
-          <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-neutral-500 font-mono">
+          {/* <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-neutral-500 font-mono">
             <Link href="/" className="hover:text-white transition-colors">
               {t("nav.home", "Home")}
             </Link>
             <span>/</span>
             <span className="text-neutral-300">{t("nav.collection", "Shop")}</span>
-          </div>
+          </div> */}
 
           {/* Page Title & Stats */}
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6">
@@ -300,10 +321,10 @@ export default function ShopPage() {
                   key={vol.value}
                   type="button"
                   onClick={() => setSelectedVolume(vol.value)}
-                  className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer font-mono ${
+                  className={`px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer font-mono rounded-sm ${
                     selectedVolume === vol.value
                       ? "bg-white text-black"
-                      : "bg-neutral-900 text-neutral-400 hover:text-white hover:border-neutral-700"
+                      : "bg-neutral-900 text-neutral-400 hover:text-white"
                   }`}
                 >
                   {vol.label}
@@ -312,52 +333,43 @@ export default function ShopPage() {
             </div>
           </div>
 
-          {/* Secondary Filter & Sort Controls */}
-          <div className="flex items-center justify-between gap-3 p-3 sm:p-4 relative z-30">
-            {/* Start Side: Mobile Filter Button & Desktop Category/Price Filters */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* Mobile Filter Trigger Button */}
+          {/* Categories Bar & Sort Controls */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            {/* Horizontal Categories Tabs without borders */}
+            <div className="flex items-center gap-5 sm:gap-7 overflow-x-auto no-scrollbar py-1">
               <button
                 type="button"
-                onClick={() => setIsMobileFilterOpen(true)}
-                className="flex sm:hidden items-center gap-2 bg-neutral-900 px-3.5 py-2 text-xs uppercase tracking-wider font-mono text-neutral-200 cursor-pointer transition-colors hover:text-white select-none rounded-[10px]"
+                onClick={() => setSelectedCategory("all")}
+                className={`text-[11px] sm:text-xs tracking-wider uppercase font-primary transition-all whitespace-nowrap cursor-pointer py-1 ${
+                  selectedCategory === "all"
+                    ? "text-white font-bold"
+                    : "text-neutral-400 hover:text-white font-normal"
+                }`}
               >
-                <svg className="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                </svg>
-                <span>{t("products.filter", "Filters")}</span>
-                {((selectedCategory !== "all" ? 1 : 0) + (selectedVolume !== "all" ? 1 : 0)) > 0 && (
-                  <span className="w-4 h-4 rounded-full bg-white text-black text-[10px] font-bold flex items-center justify-center">
-                    {(selectedCategory !== "all" ? 1 : 0) + (selectedVolume !== "all" ? 1 : 0)}
-                  </span>
-                )}
+                {t("products.all_categories", "ALL FRAGRANCES")}
               </button>
 
-              {/* Desktop Category Dropdown */}
-              {categories.length > 0 && (
-                <div className="hidden sm:inline-block">
-                  <CustomSelect
-                    value={selectedCategory}
-                    options={categoryOptions}
-                    onChange={setSelectedCategory}
-                    align="left"
-                  />
-                </div>
-              )}
-
-              {/* Desktop Price Range Dropdown (Hidden on Mobile) */}
-              <div className="hidden sm:inline-block">
-                <CustomSelect
-                  value={priceRange}
-                  options={priceRangeOptions}
-                  onChange={setPriceRange}
-                  align="left"
-                />
-              </div>
+              {categories.map((cat) => {
+                const isSelected = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`text-[11px] sm:text-xs tracking-wider uppercase font-primary transition-all whitespace-nowrap cursor-pointer py-1 ${
+                      isSelected
+                        ? "text-white font-bold"
+                        : "text-neutral-400 hover:text-white font-normal"
+                    }`}
+                  >
+                    {tDynamic(cat.name)}
+                  </button>
+                );
+              })}
             </div>
 
             {/* End Side: Sort By & Reset */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-end gap-3 flex-shrink-0">
               <CustomSelect
                 value={priceSort}
                 options={sortOptions}
@@ -369,7 +381,7 @@ export default function ShopPage() {
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="hidden sm:inline-block px-3.5 py-2 bg-red-950/40 hover:bg-red-950/70 border border-red-900/60 text-red-300 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer font-mono"
+                  className="px-3 py-1.5 bg-red-950/40 hover:bg-red-950/70 text-red-300 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer font-mono rounded-sm"
                 >
                   {t("products.reset_filters", "Reset")}
                 </button>
@@ -503,7 +515,7 @@ export default function ShopPage() {
             </div>
           ) : filteredProducts.length === 0 ? (
             /* Empty State */
-            <div className="py-20 text-center space-y-4 border border-neutral-800 bg-neutral-950 p-8">
+            <div className="py-20 text-center space-y-4 bg-neutral-950 p-8">
               <p className="text-base text-neutral-300 font-serif">
                 {t("products.no_matching_filters", "No fragrances match the selected filter criteria.")}
               </p>
