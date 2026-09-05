@@ -329,7 +329,7 @@ export default function Navbar() {
 
       {/* Drawer Panel */}
       <aside
-        className={`fixed top-0 bottom-0 ${isRTL ? "right-0 border-l" : "left-0 border-r"} w-80 max-w-[85vw] bg-neutral-950/98 backdrop-blur-xl text-white z-50 shadow-2xl flex flex-col justify-between border-neutral-800/80 transition-transform duration-300 ease-in-out transform ${
+        className={`fixed top-0 bottom-0 ${isRTL ? "right-0" : "left-0"} w-80 max-w-[85vw] bg-neutral-950/98 backdrop-blur-xl text-white z-50 shadow-2xl flex flex-col justify-between transition-transform duration-300 ease-in-out transform ${
           isMenuOpen
             ? "translate-x-0"
             : isRTL
@@ -376,11 +376,11 @@ export default function Navbar() {
             <label className="text-[10px] uppercase font-semibold tracking-[0.18em] text-[#f0d5c8]/80 block mb-2">
               {t("nav.language", "Language")}
             </label>
-            <div className="grid grid-cols-2 p-1 bg-neutral-900/90">
+            <div className="grid grid-cols-2 p-1 bg-neutral-900/90 rounded-full">
               <button
                 type="button"
                 onClick={() => setLanguage("en")}
-                className={`py-1.5 text-xs font-medium transition-all cursor-pointer ${
+                className={`py-1.5 text-xs font-medium transition-all cursor-pointer rounded-full ${
                   language === "en"
                     ? "bg-white text-neutral-950 font-semibold shadow-sm"
                     : "text-neutral-400 hover:text-white"
@@ -391,7 +391,7 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setLanguage("ar")}
-                className={`py-1.5 text-xs font-medium transition-all cursor-pointer ${
+                className={`py-1.5 text-xs font-medium transition-all cursor-pointer rounded-full ${
                   language === "ar"
                     ? "bg-[#f0d5c8] text-neutral-950 font-semibold shadow-sm"
                     : "text-neutral-400 hover:text-white"
@@ -412,7 +412,7 @@ export default function Navbar() {
                 <button
                   type="button"
                   onClick={() => setIsMobileCountryOpen(!isMobileCountryOpen)}
-                  className="w-full flex items-center justify-between px-3.5 py-2.5 bg-neutral-900/90 hover:border-neutral-700 text-xs font-medium text-neutral-200 transition-all cursor-pointer"
+                  className="w-full flex items-center justify-between px-3.5 py-2.5 bg-neutral-900/90 rounded-sm text-xs font-medium text-neutral-200 transition-all cursor-pointer"
                 >
                   <span className="font-semibold text-white tracking-wide">
                     {country?.name || activeCountries[0]?.name}

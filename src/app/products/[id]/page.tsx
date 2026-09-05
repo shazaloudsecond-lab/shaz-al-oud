@@ -183,11 +183,11 @@ export default function ProductDetailsPage() {
           {/* Left Column: Image Area */}
           <div className="space-y-4">
             {/* Main Display Image */}
-            <div className="aspect-[4/5] flex items-center justify-center overflow-hidden relative shadow-2xl bg-neutral-950">
+            <div className="w-full sm:aspect-[4/5] flex items-center justify-center overflow-hidden relative sm:p-0">
               <img 
                 src={activeImage || product.image_url} 
                 alt={product.name} 
-                className="w-full h-full object-contain relative z-10 transition-opacity duration-300"
+                className="w-full h-auto sm:h-full object-contain relative z-10 transition-opacity duration-300"
               />
             </div>
 
