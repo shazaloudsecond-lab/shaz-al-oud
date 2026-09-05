@@ -60,7 +60,7 @@ export default function ProductSection() {
       <div className="max-w-7xl mx-auto space-y-10 sm:space-y-12">
         {/* Header: Title & View All */}
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl sm:text-3xl font-primary text-white tracking-wider uppercase">
+          <h2 className="text-2xl sm:text-3xl font-primary text-white tracking-wider sm:uppercase">
             {t("products.all_categories", "ALL FRAGRANCES")}
           </h2>
 

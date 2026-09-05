@@ -37,6 +37,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
   useEffect(() => {
     setErrorMsg(null);
     setSuccessMsg(null);
+    setLoading(false);
     if (!isOpen) return;
 
     const checkSession = async () => {
@@ -141,6 +142,9 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
     try {
       const cleanEmail = email.trim().toLowerCase();
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -149,7 +153,9 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
           password,
           fullName: fullName.trim(),
         }),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       const result = await res.json();
       if (!res.ok || result.error) {
@@ -177,7 +183,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
         setMode("signin");
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "Registration failed.");
+      setErrorMsg(err.name === "AbortError" ? "Request timed out. Please try again." : (err.message || "Registration failed."));
     } finally {
       setLoading(false);
     }
@@ -300,6 +306,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
       router.refresh();
     } catch (err: any) {
       setErrorMsg(err.message || "Failed to sign out.");
+    } finally {
       setLoading(false);
     }
   };
@@ -347,7 +354,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
             </div>
 
             {successMsg && (
-              <p className="text-xs text-emerald-400 bg-emerald-950/50 p-2.5">
+              <p className="text-xs text-white bg-neutral-900 border border-neutral-800 p-2.5">
                 {successMsg}
               </p>
             )}
@@ -418,6 +425,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                     setMode("signin");
                     setErrorMsg(null);
                     setSuccessMsg(null);
+                    setLoading(false);
                   }}
                   className={`flex-1 py-2 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
                     mode === "signin"
@@ -433,6 +441,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
                     setMode("signup");
                     setErrorMsg(null);
                     setSuccessMsg(null);
+                    setLoading(false);
                   }}
                   className={`flex-1 py-2 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer ${
                     mode === "signup"
@@ -452,7 +461,7 @@ export default function AccountModal({ isOpen, onClose }: AccountModalProps) {
               </div>
             )}
             {successMsg && (
-              <div className="p-3 text-center text-emerald-300 text-xs">
+              <div className="p-3 text-center text-white text-xs">
                 {tDynamic(successMsg)}
               </div>
             )}

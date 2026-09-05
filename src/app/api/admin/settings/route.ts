@@ -38,6 +38,10 @@ export async function GET() {
       if (compData.phone) settings.company_phone = compData.phone;
       if (compData.email) settings.company_email = compData.email;
       if (compData.tagline) settings.company_tagline = compData.tagline;
+      if (compData.instagram) settings.company_instagram = compData.instagram;
+      if (compData.youtube) settings.company_youtube = compData.youtube;
+      if (compData.tiktok) settings.company_tiktok = compData.tiktok;
+      if (compData.facebook) settings.company_facebook = compData.facebook;
     }
 
     return NextResponse.json({ settings });
@@ -58,12 +62,16 @@ export async function POST(req: Request) {
       // Also try to upsert into company_details if table exists
       try {
         const { data: existing } = await supabase.from("company_details").select("id").limit(1).maybeSingle();
-        const payload = {
+        const payload: any = {
           company_name: s.company_name || null,
           address: s.company_address || null,
           phone: s.company_phone || null,
           email: s.company_email || null,
           tagline: s.company_tagline || null,
+          instagram: s.company_instagram || s.instagram || null,
+          youtube: s.company_youtube || s.youtube || null,
+          tiktok: s.company_tiktok || s.tiktok || null,
+          facebook: s.company_facebook || s.facebook || null,
           updated_at: new Date().toISOString(),
         };
         if (existing?.id) {
@@ -72,7 +80,7 @@ export async function POST(req: Request) {
           await supabase.from("company_details").insert([payload]);
         }
       } catch (e) {
-        // company_details table might not exist yet, fallback to admin_settings
+        // company_details table might not have columns or exist yet, fallback to admin_settings
       }
 
       const rows = Object.entries(body.settings).map(([key, value]) => ({

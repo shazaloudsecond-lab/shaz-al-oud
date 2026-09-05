@@ -15,7 +15,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { cartItems, clearCart, loadingCart } = useCart();
   const { country, formatPrice, resolvePrice } = useCountry();
-  const { t, tDynamic, isRTL } = useLanguage();
+  const { t, tDynamic, isRTL, getProductName } = useLanguage();
 
   const dynamicTotalPrice = cartItems.reduce((acc, item) => {
     const pr = resolvePrice(item.product, item.product.volume).price;
@@ -211,12 +211,12 @@ export default function CheckoutPage() {
       <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-32 sm:pb-24 relative z-10">
         {/* Page Header */}
         <div className="mb-6 sm:mb-8">
-          <Link href="/" className="text-[13px] text-neutral-400 hover:text-white transition-colors flex items-center gap-2 w-fit mb-3 sm:mb-4">
+          {/* <Link href="/" className="text-[13px] text-neutral-400 hover:text-white transition-colors flex items-center gap-2 w-fit mb-3 sm:mb-4">
             <svg className={`w-4 h-4 transform ${isRTL ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
             </svg>
             <span>{t("common.continue_shopping", "Back to Shopping")}</span>
-          </Link>
+          </Link> */}
           <h1 className="text-xl sm:text-3xl font-semibold uppercase tracking-wider text-white font-primary">
             {t("checkout.title", "Checkout")}
           </h1>
@@ -449,7 +449,7 @@ export default function CheckoutPage() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-neutral-100 truncate">{product.name}</p>
+                          <p className="text-xs font-medium text-neutral-100 truncate">{getProductName(product)}</p>
                           {product.volume && <p className="text-[10px] text-neutral-500 uppercase">{product.volume}</p>}
                           <p className="text-[11px] text-neutral-400 mt-0.5">{t("cart.quantity", "Qty")}: {quantity}</p>
                         </div>
@@ -529,7 +529,7 @@ export default function CheckoutPage() {
             form="checkout-form"
             type="submit"
             disabled={submitting || cartItems.length === 0}
-            className="py-3.5 px-5 bg-white hover:bg-[#f0d5c8] disabled:opacity-60 text-black font-semibold text-xs uppercase tracking-widest text-center shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-sans"
+            className="py-3.5 px-5 bg-white hover:bg-[#f0d5c8] disabled:opacity-60 text-black font-semibold text-xs uppercase tracking-widest text-center shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer font-sans rounded-sm"
           >
             {submitting ? (
               <>

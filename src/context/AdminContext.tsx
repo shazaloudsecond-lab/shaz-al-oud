@@ -35,6 +35,7 @@ export interface ProductVariant {
 export interface Product {
   id: string;
   name: string;
+  name_ar?: string | null;
   brand_name?: string | null;
   our_signature?: string | null;
   slug?: string | null;

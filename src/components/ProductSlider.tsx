@@ -11,7 +11,7 @@ export default function ProductSlider() {
   const { productSliderConfig, productSliderItems, loadingStore } = useStore();
   const { addToCart } = useCart();
   const { formatPrice, resolvePrice, country } = useCountry();
-  const { t, tDynamic, isRTL } = useLanguage();
+  const { t, tDynamic, isRTL, getProductName } = useLanguage();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isHovered = useRef(false);
   const animFrameId = useRef<number | null>(null);
@@ -94,11 +94,11 @@ export default function ProductSlider() {
   }
 
   return (
-    <section id="signature" className="w-full bg-black py-16 sm:py-24 px-4 sm:px-6 lg:px-12 select-none overflow-hidden">
+    <section id="signature" className="w-full bg-black py-16 sm:py-20 px-4 sm:px-6 lg:px-12 select-none overflow-hidden">
       <div className="max-w-[1400px] mx-auto">
         {/* Header */}
         {productSliderConfig.heading && (
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-primary text-white mb-10 sm:mb-14 px-2">
+          <h2 className="text-2xl sm:text-4xl font-primary text-white mb-10 sm:mb-14 px-2 sm:uppercase">
             {tDynamic(productSliderConfig.heading)}
           </h2>
         )}
@@ -138,14 +138,13 @@ export default function ProductSlider() {
                 <Link href={`/products/${product.id}`} className="block w-full h-full" draggable={false}>
                   {/* Image Container */}
                   <div
-                    className="aspect-[4/5] relative overflow-hidden mb-2.5 sm:mb-4 transition-transform duration-500 group-hover:-translate-y-2 border border-neutral-800"
-                    style={{ backgroundColor: item.bg_color || "#121212" }}
+                    className="aspect-[4/5] relative overflow-hidden mb-2.5 sm:mb-4 transition-transform duration-500 group-hover:-translate-y-2 bg-neutral-950"
                   >
                     {product.image_url ? (
                       <img
                         src={product.image_url}
                         alt={product.name}
-                        className="w-full h-full object-contain p-2.5 sm:p-4 transition-transform duration-700 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         draggable={false}
                       />
                     ) : (
@@ -172,7 +171,7 @@ export default function ProductSlider() {
                             volume: pr.volume,
                           });
                         }}
-                        className="w-full py-2.5 px-3 bg-black hover:bg-neutral-900 text-white text-xs font-semibold uppercase tracking-widest text-center shadow-lg transition-colors cursor-pointer"
+                        className="w-full py-2.5 px-3 bg-white hover:bg-neutral-100 text-black text-xs font-semibold uppercase tracking-widest text-center shadow-lg transition-colors cursor-pointer"
                       >
                         {t("products.add_to_bag", "Add to Cart")}
                       </button>
@@ -185,7 +184,7 @@ export default function ProductSlider() {
                       <span className="text-[10px] sm:text-xs font-mono tracking-wider text-neutral-500 flex-shrink-0">{idxStr}</span>
                       <div className="min-w-0">
                         <span className="text-xs sm:text-sm tracking-wider uppercase font-medium line-clamp-1 block truncate">
-                          {tDynamic(product.our_signature || product.name)}
+                          {getProductName(product)}
                         </span>
                         {/* <div className="hidden sm:block text-xs text-[#dfc3b4] font-mono font-medium mt-0.5">
                           {formatPrice(resolvePrice(product).price)}

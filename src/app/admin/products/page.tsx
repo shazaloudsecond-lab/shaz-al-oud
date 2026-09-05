@@ -71,6 +71,7 @@ export default function AdminProductsPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [brandName, setBrandName] = useState("");
   const [ourSignature, setOurSignature] = useState("");
+  const [nameAr, setNameAr] = useState("");
   const [slug, setSlug] = useState("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [variants, setVariants] = useState<VariantFormItem[]>([]);
@@ -106,6 +107,7 @@ export default function AdminProductsPage() {
     setSelectedId(null);
     setBrandName("");
     setOurSignature("");
+    setNameAr("");
     setSlug("");
     setCategoryId("");
     setVariants(DEFAULT_VOLUMES.map((vol) => createEmptyVariant(vol, displayCountries)));
@@ -127,6 +129,7 @@ export default function AdminProductsPage() {
     setSelectedId(product.id);
     setBrandName(product.brand_name || "");
     setOurSignature(product.our_signature || product.name || "");
+    setNameAr(product.name_ar || "");
     setSlug(product.slug || generateSlug(product.our_signature || product.name));
     setCategoryId(product.category_id || "");
 
@@ -464,8 +467,9 @@ export default function AdminProductsPage() {
 
     try {
       const supabase = createClient();
-      const payload = {
+      const payload: any = {
         name: finalName,
+        name_ar: nameAr.trim() || null,
         brand_name: brandName.trim() || null,
         our_signature: ourSignature.trim() || null,
         slug: slug.trim() || generateSlug(finalName),
@@ -483,16 +487,32 @@ export default function AdminProductsPage() {
       };
 
       if (selectedId) {
-        const { error } = await supabase
+        let { error } = await supabase
           .from("products")
           .update(payload)
           .eq("id", selectedId);
+
+        if (error && error.message?.includes("name_ar")) {
+          const fallbackPayload = { ...payload };
+          delete fallbackPayload.name_ar;
+          const retryRes = await supabase.from("products").update(fallbackPayload).eq("id", selectedId);
+          error = retryRes.error;
+        }
+
         if (error) throw error;
         setStatusMsg({ type: "success", text: "Product updated successfully!" });
       } else {
-        const { error } = await supabase
+        let { error } = await supabase
           .from("products")
           .insert([payload]);
+
+        if (error && error.message?.includes("name_ar")) {
+          const fallbackPayload = { ...payload };
+          delete fallbackPayload.name_ar;
+          const retryRes = await supabase.from("products").insert([fallbackPayload]);
+          error = retryRes.error;
+        }
+
         if (error) throw error;
         setStatusMsg({ type: "success", text: "Product created successfully!" });
       }
@@ -653,17 +673,19 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              {/* Slug */}
+              {/* Arabic Product Name */}
               <div className="space-y-2">
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
-                  URL Slug <span className="text-neutral-500 lowercase">(auto-generated)</span>
+                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium flex items-center justify-between">
+                  <span>Arabic Name / اسم المنتج</span>
+                  <span className="text-neutral-500 lowercase font-normal">(optional)</span>
                 </label>
                 <input
                   type="text"
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
-                  placeholder="e.g. royal-amber-oud"
-                  className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-xl text-neutral-400 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm font-mono"
+                  dir="rtl"
+                  value={nameAr}
+                  onChange={(e) => setNameAr(e.target.value)}
+                  placeholder="مثال: لافندر أرجواني، عود ملكي"
+                  className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm font-medium"
                 />
               </div>
 
@@ -684,6 +706,20 @@ export default function AdminProductsPage() {
                     </option>
                   ))}
                 </select>
+              </div>
+
+              {/* Slug */}
+              <div className="space-y-2 md:col-span-2">
+                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+                  URL Slug <span className="text-neutral-500 lowercase">(auto-generated)</span>
+                </label>
+                <input
+                  type="text"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  placeholder="e.g. royal-amber-oud"
+                  className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-xl text-neutral-400 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm font-mono"
+                />
               </div>
             </div>
 
@@ -1334,6 +1370,11 @@ export default function AdminProductsPage() {
                 </div>
                 <h2 className="text-xl font-serif text-white mt-1">
                   {viewingProduct.our_signature || viewingProduct.name}
+                  {viewingProduct.name_ar && (
+                    <span className="text-sm font-sans text-amber-300 font-normal ml-2">
+                      ({viewingProduct.name_ar})
+                    </span>
+                  )}
                 </h2>
                 <p className="text-xs text-neutral-400 mt-0.5">
                   Category: <span className="text-neutral-200">{viewingProduct.category?.name || "Uncategorized"}</span>

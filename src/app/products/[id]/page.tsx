@@ -17,7 +17,7 @@ export default function ProductDetailsPage() {
   const { products, loadingStore, getProductById } = useStore();
   const { addToCart, openCart } = useCart();
   const { country, formatPrice, resolvePrice } = useCountry();
-  const { t, tDynamic, isRTL } = useLanguage();
+  const { t, tDynamic, isRTL, getProductName } = useLanguage();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -159,7 +159,7 @@ export default function ProductDetailsPage() {
     openCart();
   };
 
-  const displayName = tDynamic(product.our_signature || product.name);
+  const displayName = getProductName(product);
   const displayBrand = product.brand_name ? tDynamic(product.brand_name) : null;
   const displayCategory = product.category?.name ? tDynamic(product.category.name) : null;
   const displayDescription = product.description ? tDynamic(product.description) : `${displayName} is a luxurious fragrance from our ${displayCategory || "exclusive"} collection.`;
@@ -170,24 +170,24 @@ export default function ProductDetailsPage() {
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 lg:pt-32 relative z-10 pb-24">
         {/* Breadcrumb */}
-        <div className="mb-6 lg:mb-10">
+        {/* <div className="mb-6 lg:mb-10">
           <Link href="/" className="text-[13px] text-neutral-400 hover:text-white font-medium transition-colors flex items-center gap-2 w-fit">
             <svg className={`w-4 h-4 transform ${isRTL ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
             </svg>
             <span>{t("nav.home", "Home")} / {t("nav.collection", "Products")}</span>
           </Link>
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start">
           {/* Left Column: Image Area */}
           <div className="space-y-4">
             {/* Main Display Image */}
-            <div className="aspect-square flex items-center justify-center overflow-hidden relative shadow-2xl">
+            <div className="aspect-[4/5] flex items-center justify-center overflow-hidden relative shadow-2xl bg-neutral-950">
               <img 
                 src={activeImage || product.image_url} 
                 alt={product.name} 
-                className="w-full h-full object-cover relative z-10 transition-opacity duration-300"
+                className="w-full h-full object-contain relative z-10 transition-opacity duration-300"
               />
             </div>
 
@@ -205,12 +205,12 @@ export default function ProductDetailsPage() {
                         isActive
                           ? "border-white shadow-lg"
                           : "border-neutral-800 opacity-60 hover:opacity-100 hover:border-neutral-600"
-                      } flex items-center justify-center cursor-pointer`}
+                      } flex items-center justify-center cursor-pointer bg-neutral-950`}
                     >
                       <img
                         src={imgUrl}
                         alt={`${product.name} view ${idx + 1}`}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain"
                       />
                     </button>
                   );
@@ -428,7 +428,7 @@ export default function ProductDetailsPage() {
             type="button"
             disabled={!isCurrentlyInStock || !isAvailableInCountry}
             onClick={handleAddToCart}
-            className="w-full py-3 px-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-[11px] uppercase tracking-wider text-center transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer font-sans truncate"
+            className="w-full py-3 px-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-[11px] uppercase tracking-wider text-center transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer font-sans truncate rounded-sm"
           >
             <span>{t("products.add_to_bag", "Add to Bag")}</span>
           </button>
@@ -437,7 +437,7 @@ export default function ProductDetailsPage() {
             type="button"
             disabled={!isCurrentlyInStock || !isAvailableInCountry}
             onClick={handleBuyNow}
-            className="w-full py-3 px-2.5 bg-white hover:bg-[#f0d5c8] disabled:opacity-40 disabled:cursor-not-allowed text-black font-semibold text-[11px] uppercase tracking-wider text-center shadow-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans truncate"
+            className="w-full py-3 px-2.5 bg-white hover:bg-[#f0d5c8] rounded-sm disabled:opacity-40 disabled:cursor-not-allowed text-black font-semibold text-[11px] uppercase tracking-wider text-center shadow-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer font-sans truncate"
           >
             <span>{t("cart.checkout", "Proceed to Checkout")}</span>
           </button>
