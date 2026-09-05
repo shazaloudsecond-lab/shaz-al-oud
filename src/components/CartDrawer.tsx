@@ -110,7 +110,7 @@ export default function CartDrawer() {
               <button
                 type="button"
                 onClick={closeCart}
-                className="mt-4 px-6 py-2.5 bg-white hover:bg-[#f0d5c8] text-black text-xs font-semibold uppercase tracking-widest transition-all cursor-pointer shadow-md"
+                className="mt-4 px-6 py-2.5 bg-white hover:bg-[#f0d5c8] text-black text-xs font-semibold uppercase tracking-widest transition-all cursor-pointer shadow-md rounded-sm "
               >
                 {t("cart.start_shopping", "Explore Fragrances")}
               </button>
