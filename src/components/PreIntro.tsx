@@ -32,7 +32,7 @@ export default function PreIntro({ onFinish }: PreIntroProps) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6, ease: "easeInOut" }}
       onClick={onFinish}
-      className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black cursor-pointer select-none overflow-hidden"
+      className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-black select-none overflow-hidden"
       aria-label="Pre-Intro Splash Screen"
     >
       {/* Luxury ambient gold glow */}
@@ -43,18 +43,6 @@ export default function PreIntro({ onFinish }: PreIntroProps) {
             "radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.12) 0%, rgba(0, 0, 0, 0) 65%)",
         }}
       />
-
-      {/* Skip Button */}
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onFinish();
-        }}
-        className="absolute top-6 right-6 z-20 px-3 py-1 text-[11px] tracking-[0.25em] uppercase text-white/50 hover:text-white transition-colors duration-200 border border-white/15 hover:border-white/40 rounded-full"
-      >
-        Skip
-      </button>
 
       {/* Centered Brand Content */}
       <div className="relative z-10 flex flex-col items-center justify-center px-6">
