@@ -11,8 +11,8 @@ export default function Badges() {
   // Skeleton
   if (loadingStore) {
     return (
-      <section className="w-full bg-black py-8 sm:py-16 px-4 sm:px-6 lg:px-12 select-none">
-        <div className="max-w-7xl mx-auto bg-gradient-to-b from-[#1e130a] via-[#140c06] to-[#0c0704] p-4 sm:p-10 rounded-sm">
+      <section className="w-full bg-black py-8 sm:py-16 px-0 sm:px-6 lg:px-12 select-none">
+        <div className="max-w-7xl mx-auto bg-gradient-to-b from-[#1e130a] via-[#140c06] to-[#0c0704] p-4 sm:p-10 rounded-none sm:rounded-sm">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="flex flex-col items-center gap-2 sm:gap-3 animate-pulse">
@@ -32,11 +32,11 @@ export default function Badges() {
   if (visibleBadges.length === 0) return null;
 
   return (
-    <section className="w-full bg-black py-8 sm:py-16 px-3 sm:px-6 lg:px-12 select-none overflow-hidden">
+    <section className="w-full bg-black py-8 sm:py-16 px-0 sm:px-6 lg:px-12 select-none overflow-hidden">
       {/* Outer luxury Frame Container */}
       <div className="max-w-7xl mx-auto relative group">
         {/* Luxury amber backdrop without outline border */}
-        <div className="relative bg-gradient-to-b from-[#23160c] via-[#170e08] to-[#100905] shadow-[0_0_50px_rgba(0,0,0,0.9)] overflow-hidden rounded-xl sm:rounded-none">
+        <div className="relative bg-gradient-to-b from-[#23160c] via-[#170e08] to-[#100905] shadow-[0_0_50px_rgba(0,0,0,0.9)] overflow-hidden rounded-none">
           
           {/* Subtle Ambient Radial Light in Center */}
           {/* <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.08)_0%,rgba(0,0,0,0.6)_80%)] pointer-events-none" /> */}

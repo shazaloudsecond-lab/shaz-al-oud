@@ -43,7 +43,7 @@ export default function PromoBanners() {
     const hasLink = linkUrl && linkUrl !== "#";
 
     const CardInner = (
-      <div className="group relative w-full aspect-[16/10] sm:rounded-3xl overflow-hidden  shadow-[0_0_45px_rgba(255,255,255,0.18)] hover:shadow-[0_0_65px_rgba(255,255,255,0.30)] transition-all duration-500">
+      <div className="group relative w-full aspect-[16/10] sm:rounded-sm overflow-hidden  shadow-[0_0_45px_rgba(255,255,255,0.18)] hover:shadow-[0_0_65px_rgba(255,255,255,0.30)] transition-all duration-500">
         {/* Background Image with subtle zoom */}
         <img
           src={imageUrl}
@@ -128,7 +128,7 @@ export default function PromoBanners() {
         {(promoBanner.heading || promoBanner.subheading) && (
           <div className="text-center max-w-3xl mx-auto space-y-3 px-2">
             {promoBanner.heading && (
-              <h2 className="text-2xl sm:text-3xl font-primary text-white tracking-wide">
+              <h2 className="text-2xl sm:text-3xl font-primary text-white tracking-wide sm:uppercase">
                 {tDynamic(promoBanner.heading)}
               </h2>
             )}
@@ -172,7 +172,7 @@ export default function PromoBanners() {
         <div className="flex justify-center pt-2 sm:pt-4">
           <Link
             href="/shop"
-            className="inline-flex items-center rounded-xl gap-2 px-5 sm:px-7 py-2.5 bg-gradient-to-r from-[#d8b08c] via-[#dfc3b4] to-[#c99a70] hover:from-[#e3be9c] hover:to-[#d8aa80] text-black font-semibold text-[11px] sm:text-xs tracking-[0.15em] uppercase transition-all duration-300 shadow-lg hover:shadow-[#dfc3b4]/20 hover:scale-105 cursor-pointer"
+            className="inline-flex items-center rounded-sm gap-2 px-4 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-[#d8b08c] via-[#dfc3b4] to-[#c99a70] hover:from-[#e3be9c] hover:to-[#d8aa80] text-black font-bold text-[11px] sm:text-xs tracking-wider uppercase transition-all duration-300 shadow-lg hover:shadow-[#dfc3b4]/20 hover:scale-105 cursor-pointer"
           >
             <span>{t("common.discover_scent", "DISCOVER YOUR SCENT")}</span>
             <svg

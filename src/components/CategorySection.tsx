@@ -16,7 +16,7 @@ export default function CategorySection() {
       <section className="w-full bg-black py-8 sm:py-12 select-none">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-10">
-            <h2 className="text-2xl sm:text-3xl font-primary text-white tracking-wider uppercase">
+            <h2 className="text-2xl sm:text-3xl font-primary text-white uppercase">
               Category
             </h2>
           </div>
@@ -48,7 +48,7 @@ export default function CategorySection() {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         {/* Centered Heading */}
         <div className="text-center mb-8 sm:mb-10">
-          <h2 className="text-2xl sm:text-3xl font-primary text-white tracking-wider uppercase">
+          <h2 className="text-2xl sm:text-3xl font-primary text-white tracking-wider sm:uppercase">
             Category
           </h2>
         </div>
@@ -101,7 +101,7 @@ export default function CategorySection() {
                 </div>
 
                 {/* Bottom Name */}
-                <span className="mt-2.5 sm:mt-4 text-[11px] sm:text-sm md:text-base font-medium tracking-wider uppercase font-primary text-neutral-400 group-hover:text-white transition-colors text-center max-w-[96px] xs:max-w-[104px] sm:max-w-[140px] md:max-w-[170px] lg:max-w-[190px] truncate">
+                <span className="mt-2.5 sm:mt-4 text-[11px] sm:text-xs tracking-wider uppercase font-primary text-neutral-400 group-hover:text-white transition-colors text-center max-w-[96px] xs:max-w-[104px] sm:max-w-[140px] md:max-w-[170px] lg:max-w-[190px] truncate">
                   {displayName}
                 </span>
               </Link>

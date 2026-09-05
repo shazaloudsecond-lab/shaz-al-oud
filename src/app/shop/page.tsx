@@ -23,24 +23,32 @@ function CustomSelect({
   options,
   onChange,
   align = "left",
+  fullWidth = false,
+  buttonPrefix = "",
 }: {
   value: string;
   options: DropdownOption[];
   onChange: (value: string) => void;
   align?: "left" | "right";
+  fullWidth?: boolean;
+  buttonPrefix?: string;
 }) {
   const { isRTL } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, []);
 
   const selectedOption = options.find((opt) => opt.value === value) || options[0];
@@ -56,17 +64,20 @@ function CustomSelect({
       : "left-0";
 
   return (
-    <div ref={dropdownRef} className="relative inline-block text-start">
+    <div ref={dropdownRef} className={`relative text-start ${fullWidth ? "w-full" : "inline-block"}`}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`bg-neutral-900 px-3.5 py-2 text-xs uppercase tracking-wider cursor-pointer font-mono flex items-center justify-between gap-3 transition-all select-none rounded-sm ${
+        className={`w-full bg-neutral-900/90 hover:bg-neutral-800 rounded-sm px-3.5 py-2 text-xs uppercase tracking-wider cursor-pointer font-mono flex items-center justify-between gap-2.5 transition-all select-none ${
           isOpen ? "text-white" : "text-neutral-200"
         }`}
       >
-        <span className="truncate">{selectedOption?.label}</span>
+        <span className="truncate">
+          {buttonPrefix && <span className="text-neutral-400 font-normal mr-1"></span>}
+          {selectedOption?.label}
+        </span>
         <svg
-          className={`w-3.5 h-3.5 text-neutral-400 transition-transform duration-200 flex-shrink-0 ${
+          className={`w-3.5 h-3.5 text-neutral-400 transition-transform duration-300 ease-out flex-shrink-0 ${
             isOpen ? "rotate-180 text-amber-400" : ""
           }`}
           fill="none"
@@ -80,7 +91,9 @@ function CustomSelect({
 
       {isOpen && (
         <div
-          className={`absolute ${dropdownPlacementClass} mt-1 w-56 bg-neutral-950 shadow-2xl z-50 py-1 max-h-64 overflow-y-auto no-scrollbar rounded-sm`}
+          className={`absolute ${dropdownPlacementClass} mt-1.5 ${
+            fullWidth ? "w-full min-w-[200px]" : "w-56"
+          } bg-neutral-950/95 backdrop-blur-md border border-neutral-800 shadow-2xl z-50 py-1 max-h-64 overflow-y-auto no-scrollbar rounded-sm animate-dropdown-luxury`}
         >
           {options.map((option) => {
             const isSelected = option.value === value;
@@ -155,7 +168,7 @@ export default function ShopPage() {
 
   const categoryOptions = useMemo(
     () => [
-      { label: t("products.all_categories", "All Categories"), value: "all" },
+      { label: t("products.all_categories", "All Fragrances"), value: "all" },
       ...categories.map((c) => ({ label: tDynamic(c.name), value: c.id })),
     ],
     [categories, t, tDynamic]
@@ -334,8 +347,8 @@ export default function ShopPage() {
           </div>
 
           {/* Categories Bar & Sort Controls */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            {/* Horizontal Categories Tabs without borders */}
+          {/* Desktop View: Horizontal Categories Tabs without borders */}
+          <div className="hidden sm:flex sm:items-center justify-between gap-4">
             <div className="flex items-center gap-5 sm:gap-7 overflow-x-auto no-scrollbar py-1">
               <button
                 type="button"
@@ -387,6 +400,40 @@ export default function ShopPage() {
                 </button>
               )}
             </div>
+          </div>
+
+          {/* Mobile View: Category Dropdown & Sort Dropdown */}
+          <div className="flex sm:hidden items-center gap-2.5 w-full">
+            <div className="flex-1 min-w-0">
+              <CustomSelect
+                value={selectedCategory}
+                options={categoryOptions}
+                onChange={(val) => setSelectedCategory(val)}
+                align="left"
+                fullWidth
+                buttonPrefix={t("products.category_prefix", "Category: ")}
+              />
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <CustomSelect
+                value={priceSort}
+                options={sortOptions}
+                onChange={(val) => setPriceSort(val as any)}
+                align="right"
+                fullWidth
+              />
+            </div>
+
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="px-2.5 py-2 bg-red-950/40 hover:bg-red-950/70 text-red-300 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer font-mono rounded-sm flex-shrink-0"
+              >
+                {t("products.reset_filters", "Reset")}
+              </button>
+            )}
           </div>
 
           {/* Mobile Bottom-to-Top Filter Sheet */}

@@ -15,10 +15,10 @@ interface ProductCardProps {
 export default function ProductCard({ product, className = "" }: ProductCardProps) {
   const { addToCart } = useCart();
   const { formatPrice, resolvePrice } = useCountry();
-  const { t, tDynamic, isRTL } = useLanguage();
+  const { t, isRTL, getProductName } = useLanguage();
 
   const pricing = resolvePrice(product);
-  const displayName = product.our_signature || product.name;
+  const displayName = getProductName(product);
 
   return (
     <Link
@@ -26,11 +26,11 @@ export default function ProductCard({ product, className = "" }: ProductCardProp
       className={`group flex flex-col items-center text-center ${className}`}
     >
       {/* Image Card Container */}
-      <div className="w-full aspect-[4/4.5] sm:aspect-square overflow-hidden relative flex items-center justify-center transition-all duration-300 group-hover:border-neutral-700">
+      <div className="w-full aspect-[4/5] bg-neutral-950 overflow-hidden relative flex items-center justify-center transition-all duration-300 group-hover:border-neutral-700">
         <img
           src={product.image_url}
           alt={displayName}
-          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          className="w-full h-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-105"
           loading="lazy"
         />
 
@@ -71,7 +71,7 @@ export default function ProductCard({ product, className = "" }: ProductCardProp
       {/* Product Meta */}
       <div className="mt-3 sm:mt-5 space-y-1 sm:space-y-1.5 w-full px-1">
         <h3 className="text-xs sm:text-base font-serif font-normal text-neutral-100 tracking-normal group-hover:text-[#f0d5c8] transition-colors line-clamp-1">
-          {tDynamic(displayName)}
+          {displayName}
         </h3>
 
         <div className="flex items-center justify-center gap-1.5 sm:gap-2">

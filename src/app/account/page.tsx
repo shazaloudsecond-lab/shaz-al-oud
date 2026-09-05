@@ -166,33 +166,34 @@ export default function AccountPage() {
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-24 space-y-10 relative z-10">
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
+        <div className="space-y-1">
+          <div className="flex items-center justify-between gap-3">
             <h1 className="text-2xl sm:text-3xl font-semibold uppercase tracking-wider text-white font-primary">
               {t("account.title", "My Account")}
             </h1>
-            <p className="text-xs sm:text-sm text-neutral-400 mt-1">
-              {t("account.subtitle", "Manage your personal information and track your orders")}
-            </p>
+
+            <div className="flex items-center gap-2.5 flex-shrink-0">
+              {user.role === "admin" && (
+                <Link
+                  href="/admin"
+                  className="px-3 sm:px-4 py-2 sm:py-2.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-[11px] sm:text-xs font-semibold uppercase tracking-wider transition-all font-mono rounded-sm"
+                >
+                  {t("account.admin_panel", "Admin Panel")}
+                </Link>
+              )}
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="px-3 sm:px-4 py-2 sm:py-2.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 hover:text-white text-[11px] sm:text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer font-mono rounded-sm"
+              >
+                {t("account.logout", "Sign Out")}
+              </button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            {user.role === "admin" && (
-              <Link
-                href="/admin"
-                className="px-4 py-2.5 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-amber-300 text-xs font-semibold uppercase tracking-wider transition-all font-mono"
-              >
-                {t("account.admin_panel", "Admin Panel")}
-              </Link>
-            )}
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="px-4 py-2.5 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 hover:text-white text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer font-mono"
-            >
-              {t("account.logout", "Sign Out")}
-            </button>
-          </div>
+          <p className="text-xs sm:text-sm text-neutral-400">
+            {t("account.subtitle", "Manage your personal information and track your orders")}
+          </p>
         </div>
 
         {/* Profile Information Card */}
@@ -212,14 +213,14 @@ export default function AccountPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            <div className="bg-neutral-900/60 border border-neutral-850 p-4">
+            <div className="bg-neutral-900/60 p-4">
               <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-mono">
                 {t("account.email", "Email")}
               </p>
               <p className="text-xs sm:text-sm font-medium text-neutral-100 mt-1 truncate font-mono">{user.email}</p>
             </div>
 
-            <div className="bg-neutral-900/60 border border-neutral-850 p-4">
+            <div className="bg-neutral-900/60 p-4">
               <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-mono">
                 {t("account.account_type", "Account Type")}
               </p>
@@ -230,7 +231,7 @@ export default function AccountPage() {
               </p>
             </div>
 
-            <div className="bg-neutral-900/60 border border-neutral-850 p-4">
+            <div className="bg-neutral-900/60 p-4">
               <p className="text-[10px] uppercase tracking-widest text-neutral-400 font-mono">
                 {t("account.member_since", "Member Since")}
               </p>
@@ -255,8 +256,8 @@ export default function AccountPage() {
           </div>
 
           {orders.length === 0 ? (
-            <div className="py-12 text-center space-y-3 bg-neutral-900/30 border border-neutral-850 p-6">
-              <div className="w-12 h-12 bg-neutral-900 border border-neutral-800 flex items-center justify-center mx-auto text-neutral-500">
+            <div className="py-12 text-center space-y-3 bg-neutral-900/30 p-6">
+              <div className="w-12 h-12 bg-neutral-900 flex items-center justify-center mx-auto text-neutral-500">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                 </svg>

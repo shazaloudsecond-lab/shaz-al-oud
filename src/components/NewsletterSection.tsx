@@ -100,7 +100,7 @@ export default function NewsletterSection() {
         <div className="flex flex-col justify-center space-y-6 sm:space-y-8">
           <div className="space-y-3">
             {newsletterConfig.heading && (
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-primary text-white leading-tight tracking-tight">
+              <h2 className="text-2xl sm:text-4xl font-primary text-white leading-tight tracking-tight">
                 {tDynamic(newsletterConfig.heading)}
               </h2>
             )}
@@ -121,12 +121,12 @@ export default function NewsletterSection() {
                 placeholder={t("newsletter.placeholder", "Enter your email address")}
                 disabled={submitting}
                 required
-                className="w-full sm:flex-1 px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 focus:bg-neutral-950 transition-all text-sm rounded-[10px] sm:rounded-none"
+                className="w-full sm:flex-1 px-4 py-3 bg-neutral-900 text-white placeholder-neutral-500 focus:outline-none focus:border-amber-400 focus:bg-neutral-950 transition-all text-sm rounded-sm"
               />
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-[#f0d5c8] disabled:opacity-50 text-black text-xs font-semibold uppercase tracking-widest transition-all shadow-md flex items-center justify-center cursor-pointer flex-shrink-0 rounded-[10px] sm:rounded-none"
+                className="w-full sm:w-auto px-8 py-3.5 bg-white hover:bg-[#f0d5c8] disabled:opacity-50 text-black text-xs font-semibold uppercase tracking-widest transition-all shadow-md flex items-center justify-center cursor-pointer flex-shrink-0 rounded-sm"
               >
                 {submitting ? (
                   <span className="flex items-center gap-2">

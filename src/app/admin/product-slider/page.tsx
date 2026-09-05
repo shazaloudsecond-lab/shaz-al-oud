@@ -6,7 +6,6 @@ import { useAdminContext } from "@/context/AdminContext";
 
 interface SelectedItem {
   product_id: string;
-  bg_color: string;
 }
 
 export default function ProductSliderAdminPage() {
@@ -38,14 +37,13 @@ export default function ProductSliderAdminPage() {
 
         const { data: itemsData } = await supabase
           .from("product_slider_items")
-          .select("product_id, bg_color")
+          .select("product_id")
           .order("display_order", { ascending: true });
 
         if (itemsData) {
           setSelectedItems(
             itemsData.map((item) => ({
               product_id: item.product_id,
-              bg_color: item.bg_color || "#ececec",
             }))
           );
         }
@@ -64,15 +62,9 @@ export default function ProductSliderAdminPage() {
       if (prev.find((i) => i.product_id === productId)) {
         return prev.filter((i) => i.product_id !== productId);
       } else {
-        return [...prev, { product_id: productId, bg_color: "#ececec" }];
+        return [...prev, { product_id: productId }];
       }
     });
-  };
-
-  const handleColorChange = (productId: string, color: string) => {
-    setSelectedItems((prev) =>
-      prev.map((i) => (i.product_id === productId ? { ...i, bg_color: color } : i))
-    );
   };
 
   const moveProduct = (index: number, direction: "up" | "down") => {
@@ -109,14 +101,13 @@ export default function ProductSliderAdminPage() {
         if (data) setConfigId(data.id);
       }
 
-      // Delete all existing items then re-insert with updated order + colors
+      // Delete all existing items then re-insert with updated order
       await supabase.from("product_slider_items").delete().neq("id", "00000000-0000-0000-0000-000000000000");
 
       if (selectedItems.length > 0) {
         const insertData = selectedItems.map((item, idx) => ({
           product_id: item.product_id,
           display_order: idx + 1,
-          bg_color: item.bg_color || "#ececec",
         }));
         const { error: itemsError } = await supabase.from("product_slider_items").insert(insertData);
         if (itemsError) throw itemsError;
@@ -152,7 +143,7 @@ export default function ProductSliderAdminPage() {
       <div>
         <h2 className="text-xl font-medium text-white tracking-wide">Product Slider Configuration</h2>
         <p className="text-sm text-neutral-400 mt-1">
-          Select products, set their card background color, and reorder them for the homepage slider.
+          Select products and reorder them for the homepage slider.
         </p>
       </div>
 
@@ -189,7 +180,7 @@ export default function ProductSliderAdminPage() {
             <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
               Selected Products ({selectedItems.length})
             </label>
-            <p className="text-xs text-neutral-500">Use arrows to reorder. Use the color swatch to set each card's background color.</p>
+            <p className="text-xs text-neutral-500">Use arrows to reorder selected products for the slider.</p>
 
             <div className="space-y-2 mt-4">
               {selectedProductDetails.length === 0 ? (
@@ -203,25 +194,15 @@ export default function ProductSliderAdminPage() {
                   return (
                     <div key={item.product_id} className="flex items-center justify-between p-3 bg-neutral-950 border border-neutral-800 rounded-xl gap-3">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
-                        {/* Color Picker */}
-                        <div className="relative flex-shrink-0">
-                          <input
-                            type="color"
-                            value={item.bg_color}
-                            onChange={(e) => handleColorChange(item.product_id, e.target.value)}
-                            className="w-8 h-8 rounded-lg cursor-pointer border-0 p-0 bg-transparent"
-                            title="Pick card background color"
-                          />
-                        </div>
                         {/* Product Image Preview */}
-                        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0" style={{ background: item.bg_color }}>
+                        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-neutral-900 border border-neutral-800">
                           {prod.image_url && (
                             <img src={prod.image_url} alt={prod.name} className="w-full h-full object-contain p-1" />
                           )}
                         </div>
                         <div className="min-w-0">
                           <p className="text-sm text-neutral-200 font-medium truncate">{prod.name}</p>
-                          <p className="text-xs text-neutral-500 font-mono">{item.bg_color}</p>
+                          <p className="text-xs text-neutral-500 truncate">{prod.category?.name || "Uncategorized"}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">

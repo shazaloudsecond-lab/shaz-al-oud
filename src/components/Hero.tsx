@@ -7,10 +7,66 @@ import { useStore } from "@/context/StoreContext";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Hero() {
-  const { heroSlides: slides, heroConfig, loadingHero: loading } = useStore();
+  const { heroSlides: slides, heroConfig, loadingHero: loading, companyDetails } = useStore();
   const { tDynamic, isRTL } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const instagramUrl = companyDetails?.instagram || "https://instagram.com";
+  const youtubeUrl = companyDetails?.youtube || "https://youtube.com";
+  const tiktokUrl = companyDetails?.tiktok || "https://tiktok.com";
+  const facebookUrl = companyDetails?.facebook || "https://facebook.com";
+
+  const renderSocialLinks = () => (
+    <div className="hidden sm:flex items-center gap-2 sm:gap-2.5">
+      <a
+        href={instagramUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Instagram"
+        className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md"
+      >
+        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+        </svg>
+      </a>
+      <a
+        href={youtubeUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="YouTube"
+        className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md"
+      >
+        <svg className="w-3.5 h-3.5 fill-current ml-0.5" viewBox="0 0 24 24">
+          <path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86a1 1 0 0 0-1.5.86z" />
+        </svg>
+      </a>
+      <a
+        href={tiktokUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="TikTok"
+        className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md"
+      >
+        <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+          <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.24 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+        </svg>
+      </a>
+      <a
+        href={facebookUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Facebook"
+        className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md"
+      >
+        <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+          <path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.52-.14-2.71-.14-2.72 0-4.64 1.64-4.64 4.75v2.75H7v4h3.15V22h3.85v-8.5z" />
+        </svg>
+      </a>
+    </div>
+  );
 
   const isVideoMode = heroConfig?.media_type === "video";
 
@@ -117,24 +173,7 @@ export default function Hero() {
         <div className="absolute bottom-8 sm:bottom-10 inset-x-0 z-20 pointer-events-none">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between pointer-events-auto">
             {/* Social Media Links */}
-            <div className="hidden sm:flex items-center gap-2 sm:gap-2.5">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md">
-                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.52-.14-2.71-.14-2.72 0-4.64 1.64-4.64 4.75v2.75H7v4h3.15V22h3.85v-8.5z" /></svg>
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md">
-                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                </svg>
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md">
-                <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" /></svg>
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md">
-                <svg className="w-3.5 h-3.5 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86a1 1 0 0 0-1.5.86z" /></svg>
-              </a>
-            </div>
+            {renderSocialLinks()}
 
             {/* Action Button */}
             {activeSlide.button_text && (
@@ -234,24 +273,7 @@ export default function Hero() {
       <div className="absolute bottom-8 sm:bottom-10 inset-x-0 z-20 pointer-events-none">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between pointer-events-auto">
           {/* Social Media Links */}
-          <div className="hidden sm:flex items-center gap-2 sm:gap-2.5">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md">
-              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M14 13.5h2.5l1-4H14v-2c0-1.03 0-2 2-2h1.5V2.14c-.326-.043-1.52-.14-2.71-.14-2.72 0-4.64 1.64-4.64 4.75v2.75H7v4h3.15V22h3.85v-8.5z" /></svg>
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md">
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-              </svg>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md">
-              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" /></svg>
-            </a>
-            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-6 h-6 sm:w-7 sm:h-7 bg-white text-black flex items-center justify-center hover:scale-110 hover:bg-[#dfc3b4] transition-all duration-200 shadow-md">
-              <svg className="w-3.5 h-3.5 fill-current ml-0.5" viewBox="0 0 24 24"><path d="M8 5.14v13.72a1 1 0 0 0 1.5.86l11-6.86a1 1 0 0 0 0-1.72l-11-6.86a1 1 0 0 0-1.5.86z" /></svg>
-            </a>
-          </div>
+          {renderSocialLinks()}
 
           {/* Action Button */}
           {activeSlide.button_text && (

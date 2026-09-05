@@ -150,6 +150,7 @@ export interface ProductVariant {
 export interface Product {
   id: string;
   name: string;
+  name_ar?: string | null;
   brand_name?: string | null;
   our_signature?: string | null;
   slug?: string | null;
@@ -174,6 +175,10 @@ export interface CompanyDetails {
   phone?: string;
   email?: string;
   tagline?: string;
+  instagram?: string;
+  youtube?: string;
+  tiktok?: string;
+  facebook?: string;
 }
 
 interface StoreContextProps {
@@ -397,6 +402,10 @@ export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
           phone: map.company_phone,
           email: map.company_email,
           tagline: map.company_tagline,
+          instagram: map.company_instagram || map.instagram,
+          youtube: map.company_youtube || map.youtube,
+          tiktok: map.company_tiktok || map.tiktok,
+          facebook: map.company_facebook || map.facebook,
         });
       }
     } catch (err) {

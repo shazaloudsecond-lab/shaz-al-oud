@@ -13,7 +13,7 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen bg-black text-white font-sans flex flex-col justify-between">
       <Navbar />
-      <div className="pt-20 sm:pt-28 flex-1 space-y-12 sm:space-y-16 pb-12 sm:pb-20">
+      <div className="pt-20 sm:pt-20 flex-1 space-y-12 sm:space-y-16 pb-12 sm:pb-20">
         <AboutSection />
         <AboutSectionTwo />
         <VisionSection />

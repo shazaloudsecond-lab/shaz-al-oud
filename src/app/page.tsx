@@ -19,10 +19,10 @@ export default function Home() {
       <CategorySection />
       <ProductSection />
       <PromoBanners />
-      {/* <FullBanner /> */}
+      <FullBanner />
       <ProductSlider />
       <FeaturedBanner />
-      <VisionSection />
+      {/* <VisionSection /> */}
       <Badges />
       <NewsletterSection />
       <Footer />

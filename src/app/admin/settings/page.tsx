@@ -8,6 +8,10 @@ export default function AdminSettingsPage() {
   const [companyPhone, setCompanyPhone] = useState("");
   const [companyEmail, setCompanyEmail] = useState("");
   const [companyTagline, setCompanyTagline] = useState("");
+  const [companyInstagram, setCompanyInstagram] = useState("");
+  const [companyYoutube, setCompanyYoutube] = useState("");
+  const [companyTiktok, setCompanyTiktok] = useState("");
+  const [companyFacebook, setCompanyFacebook] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -23,6 +27,10 @@ export default function AdminSettingsPage() {
           setCompanyPhone(data.settings.company_phone || "");
           setCompanyEmail(data.settings.company_email || "");
           setCompanyTagline(data.settings.company_tagline || "");
+          setCompanyInstagram(data.settings.company_instagram || data.settings.instagram || "");
+          setCompanyYoutube(data.settings.company_youtube || data.settings.youtube || "");
+          setCompanyTiktok(data.settings.company_tiktok || data.settings.tiktok || "");
+          setCompanyFacebook(data.settings.company_facebook || data.settings.facebook || "");
         }
       } catch (err) {
         console.error("Error loading settings:", err);
@@ -50,6 +58,10 @@ export default function AdminSettingsPage() {
             company_phone: companyPhone.trim(),
             company_email: companyEmail.trim(),
             company_tagline: companyTagline.trim(),
+            company_instagram: companyInstagram.trim(),
+            company_youtube: companyYoutube.trim(),
+            company_tiktok: companyTiktok.trim(),
+            company_facebook: companyFacebook.trim(),
           },
         }),
       });
@@ -179,6 +191,76 @@ export default function AdminSettingsPage() {
               placeholder="e.g. Exquisite luxury fragrances and authentic pure oud crafted for timeless elegance."
               className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-black transition-colors text-sm font-medium"
             />
+          </div>
+
+          {/* Social Media Links Section */}
+          <div className="pt-4 border-t border-neutral-200 space-y-4">
+            <div>
+              <h3 className="text-sm font-bold uppercase tracking-wider text-neutral-900 font-mono">
+                Social Media Links
+              </h3>
+              <p className="text-xs text-neutral-500 mt-0.5">
+                Add your official profile URLs for customer engagement across the store, hero section, and footer.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Instagram */}
+              <div className="space-y-1.5">
+                <label className="block text-xs uppercase tracking-wider text-neutral-700 font-bold font-mono">
+                  Instagram URL
+                </label>
+                <input
+                  type="url"
+                  value={companyInstagram}
+                  onChange={(e) => setCompanyInstagram(e.target.value)}
+                  placeholder="https://instagram.com/shazaloud"
+                  className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-black transition-colors text-sm font-medium"
+                />
+              </div>
+
+              {/* YouTube */}
+              <div className="space-y-1.5">
+                <label className="block text-xs uppercase tracking-wider text-neutral-700 font-bold font-mono">
+                  YouTube URL
+                </label>
+                <input
+                  type="url"
+                  value={companyYoutube}
+                  onChange={(e) => setCompanyYoutube(e.target.value)}
+                  placeholder="https://youtube.com/@shazaloud"
+                  className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-black transition-colors text-sm font-medium"
+                />
+              </div>
+
+              {/* TikTok */}
+              <div className="space-y-1.5">
+                <label className="block text-xs uppercase tracking-wider text-neutral-700 font-bold font-mono">
+                  TikTok URL
+                </label>
+                <input
+                  type="url"
+                  value={companyTiktok}
+                  onChange={(e) => setCompanyTiktok(e.target.value)}
+                  placeholder="https://tiktok.com/@shazaloud"
+                  className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-black transition-colors text-sm font-medium"
+                />
+              </div>
+
+              {/* Facebook */}
+              <div className="space-y-1.5">
+                <label className="block text-xs uppercase tracking-wider text-neutral-700 font-bold font-mono">
+                  Facebook URL
+                </label>
+                <input
+                  type="url"
+                  value={companyFacebook}
+                  onChange={(e) => setCompanyFacebook(e.target.value)}
+                  placeholder="https://facebook.com/shazaloud"
+                  className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-400 focus:outline-none focus:border-black transition-colors text-sm font-medium"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Save Button */}
