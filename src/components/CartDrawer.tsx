@@ -9,7 +9,7 @@ import { useLanguage } from "@/context/LanguageContext";
 export default function CartDrawer() {
   const router = useRouter();
   const { formatPrice, resolvePrice } = useCountry();
-  const { isRTL, t } = useLanguage();
+  const { isRTL, t, getProductName } = useLanguage();
   const {
     cartItems,
     isCartOpen,
@@ -73,7 +73,7 @@ export default function CartDrawer() {
             <h2 className="text-base font-semibold uppercase tracking-widest text-neutral-100 font-primary">
               {t("cart.title", "Shopping Cart")}
             </h2>
-            <span className="text-xs bg-neutral-900 text-[#f0d5c8] px-2.5 py-0.5 font-mono font-medium">
+            <span className="text-xs text-[#f0d5c8] px-2.5 py-0.5 font-mono font-medium">
               {totalItems}
             </span>
           </div>
@@ -125,7 +125,7 @@ export default function CartDrawer() {
                   className="flex gap-4 p-3.5 bg-neutral-900/70 relative group transition-colors hover:border-neutral-700"
                 >
                   {/* Product Thumbnail */}
-                  <div className="w-20 h-20 bg-neutral-950 border border-neutral-800 flex-shrink-0 flex items-center justify-center p-2 overflow-hidden">
+                  <div className="w-20 h-20 flex-shrink-0 flex items-center justify-center overflow-hidden">
                     {product.image_url ? (
                       <img
                         src={product.image_url}
@@ -143,7 +143,7 @@ export default function CartDrawer() {
                   <div className="flex-1 flex flex-col justify-between min-w-0 pr-6">
                     <div>
                       <h3 className="text-xs sm:text-sm font-medium text-neutral-100 truncate">
-                        {product.name}
+                        {getProductName(product)}
                       </h3>
                       {product.volume && (
                         <p className="text-[10px] text-neutral-400 uppercase tracking-wider mt-0.5">
@@ -222,7 +222,7 @@ export default function CartDrawer() {
                   closeCart();
                   router.push("/checkout");
                 }}
-                className="w-full py-3.5 bg-white hover:bg-[#f0d5c8] text-black font-semibold text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-black/40 text-center"
+                className="w-full py-3.5 bg-white hover:bg-[#f0d5c8] rounded-sm text-black font-semibold text-xs uppercase tracking-widest transition-all cursor-pointer shadow-lg shadow-black/40 text-center"
               >
                 {t("cart.checkout", "Checkout")} • {formatPrice(dynamicTotalPrice)}
               </button>

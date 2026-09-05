@@ -14,7 +14,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const isHomePage = pathname === "/";
   const { country, countries, setCountry, formatPrice, resolvePrice } = useCountry();
-  const { language, isRTL, setLanguage, toggleLanguage, t } = useLanguage();
+  const { language, isRTL, setLanguage, toggleLanguage, t, getProductName } = useLanguage();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -113,10 +113,11 @@ export default function Navbar() {
     if (!q) return [];
     return products.filter((p) => {
       const matchName = p.name?.toLowerCase().includes(q);
+      const matchNameAr = p.name_ar?.toLowerCase().includes(q);
       const matchDesc = p.description?.toLowerCase().includes(q);
       const matchCat = p.category?.name?.toLowerCase().includes(q);
       const matchVol = p.volume?.toLowerCase().includes(q);
-      return matchName || matchDesc || matchCat || matchVol;
+      return matchName || matchNameAr || matchDesc || matchCat || matchVol;
     });
   }, [searchQuery, products]);
 
@@ -602,7 +603,7 @@ export default function Navbar() {
                       {/* Info */}
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-medium text-white group-hover:text-[#f0d5c8] transition-colors truncate">
-                          {product.name}
+                          {getProductName(product)}
                         </h4>
                         <div className="flex items-center gap-2 mt-1">
                           {product.category?.name && (

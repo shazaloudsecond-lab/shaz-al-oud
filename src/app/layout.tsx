@@ -5,6 +5,7 @@ import { CountryProvider } from "@/context/CountryContext";
 import { StoreProvider } from "@/context/StoreContext";
 import { CartProvider } from "@/context/CartContext";
 import CartDrawer from "@/components/CartDrawer";
+import PreIntroWrapper from "@/components/PreIntroWrapper";
 
 export const metadata: Metadata = {
   title: "Shaz Al Oud | Luxury Fragrances & Perfumes",
@@ -44,6 +45,7 @@ export default function RootLayout({
           <CountryProvider>
             <StoreProvider>
               <CartProvider>
+                <PreIntroWrapper />
                 {children}
                 <CartDrawer />
               </CartProvider>

@@ -16,6 +16,7 @@ interface LanguageContextProps {
   toggleLanguage: () => void;
   t: (key: string, fallback?: string) => string;
   tDynamic: (text: string | null | undefined) => string;
+  getProductName: (product?: { name?: string | null; name_ar?: string | null; our_signature?: string | null } | null) => string;
 }
 
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined);
@@ -122,6 +123,18 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
     [language, translationVersion]
   );
 
+  const getProductName = useCallback(
+    (product?: { name?: string | null; name_ar?: string | null; our_signature?: string | null } | null): string => {
+      if (!product) return "";
+      if (language === "ar" && product.name_ar && product.name_ar.trim()) {
+        return product.name_ar.trim();
+      }
+      const baseName = product.our_signature || product.name || "";
+      return tDynamic(baseName);
+    },
+    [language, tDynamic]
+  );
+
   const dir: Direction = language === "ar" ? "rtl" : "ltr";
   const isRTL = language === "ar";
 
@@ -135,6 +148,7 @@ export const LanguageProvider = ({ children }: { children: React.ReactNode }) =>
         toggleLanguage,
         t,
         tDynamic,
+        getProductName,
       }}
     >
       {children}
