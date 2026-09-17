@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useAdminContext, HeroSlide, HeroConfig } from "@/context/AdminContext";
+import { useAdminContext, HeroSlide } from "@/context/AdminContext";
 import { deleteCloudinaryAsset } from "@/lib/cloudinaryClient";
 import AdminDeleteModal from "@/components/admin/AdminDeleteModal";
 import AdminUploadProgress from "@/components/admin/AdminUploadProgress";
@@ -38,21 +38,11 @@ const computeHeroLink = (type: LinkType, selectedId: string): string => {
 export default function AdminHeroPage() {
   const {
     heroSlides: slides,
-    heroConfig,
     products,
     categories,
     loadingHeroSlides: loading,
-    loadingHeroConfig,
     fetchHeroSlides: fetchSlides,
-    fetchHeroConfig,
   } = useAdminContext();
-
-  // ─── Media type state ─────────────────────────────────────────────
-  const [mediaType, setMediaType] = useState<"image" | "video">("image");
-  const [videoUrl, setVideoUrl] = useState("");
-  const [uploadingVideo, setUploadingVideo] = useState(false);
-  const [videoProgress, setVideoProgress] = useState(0);
-  const [savingConfig, setSavingConfig] = useState(false);
 
   // Delete slide confirmation modal
   const [deleteSlideModal, setDeleteSlideModal] = useState<boolean>(false);
@@ -77,14 +67,6 @@ export default function AdminHeroPage() {
     setSelectedTargetId(targetId);
     setButtonLink(computeHeroLink(type, targetId));
   };
-
-  // ─── Sync heroConfig into local state ────────────────────────────
-  useEffect(() => {
-    if (heroConfig) {
-      setMediaType(heroConfig.media_type);
-      setVideoUrl(heroConfig.video_url || "");
-    }
-  }, [heroConfig]);
 
   // ─── Initialize form with first slide once on load ─────────────────
   useEffect(() => {
@@ -119,111 +101,6 @@ export default function AdminHeroPage() {
     setLinkType("shop");
     setSelectedTargetId("");
     setStatusMsg(null);
-  };
-
-  // ─── Switch media type (saves to DB immediately) ──────────────────
-  const handleMediaTypeSwitch = async (type: "image" | "video") => {
-    if (type === mediaType) return;
-    if (!heroConfig?.id) {
-      setStatusMsg({ type: "error", text: "Hero config not loaded. Please refresh." });
-      return;
-    }
-
-    setSavingConfig(true);
-    setStatusMsg(null);
-    try {
-      const supabase = createClient();
-      const { error } = await supabase
-        .from("hero_config")
-        .update({ media_type: type, updated_at: new Date().toISOString() })
-        .eq("id", heroConfig.id);
-      if (error) throw error;
-      setMediaType(type);
-      await fetchHeroConfig();
-      setStatusMsg({ type: "success", text: `Switched to ${type === "video" ? "Video" : "Image Carousel"} mode.` });
-    } catch (err: any) {
-      setStatusMsg({ type: "error", text: err.message || "Failed to update media type." });
-    } finally {
-      setSavingConfig(false);
-    }
-  };
-
-  // ─── Video upload ─────────────────────────────────────────────────
-  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadingVideo(true);
-    setVideoProgress(0);
-    setStatusMsg(null);
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const data = await uploadWithProgress("/api/upload-video", formData, (pct) => {
-        setVideoProgress(pct);
-      });
-      if (data.url) {
-        setVideoUrl(data.url);
-        setStatusMsg({ type: "success", text: "Video uploaded! Click 'Save Video' to apply." });
-      } else {
-        throw new Error(data.error || "Upload failed");
-      }
-    } catch (err: any) {
-      setStatusMsg({ type: "error", text: err.message || "Failed to upload video." });
-    } finally {
-      setUploadingVideo(false);
-      setVideoProgress(0);
-      e.target.value = "";
-    }
-  };
-
-  const handleSaveVideo = async () => {
-    if (!heroConfig?.id) return;
-    if (!videoUrl.trim()) {
-      setStatusMsg({ type: "error", text: "Please upload or enter a video URL first." });
-      return;
-    }
-
-    setSavingConfig(true);
-    setStatusMsg(null);
-    try {
-      const supabase = createClient();
-      const { error } = await supabase
-        .from("hero_config")
-        .update({ video_url: videoUrl, updated_at: new Date().toISOString() })
-        .eq("id", heroConfig.id);
-      if (error) throw error;
-      await fetchHeroConfig();
-      setStatusMsg({ type: "success", text: "Hero video saved successfully!" });
-    } catch (err: any) {
-      setStatusMsg({ type: "error", text: err.message || "Failed to save video." });
-    } finally {
-      setSavingConfig(false);
-    }
-  };
-
-  const handleDeleteVideo = async () => {
-    if (!videoUrl) return;
-    setSavingConfig(true);
-    setStatusMsg(null);
-    try {
-      await deleteCloudinaryAsset(videoUrl);
-      if (heroConfig?.id) {
-        const supabase = createClient();
-        await supabase
-          .from("hero_config")
-          .update({ video_url: null, updated_at: new Date().toISOString() })
-          .eq("id", heroConfig.id);
-        await fetchHeroConfig();
-      }
-      setVideoUrl("");
-      setStatusMsg({ type: "success", text: "Hero video deleted successfully." });
-    } catch (err: any) {
-      setStatusMsg({ type: "error", text: err.message || "Failed to delete video." });
-    } finally {
-      setSavingConfig(false);
-    }
   };
 
   const handleDeleteBackgroundImage = async () => {
@@ -343,7 +220,7 @@ export default function AdminHeroPage() {
   };
 
   // ─── Loading skeleton ─────────────────────────────────────────────
-  if (loading || loadingHeroConfig) {
+  if (loading) {
     return (
       <div className="max-w-5xl mx-auto space-y-8 animate-pulse">
         <div className="flex justify-between items-center">
@@ -374,69 +251,20 @@ export default function AdminHeroPage() {
         <div>
           <h2 className="text-xl font-medium text-white tracking-wide">Hero Section Management</h2>
           <p className="text-sm text-neutral-400">
-            Choose a media type and manage the hero background.
+            Manage your hero slides and carousel.
           </p>
         </div>
-        {mediaType === "image" && (
-          <button
-            type="button"
-            onClick={resetForm}
-            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-black text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors inline-flex items-center gap-2 cursor-pointer"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Add New Slide
-          </button>
-        )}
-      </div>
-
-      {/* ── Media Type Toggle ── */}
-      <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-5">
-        <p className="text-xs uppercase tracking-wider text-neutral-400 font-medium mb-3">
-          Hero Background Type
-        </p>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            disabled={savingConfig}
-            onClick={() => handleMediaTypeSwitch("image")}
-            className={`px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer border flex items-center gap-2 ${
-              mediaType === "image"
-                ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-md"
-                : "bg-neutral-950 text-neutral-400 border-neutral-800 hover:text-white hover:bg-neutral-800"
-            }`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <polyline points="21 15 16 10 5 21" />
-            </svg>
-            Image Carousel
-          </button>
-
-          <button
-            type="button"
-            disabled={savingConfig}
-            onClick={() => handleMediaTypeSwitch("video")}
-            className={`px-5 py-2.5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer border flex items-center gap-2 ${
-              mediaType === "video"
-                ? "bg-amber-500/20 text-amber-300 border-amber-500/50 shadow-md"
-                : "bg-neutral-950 text-neutral-400 border-neutral-800 hover:text-white hover:bg-neutral-800"
-            }`}
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-              <polygon points="23 7 16 12 23 17 23 7" />
-              <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
-            </svg>
-            Video
-          </button>
-
-          {savingConfig && (
-            <span className="text-xs text-neutral-500 animate-pulse">Saving…</span>
-          )}
-        </div>
+        <button
+          type="button"
+          onClick={resetForm}
+          className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-black text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors inline-flex items-center gap-2 cursor-pointer"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Add New Slide
+        </button>
       </div>
 
       {/* ── Status Alert ── */}
@@ -452,98 +280,7 @@ export default function AdminHeroPage() {
         </div>
       )}
 
-      {/* ══════════════ VIDEO MODE ══════════════ */}
-      {mediaType === "video" && (
-        <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-6 sm:p-8 space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-200">
-              Hero Video
-            </h3>
-            <span className="text-xs text-neutral-500">One video displayed fullscreen as background</span>
-          </div>
-
-          {/* Upload area */}
-          <div className="space-y-3">
-            <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
-              Background Video
-            </label>
-
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-              <label className="px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors cursor-pointer border border-neutral-700 flex items-center gap-2">
-                <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                </svg>
-                <span>{uploadingVideo ? "Uploading…" : "Upload Video"}</span>
-                <input
-                  type="file"
-                  accept="video/*"
-                  disabled={uploadingVideo}
-                  onChange={handleVideoUpload}
-                  className="hidden"
-                />
-              </label>
-
-              <span className="text-xs text-neutral-500">or enter a video URL directly:</span>
-
-              <input
-                type="url"
-                value={videoUrl}
-                onChange={(e) => setVideoUrl(e.target.value)}
-                placeholder="https://res.cloudinary.com/…/video/upload/…"
-                className="flex-1 w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm"
-              />
-            </div>
-
-            {/* Video Upload Progress */}
-            <AdminUploadProgress
-              progress={videoProgress}
-              isUploading={uploadingVideo}
-              title="Uploading Hero Video"
-              className="mt-3"
-            />
-
-            {/* Video preview */}
-            {videoUrl && (
-              <div className="mt-4 relative rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950 aspect-video max-h-64">
-                <video
-                  src={videoUrl}
-                  muted
-                  playsInline
-                  controls
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={handleDeleteVideo}
-                  className="absolute top-2 right-2 px-3 py-1.5 bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer shadow-lg transition-colors"
-                >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                  Delete Video
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Save video button */}
-          <div className="flex justify-end pt-2 border-t border-neutral-800/80">
-            <button
-              type="button"
-              onClick={handleSaveVideo}
-              disabled={savingConfig || uploadingVideo}
-              className="px-8 py-3.5 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-black font-semibold tracking-wider uppercase text-xs rounded-xl transition-all duration-200 cursor-pointer shadow-lg shadow-amber-950/40"
-            >
-              {savingConfig ? "Saving…" : "Save Video"}
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ══════════════ IMAGE CAROUSEL MODE ══════════════ */}
-      {mediaType === "image" && (
-        <>
-          {/* Slide Selector Tabs */}
+      {/* Slide Selector Tabs */}
           <div className="flex flex-wrap items-center gap-2.5 pb-2">
             {slides.map((slide, index) => {
               const isSelected = slide.id === selectedSlideId;
@@ -828,8 +565,6 @@ export default function AdminHeroPage() {
               </button>
             </div>
           </form>
-        </>
-      )}
 
       {/* Delete Slide Confirmation Modal */}
       <AdminDeleteModal

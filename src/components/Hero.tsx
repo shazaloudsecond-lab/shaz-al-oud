@@ -7,7 +7,7 @@ import { useStore } from "@/context/StoreContext";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function Hero() {
-  const { heroSlides: slides, heroConfig, loadingHero: loading, companyDetails } = useStore();
+  const { heroSlides: slides, loadingHero: loading, companyDetails } = useStore();
   const { tDynamic, isRTL } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -68,8 +68,6 @@ export default function Hero() {
     </div>
   );
 
-  const isVideoMode = heroConfig?.media_type === "video";
-
   // Next slide function
   const nextSlide = useCallback(() => {
     if (slides.length > 1) {
@@ -77,9 +75,9 @@ export default function Hero() {
     }
   }, [slides.length]);
 
-  // Autoplay carousel timer — only in image mode
+  // Autoplay carousel timer
   useEffect(() => {
-    if (isVideoMode || slides.length <= 1) return;
+    if (slides.length <= 1) return;
 
     timerRef.current = setInterval(() => {
       nextSlide();
@@ -88,7 +86,7 @@ export default function Hero() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isVideoMode, slides.length, nextSlide, currentIndex]);
+  }, [slides.length, nextSlide, currentIndex]);
 
   // Loading skeleton
   if (loading) {
@@ -108,105 +106,6 @@ export default function Hero() {
 
   const activeSlide = slides[currentIndex] || slides[0];
 
-  // ─── VIDEO MODE ────────────────────────────────────────────────────
-  if (isVideoMode) {
-    const videoSrc = heroConfig?.video_url || "";
-
-    return (
-      <section className="relative w-full h-[78dvh] min-h-[520px] sm:h-[100dvh] sm:min-h-[100dvh] flex items-end sm:items-center justify-start overflow-hidden bg-black text-white font-primary select-none">
-        {/* Fullscreen video background */}
-        {videoSrc ? (
-          <video
-            key={videoSrc}
-            src={videoSrc}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              minWidth: "100%",
-              minHeight: "100%",
-              width: "auto",
-              height: "auto",
-              objectFit: "cover",
-              objectPosition: "center center",
-            }}
-          />
-        ) : (
-          <div className="absolute inset-0 bg-neutral-950" />
-        )}
-
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/50" />
-
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col items-start text-start pb-24 sm:pb-20">
-          <div className="max-w-lg md:max-w-xl space-y-3 sm:space-y-4">
-            <motion.h1
-              initial={{ opacity: 0, y: 25, filter: "blur(4px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-medium uppercase tracking-wide md:tracking-wider font-primary leading-tight text-[#f0d5c8] drop-shadow-md break-words"
-            >
-              {tDynamic(activeSlide.main_heading)}
-            </motion.h1>
-
-            {activeSlide.sub_heading && (
-              <motion.p
-                initial={{ opacity: 0, y: 20, filter: "blur(3px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                transition={{ duration: 0.8, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
-                className="hidden sm:block text-xs sm:text-sm text-[#dfc3b4]/85 font-light tracking-wide sm:tracking-wider uppercase leading-relaxed font-primary max-w-md break-words"
-              >
-                {tDynamic(activeSlide.sub_heading)}
-              </motion.p>
-            )}
-          </div>
-        </div>
-
-        {/* Bottom Bar: Social Media Icons (Start) & Action Button (End) aligned with Navbar max-w-7xl */}
-        <div className="absolute bottom-8 sm:bottom-10 inset-x-0 z-20 pointer-events-none">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between pointer-events-auto">
-            {/* Social Media Links */}
-            {renderSocialLinks()}
-
-            {/* Action Button */}
-            {activeSlide.button_text && (
-              <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="sm:ms-auto"
-              >
-                <Link
-                  href={activeSlide.button_link && activeSlide.button_link !== "#" ? activeSlide.button_link : "/shop"}
-                  className="group inline-flex items-center gap-3 px-6 py-3 bg-white hover:bg-[#f0d5c8] text-black font-medium transition-all duration-300 font-primary text-xs tracking-widest uppercase shadow-2xl hover:scale-105"
-                >
-                  <span>{tDynamic(activeSlide.button_text)}</span>
-                  <svg
-                    className={`w-3.5 h-3.5 text-black ${isRTL ? "group-hover:-translate-x-1 rotate-180" : "group-hover:translate-x-1"} transition-transform duration-300`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2.2"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </motion.div>
-            )}
-          </div>
-        </div>
-      </section>
-    );
-  }
-
-  // ─── IMAGE CAROUSEL MODE ──────────────────────────────────────────
   return (
     <section className="relative w-full h-[78dvh] min-h-[520px] sm:h-[100dvh] sm:min-h-[100dvh] flex items-end sm:items-center justify-start overflow-hidden bg-black text-white font-primary select-none">
       {/* Background Image Smooth Crossfade & Subtle Zoom Animation */}
