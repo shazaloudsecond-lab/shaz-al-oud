@@ -78,7 +78,7 @@ export default function PreIntro({ onFinish }: PreIntroProps) {
           transition={{ duration: 1.0, delay: 0.5, ease: "easeOut" }}
           className="mt-3 text-[10px] sm:text-xs tracking-[0.35em] text-white/70 uppercase font-light"
         >
-          Haute Parfumerie
+          Craft Your Signature Essence
         </motion.p>
       </div>
     </motion.div>
