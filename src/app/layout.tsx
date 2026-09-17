@@ -10,6 +10,14 @@ import PreIntroWrapper from "@/components/PreIntroWrapper";
 export const metadata: Metadata = {
   title: "Shaz Al Oud | Luxury Fragrances & Perfumes",
   description: "Exquisite and luxury Arabian fragrances, oud, and perfumes.",
+  icons: {
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -26,6 +34,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="shortcut icon" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
