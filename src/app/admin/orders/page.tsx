@@ -464,6 +464,15 @@ export default function AdminOrdersPage() {
                                     <span className="text-amber-400 font-mono font-medium">{order.delivery_slot}</span>
                                   </div>
                                 )}
+                                <div className="flex gap-3">
+                                  <span className="text-[var(--adm-text-muted)] w-20 flex-shrink-0">Payment</span>
+                                  <span className="text-[var(--adm-text)] font-semibold">
+                                    {order.payment_method === 'cod' ? 'Cash on Delivery' : 
+                                     order.payment_method === 'card_on_delivery' ? 'Card on Delivery' : 
+                                     order.payment_method === 'fawran' ? 'Fawran' : 
+                                     (order.payment_method || 'Cash on Delivery')}
+                                  </span>
+                                </div>
                               </div>
                             </div>
                           </div>
