@@ -563,7 +563,7 @@ export default function AdminDashboardPage() {
                                     onError={(e) => {
                                       const el = e.currentTarget;
                                       el.style.display = "none";
-                                      const fallback = el.nextElementSibling;
+                                      const fallback = el.nextElementSibling as HTMLElement;
                                       if (fallback) fallback.style.display = "flex";
                                     }}
                                   />

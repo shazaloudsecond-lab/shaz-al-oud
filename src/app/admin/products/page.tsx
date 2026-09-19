@@ -467,12 +467,32 @@ export default function AdminProductsPage() {
 
     try {
       const supabase = createClient();
+      
+      let baseSlug = slug.trim() || generateSlug(finalName);
+      let uniqueSlug = baseSlug;
+      let isUnique = false;
+      let counter = 1;
+
+      while (!isUnique) {
+        let query = supabase.from("products").select("id").eq("slug", uniqueSlug);
+        if (selectedId) {
+          query = query.neq("id", selectedId);
+        }
+        const { data } = await query;
+        if (!data || data.length === 0) {
+          isUnique = true;
+        } else {
+          uniqueSlug = `${baseSlug}-${counter}`;
+          counter++;
+        }
+      }
+
       const payload: any = {
         name: finalName,
         name_ar: nameAr.trim() || null,
         brand_name: brandName.trim() || null,
         our_signature: ourSignature.trim() || null,
-        slug: slug.trim() || generateSlug(finalName),
+        slug: uniqueSlug,
         category_id: categoryId ? categoryId : null,
         price: primaryVariant.price,
         original_price: primaryVariant.original_price || null,
