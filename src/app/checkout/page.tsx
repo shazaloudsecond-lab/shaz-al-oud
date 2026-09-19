@@ -38,6 +38,7 @@ export default function CheckoutPage() {
   const [deliverySlot, setDeliverySlot] = useState<"morning" | "evening" | "custom">("morning");
   const [customTime, setCustomTime] = useState("");
   const [notes, setNotes] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"cod" | "card_on_delivery" | "fawran">("cod");
 
   // UI state
   const [submitting, setSubmitting] = useState(false);
@@ -135,6 +136,7 @@ export default function CheckoutPage() {
           userId: userId || null,
           sessionId: sessionId || null,
           notes: notes.trim() || null,
+          paymentMethod: paymentMethod,
           clientCountryCode: country?.code || "QA",
         }),
       });
@@ -401,21 +403,144 @@ export default function CheckoutPage() {
                   {t("checkout.payment_title", "Payment Method")}
                 </h2>
 
-                <div className="flex items-center gap-4 p-4 bg-[#f0d5c8]/5 rounded-[10px] sm:rounded-none">
-                  <div className="w-10 h-10 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-[#f0d5c8]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-white">{t("checkout.cod_name", "Cash on Delivery (COD)")}</p>
-                    <p className="text-xs text-neutral-400 mt-0.5">{t("checkout.cod_desc", "Pay when your order arrives at your doorstep.")}</p>
-                  </div>
-                  <div className="w-5 h-5 rounded-full bg-[#f0d5c8] flex items-center justify-center flex-shrink-0">
-                    <svg className="w-3 h-3 text-black" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                    </svg>
-                  </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {/* COD */}
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("cod")}
+                    className={`w-full transition-all cursor-pointer border flex flex-row sm:flex-col items-center justify-start sm:justify-center gap-4 sm:gap-2 p-4 sm:p-4 rounded-xl sm:rounded-[10px] sm:rounded-none text-left sm:text-center ${
+                      paymentMethod === "cod"
+                        ? "bg-[#f0d5c8]/5 sm:bg-[#f0d5c8]/10 border-[#f0d5c8] shadow-lg shadow-[#f0d5c8]/5 sm:shadow-[#f0d5c8]/20"
+                        : "bg-neutral-900/50 sm:bg-neutral-900 border-neutral-800 text-neutral-400 hover:bg-neutral-900 hover:text-white"
+                    }`}
+                  >
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors sm:hidden ${
+                      paymentMethod === "cod" ? "border-[#f0d5c8]" : "border-neutral-600"
+                    }`}>
+                      {paymentMethod === "cod" && <div className="w-2.5 h-2.5 rounded-full bg-[#f0d5c8]" />}
+                    </div>
+                    
+                    <div className={`flex-shrink-0 flex items-center justify-center transition-all ${
+                      paymentMethod === "cod" 
+                        ? "w-10 h-10 rounded-full bg-neutral-800/80 sm:w-8 sm:h-8 sm:bg-[#f0d5c8] text-neutral-300 sm:text-black" 
+                        : "w-10 h-10 rounded-full bg-neutral-800/80 sm:w-8 sm:h-8 sm:bg-neutral-800 text-neutral-300 sm:text-neutral-400"
+                    }`}>
+                      <svg className="w-5 h-5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                    </div>
+
+                    <div className="flex-1 min-w-0 sm:hidden">
+                      <div className={`text-sm font-semibold transition-colors ${paymentMethod === "cod" ? "text-white" : "text-neutral-300"}`}>
+                        Cash on Delivery
+                      </div>
+                      <div className="text-xs text-neutral-500 mt-0.5">
+                        Pay when your order arrives
+                      </div>
+                    </div>
+
+                    <span className={`hidden sm:block text-[11px] font-semibold uppercase tracking-wider ${paymentMethod === "cod" ? "text-white" : ""}`}>
+                      CASH ON DELIVERY
+                    </span>
+
+                    {paymentMethod === "cod" && (
+                      <div className="px-3 py-1 rounded-full border border-[#f0d5c8]/30 text-[#f0d5c8] text-[10px] font-bold tracking-wider bg-[#f0d5c8]/10 flex-shrink-0 sm:hidden">
+                        SELECTED
+                      </div>
+                    )}
+                  </button>
+
+                  {/* Card on Delivery */}
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("card_on_delivery")}
+                    className={`w-full transition-all cursor-pointer border flex flex-row sm:flex-col items-center justify-start sm:justify-center gap-4 sm:gap-2 p-4 sm:p-4 rounded-xl sm:rounded-[10px] sm:rounded-none text-left sm:text-center ${
+                      paymentMethod === "card_on_delivery"
+                        ? "bg-[#f0d5c8]/5 sm:bg-[#f0d5c8]/10 border-[#f0d5c8] shadow-lg shadow-[#f0d5c8]/5 sm:shadow-[#f0d5c8]/20"
+                        : "bg-neutral-900/50 sm:bg-neutral-900 border-neutral-800 text-neutral-400 hover:bg-neutral-900 hover:text-white"
+                    }`}
+                  >
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors sm:hidden ${
+                      paymentMethod === "card_on_delivery" ? "border-[#f0d5c8]" : "border-neutral-600"
+                    }`}>
+                      {paymentMethod === "card_on_delivery" && <div className="w-2.5 h-2.5 rounded-full bg-[#f0d5c8]" />}
+                    </div>
+                    
+                    <div className={`flex-shrink-0 flex items-center justify-center transition-all ${
+                      paymentMethod === "card_on_delivery" 
+                        ? "w-10 h-10 rounded-full bg-neutral-800/80 sm:w-8 sm:h-8 sm:bg-[#f0d5c8] text-neutral-300 sm:text-black" 
+                        : "w-10 h-10 rounded-full bg-neutral-800/80 sm:w-8 sm:h-8 sm:bg-neutral-800 text-neutral-300 sm:text-neutral-400"
+                    }`}>
+                      <svg className="w-5 h-5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>
+                    </div>
+
+                    <div className="flex-1 min-w-0 sm:hidden">
+                      <div className={`text-sm font-semibold transition-colors ${paymentMethod === "card_on_delivery" ? "text-white" : "text-neutral-300"}`}>
+                        Card on Delivery
+                      </div>
+                      <div className="text-xs text-neutral-500 mt-0.5">
+                        Pay by card upon delivery
+                      </div>
+                    </div>
+
+                    <span className={`hidden sm:block text-[11px] font-semibold uppercase tracking-wider ${paymentMethod === "card_on_delivery" ? "text-white" : ""}`}>
+                      CARD ON DELIVERY
+                    </span>
+
+                    {paymentMethod === "card_on_delivery" && (
+                      <div className="px-3 py-1 rounded-full border border-[#f0d5c8]/30 text-[#f0d5c8] text-[10px] font-bold tracking-wider bg-[#f0d5c8]/10 flex-shrink-0 sm:hidden">
+                        SELECTED
+                      </div>
+                    )}
+                  </button>
+
+                  {/* Fawran */}
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod("fawran")}
+                    className={`w-full transition-all cursor-pointer border flex flex-row sm:flex-col items-center justify-start sm:justify-center gap-4 sm:gap-2 p-4 sm:p-4 rounded-xl sm:rounded-[10px] sm:rounded-none text-left sm:text-center ${
+                      paymentMethod === "fawran"
+                        ? "bg-[#f0d5c8]/5 sm:bg-[#f0d5c8]/10 border-[#f0d5c8] shadow-lg shadow-[#f0d5c8]/5 sm:shadow-[#f0d5c8]/20"
+                        : "bg-neutral-900/50 sm:bg-neutral-900 border-neutral-800 text-neutral-400 hover:bg-neutral-900 hover:text-white"
+                    }`}
+                  >
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-colors sm:hidden ${
+                      paymentMethod === "fawran" ? "border-[#f0d5c8]" : "border-neutral-600"
+                    }`}>
+                      {paymentMethod === "fawran" && <div className="w-2.5 h-2.5 rounded-full bg-[#f0d5c8]" />}
+                    </div>
+                    
+                    <div className={`flex-shrink-0 flex items-center justify-center transition-all ${
+                      paymentMethod === "fawran" 
+                        ? "w-10 h-10 rounded-full bg-neutral-800/80 sm:w-8 sm:h-8 sm:bg-[#f0d5c8] text-neutral-300 sm:text-black" 
+                        : "w-10 h-10 rounded-full bg-neutral-800/80 sm:w-8 sm:h-8 sm:bg-neutral-800 text-neutral-300 sm:text-neutral-400"
+                    }`}>
+                      <svg className="w-5 h-5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z" />
+                      </svg>
+                    </div>
+
+                    <div className="flex-1 min-w-0 sm:hidden">
+                      <div className={`text-sm font-semibold transition-colors ${paymentMethod === "fawran" ? "text-white" : "text-neutral-300"}`}>
+                        Fawran
+                      </div>
+                      <div className="text-xs text-neutral-500 mt-0.5">
+                        Fast and secure payment
+                      </div>
+                    </div>
+
+                    <span className={`hidden sm:block text-[11px] font-semibold uppercase tracking-wider ${paymentMethod === "fawran" ? "text-white" : ""}`}>
+                      FAWRAN
+                    </span>
+
+                    {paymentMethod === "fawran" && (
+                      <div className="px-3 py-1 rounded-full border border-[#f0d5c8]/30 text-[#f0d5c8] text-[10px] font-bold tracking-wider bg-[#f0d5c8]/10 flex-shrink-0 sm:hidden">
+                        SELECTED
+                      </div>
+                    )}
+                  </button>
                 </div>
               </div>
 
@@ -479,7 +604,9 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between text-xs text-neutral-400">
                     <span>{t("checkout.payment_title", "Payment")}</span>
-                    <span className="text-neutral-300">{t("checkout.cod_name", "Cash on Delivery (COD)")}</span>
+                    <span className="text-neutral-300">
+                      {paymentMethod === "cod" ? "Cash on Delivery" : paymentMethod === "card_on_delivery" ? "Card on Delivery" : "Fawran"}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center pt-2 border-t border-neutral-800">
                     <span className="text-sm font-semibold text-white uppercase tracking-wide">{t("cart.order_total", "Total")}</span>

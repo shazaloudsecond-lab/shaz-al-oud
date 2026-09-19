@@ -295,20 +295,20 @@ export default function AdminCountriesPage() {
               <tbody className="divide-y divide-neutral-900">
                 {countries.map((c) => (
                   <tr key={c.id || c.code} className="hover:bg-neutral-900/40 transition-colors">
-                    <td className="py-3 px-4 font-medium text-white">
+                    <td className="py-3 px-4 font-medium">
                       <div className="flex items-center gap-2.5">
                         <span className="w-7 h-7 rounded-lg bg-neutral-900 border border-neutral-800 flex items-center justify-center font-mono font-bold text-[10px] text-amber-400 flex-shrink-0">
                           {c.code}
                         </span>
                         <div>
-                          <div className="font-semibold text-xs text-white">{c.name}</div>
-                          <div className="text-[10px] text-neutral-500">{c.currency_name}</div>
+                          <div className="font-semibold text-xs">{c.name}</div>
+                          <div className="text-[10px] opacity-70">{c.currency_name}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="py-3 px-4 font-mono text-xs text-neutral-300">{c.code}</td>
+                    <td className="py-3 px-4 font-mono text-xs opacity-80">{c.code}</td>
                     <td className="py-3 px-4 font-mono text-xs text-amber-400 font-semibold">{c.currency_code}</td>
-                    <td className="py-3 px-4 text-neutral-300 font-sans text-xs">{c.currency_symbol}</td>
+                    <td className="py-3 px-4 font-sans text-xs opacity-80">{c.currency_symbol}</td>
                     <td className="py-3 px-4 font-mono text-emerald-400 text-xs">
                       <span className="inline-flex items-center gap-1.5 bg-emerald-950/40 px-2 py-0.5 rounded-lg border border-emerald-800/40 text-[11px]">
                         <svg className="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 24 24">
