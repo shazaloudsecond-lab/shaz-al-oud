@@ -211,8 +211,8 @@ export default function AdminCategoriesPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-xl font-medium text-white tracking-wide">Category Management</h2>
-          <p className="text-sm text-neutral-400">
+          <h2 className="text-xl font-medium text-[var(--adm-text)] tracking-wide">Category Management</h2>
+          <p className="text-sm text-[var(--adm-text-muted)]">
             Create, edit, and organize product categories.
           </p>
         </div>
@@ -244,7 +244,7 @@ export default function AdminCategoriesPage() {
           <button
             type="button"
             onClick={() => setStatusMsg(null)}
-            className="text-neutral-400 hover:text-white text-xs ml-4"
+            className="text-[var(--adm-text-muted)] hover:text-[var(--adm-text)] text-xs ml-4"
           >
             ✕
           </button>
@@ -253,20 +253,20 @@ export default function AdminCategoriesPage() {
 
       {/* Create / Edit Form Modal or Card */}
       {isEditing && (
-        <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl p-6 sm:p-8 space-y-6">
-          <div className="flex items-center justify-between pb-4 border-b border-neutral-800">
+        <div className="bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-2xl p-6 sm:p-8 space-y-6">
+          <div className="flex items-center justify-between pb-4 border-b border-[var(--adm-border)]">
             <div>
-              <h3 className="text-base font-semibold text-neutral-100">
+              <h3 className="text-base font-semibold text-[var(--adm-text)]">
                 {selectedId ? "Edit Category" : "Add New Category"}
               </h3>
-              <p className="text-xs text-neutral-400 mt-0.5">
+              <p className="text-xs text-[var(--adm-text-muted)] mt-0.5">
                 Fill in the details below. Categories help group and filter products on the store.
               </p>
             </div>
             <button
               type="button"
               onClick={resetForm}
-              className="text-xs text-neutral-400 hover:text-white px-3 py-1.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 transition-colors"
+              className="text-xs text-[var(--adm-text-muted)] hover:text-[var(--adm-text)] px-3 py-1.5 rounded-lg bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] transition-colors"
             >
               Cancel
             </button>
@@ -276,7 +276,7 @@ export default function AdminCategoriesPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Category Name */}
               <div>
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 mb-2 font-medium">
+                <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] mb-2 font-medium">
                   Category Name <span className="text-amber-500">*</span>
                 </label>
                 <input
@@ -285,13 +285,13 @@ export default function AdminCategoriesPage() {
                   value={name}
                   onChange={(e) => handleNameChange(e.target.value)}
                   placeholder="e.g. Women's, Unisex, Bath & Body"
-                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                  className="w-full px-4 py-3 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm"
                 />
               </div>
 
               {/* Slug */}
               <div>
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 mb-2 font-medium">
+                <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] mb-2 font-medium">
                   URL Slug <span className="text-amber-500">*</span>
                 </label>
                 <input
@@ -300,14 +300,14 @@ export default function AdminCategoriesPage() {
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   placeholder="e.g. womens, unisex, bath-and-body"
-                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                  className="w-full px-4 py-3 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm"
                 />
               </div>
             </div>
 
             {/* Description */}
             <div>
-              <label className="block text-xs uppercase tracking-wider text-neutral-300 mb-2 font-medium">
+              <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] mb-2 font-medium">
                 Description (Optional)
               </label>
               <textarea
@@ -315,13 +315,13 @@ export default function AdminCategoriesPage() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Brief description of this fragrance category..."
-                className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                className="w-full px-4 py-3 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm"
               />
             </div>
 
             {/* Display Order */}
             <div className="max-w-xs">
-              <label className="block text-xs uppercase tracking-wider text-neutral-300 mb-2 font-medium">
+              <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] mb-2 font-medium">
                 Display Order
               </label>
               <input
@@ -329,19 +329,19 @@ export default function AdminCategoriesPage() {
                 value={displayOrder}
                 onChange={(e) => setDisplayOrder(parseInt(e.target.value) || 0)}
                 placeholder="0"
-                className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                className="w-full px-4 py-3 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm"
               />
-              <span className="text-[11px] text-neutral-500 mt-1 block">Lower numbers appear first on the frontend tabs.</span>
+              <span className="text-[11px] text-[var(--adm-text-muted)] mt-1 block">Lower numbers appear first on the frontend tabs.</span>
             </div>
 
             {/* Category Image (Optional) */}
-            <div className="space-y-3 pt-2 border-t border-neutral-800">
-              <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+            <div className="space-y-3 pt-2 border-t border-[var(--adm-border)]">
+              <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] font-medium">
                 Category Image (Optional)
               </label>
 
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                <label className="px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors cursor-pointer border border-neutral-700 flex items-center gap-2">
+                <label className="px-4 py-2.5 bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] text-[var(--adm-text)] text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors cursor-pointer border border-[var(--adm-border-strong)] flex items-center gap-2">
                   <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
@@ -355,14 +355,14 @@ export default function AdminCategoriesPage() {
                   />
                 </label>
 
-                <span className="text-xs text-neutral-500">or image URL:</span>
+                <span className="text-xs text-[var(--adm-text-muted)]">or image URL:</span>
 
                 <input
                   type="url"
                   value={imageUrl}
                   onChange={(e) => setImageUrl(e.target.value)}
                   placeholder="https://..."
-                  className="flex-1 w-full px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                  className="flex-1 w-full px-4 py-2.5 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm"
                 />
               </div>
 
@@ -375,7 +375,7 @@ export default function AdminCategoriesPage() {
               />
 
               {imageUrl && (
-                <div className="mt-3 relative w-32 h-32 rounded-xl overflow-hidden border border-neutral-800 bg-neutral-950">
+                <div className="mt-3 relative w-32 h-32 rounded-xl overflow-hidden border border-[var(--adm-border)] bg-[var(--adm-card-bg)]">
                   <img src={imageUrl} alt="Category preview" className="w-full h-full object-cover" />
                   <button
                     type="button"
@@ -393,11 +393,11 @@ export default function AdminCategoriesPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-neutral-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-[var(--adm-border)]">
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-5 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 text-xs font-semibold uppercase tracking-wider rounded-xl transition-colors"
+                className="px-5 py-2.5 bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] text-[var(--adm-text)] text-xs font-semibold uppercase tracking-wider rounded-xl transition-colors"
               >
                 Cancel
               </button>
@@ -414,10 +414,10 @@ export default function AdminCategoriesPage() {
       )}
 
       {/* Category List */}
-      <div className="bg-neutral-900/90 border border-neutral-800 rounded-2xl overflow-hidden">
-        <div className="p-6 border-b border-neutral-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-2xl overflow-hidden">
+        <div className="p-6 border-b border-[var(--adm-border)] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-neutral-200">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-[var(--adm-text)]">
               All Categories ({categories.length})
             </h3>
           </div>
@@ -428,7 +428,7 @@ export default function AdminCategoriesPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search categories..."
-              className="w-full px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-lg text-xs text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors"
+              className="w-full px-3.5 py-2 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-lg text-xs text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors"
             />
           </div>
         </div>
@@ -436,41 +436,41 @@ export default function AdminCategoriesPage() {
         {loading ? (
           <div className="p-6 space-y-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex items-center justify-between py-3 border-b border-neutral-800/60 animate-pulse">
+              <div key={i} className="flex items-center justify-between py-3 border-b border-[var(--adm-border)] animate-pulse">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-neutral-800" />
+                  <div className="w-10 h-10 rounded-lg bg-[var(--adm-hover-bg)]" />
                   <div className="space-y-1.5">
-                    <div className="h-4 w-32 bg-neutral-800 rounded" />
-                    <div className="h-3 w-48 bg-neutral-800/60 rounded" />
+                    <div className="h-4 w-32 bg-[var(--adm-hover-bg)] rounded" />
+                    <div className="h-3 w-48 bg-[var(--adm-hover-bg)]/60 rounded" />
                   </div>
                 </div>
-                <div className="h-3 w-20 bg-neutral-800 rounded" />
-                <div className="h-3 w-12 bg-neutral-800 rounded" />
-                <div className="h-7 w-24 bg-neutral-800 rounded-lg" />
+                <div className="h-3 w-20 bg-[var(--adm-hover-bg)] rounded" />
+                <div className="h-3 w-12 bg-[var(--adm-hover-bg)] rounded" />
+                <div className="h-7 w-24 bg-[var(--adm-hover-bg)] rounded-lg" />
               </div>
             ))}
           </div>
         ) : filteredCategories.length === 0 ? (
-          <div className="py-16 text-center text-neutral-500 space-y-3">
-            <svg className="w-12 h-12 mx-auto text-neutral-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="py-16 text-center text-[var(--adm-text-muted)] space-y-3">
+            <svg className="w-12 h-12 mx-auto text-[var(--adm-text-sub)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
-            <p className="text-sm font-medium text-neutral-400">No categories found.</p>
-            <p className="text-xs text-neutral-600 max-w-sm mx-auto">
+            <p className="text-sm font-medium text-[var(--adm-text-muted)]">No categories found.</p>
+            <p className="text-xs text-[var(--adm-text-sub)] max-w-sm mx-auto">
               Create your first category (e.g. Women&apos;s, Unisex, Bath &amp; Body) to organize your luxury fragrance products.
             </p>
             <button
               type="button"
               onClick={startCreate}
-              className="mt-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-amber-400 text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors inline-flex items-center gap-1.5"
+              className="mt-2 px-4 py-2 bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] text-amber-400 text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors inline-flex items-center gap-1.5"
             >
               + Create Category
             </button>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-neutral-300">
-              <thead className="bg-neutral-950/60 text-xs uppercase tracking-wider text-neutral-400 border-b border-neutral-800">
+            <table className="w-full text-left text-sm text-[var(--adm-text)]">
+              <thead className="bg-[var(--adm-thead-bg)] text-xs uppercase tracking-wider text-[var(--adm-text-muted)] border-b border-[var(--adm-border)]">
                 <tr>
                   <th className="px-6 py-3.5 font-medium">Category</th>
                   <th className="px-6 py-3.5 font-medium">Slug</th>
@@ -478,31 +478,31 @@ export default function AdminCategoriesPage() {
                   <th className="px-6 py-3.5 font-medium text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-800/60">
+              <tbody className="divide-y divide-[var(--adm-border)]">
                 {filteredCategories.map((cat) => (
-                  <tr key={cat.id} className="hover:bg-neutral-800/30 transition-colors">
+                  <tr key={cat.id} className="hover:bg-[var(--adm-card-hover)] transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         {cat.image_url ? (
                           <img
                             src={cat.image_url}
                             alt={cat.name}
-                            className="w-10 h-10 rounded-lg object-cover bg-neutral-950 border border-neutral-800"
+                            className="w-10 h-10 rounded-lg object-cover bg-[var(--adm-card-bg)] border border-[var(--adm-border)]"
                           />
                         ) : (
-                          <div className="w-10 h-10 rounded-lg bg-neutral-800 border border-neutral-700 flex items-center justify-center text-amber-500 font-bold text-sm">
+                          <div className="w-10 h-10 rounded-lg bg-[var(--adm-hover-bg)] border border-[var(--adm-border-strong)] flex items-center justify-center text-amber-500 font-bold text-sm">
                             {cat.name.charAt(0)}
                           </div>
                         )}
                         <div>
-                          <p className="font-medium text-white">{cat.name}</p>
+                          <p className="font-medium text-[var(--adm-text)]">{cat.name}</p>
                           {cat.description && (
-                            <p className="text-xs text-neutral-500 truncate max-w-xs">{cat.description}</p>
+                            <p className="text-xs text-[var(--adm-text-muted)] truncate max-w-xs">{cat.description}</p>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-mono text-xs text-neutral-400">
+                    <td className="px-6 py-4 font-mono text-xs text-[var(--adm-text-muted)]">
                       /{cat.slug}
                     </td>
                     <td className="px-6 py-4 font-mono text-xs text-amber-400">
@@ -513,7 +513,7 @@ export default function AdminCategoriesPage() {
                         <button
                           type="button"
                           onClick={() => startEdit(cat)}
-                          className="px-3 py-1.5 text-xs font-medium text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors cursor-pointer"
+                          className="px-3 py-1.5 text-xs font-medium text-[var(--adm-text)] hover:text-[var(--adm-text)] bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] rounded-lg transition-colors cursor-pointer"
                         >
                           Edit
                         </button>

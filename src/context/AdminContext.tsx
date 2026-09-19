@@ -88,6 +88,8 @@ interface AdminContextProps {
   fetchCountries: () => Promise<void>;
   fetchHeroSlides: (selectId?: string | null) => Promise<void>;
   fetchHeroConfig: () => Promise<void>;
+  theme: "light" | "dark";
+  toggleTheme: () => void;
 }
 
 const AdminContext = createContext<AdminContextProps | undefined>(undefined);
@@ -105,6 +107,26 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
   const [loadingCountries, setLoadingCountries] = useState(false);
   const [loadingHeroSlides, setLoadingHeroSlides] = useState(false);
   const [loadingHeroConfig, setLoadingHeroConfig] = useState(false);
+
+  // Admin-side theme (light/dark) — persisted in localStorage, never affects public store
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    const saved = typeof window !== "undefined" ? localStorage.getItem("admin_theme") : null;
+    if (saved === "dark" || saved === "light") {
+      setTheme(saved);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    setTheme((prev) => {
+      const next = prev === "light" ? "dark" : "light";
+      if (typeof window !== "undefined") {
+        localStorage.setItem("admin_theme", next);
+      }
+      return next;
+    });
+  };
 
   const selectedCountry = React.useMemo(() => {
     if (countries.length === 0) return null;
@@ -252,6 +274,8 @@ export const AdminProvider = ({ children }: { children: React.ReactNode }) => {
         fetchCountries,
         fetchHeroSlides,
         fetchHeroConfig,
+        theme,
+        toggleTheme,
       }}
     >
       {children}

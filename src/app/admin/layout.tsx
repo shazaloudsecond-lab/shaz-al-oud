@@ -12,113 +12,94 @@ interface NavItem {
   href?: string;
   icon: React.ReactNode;
   subItems?: { name: string; href: string }[];
+  group?: string;
 }
 
 const ADMIN_NAV: NavItem[] = [
   {
     name: "Dashboard",
     href: "/admin",
+    group: "MAIN",
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-    ),
-  },
-  {
-    name: "My Store",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-    ),
-    subItems: [
-      {
-        name: "Hero Section",
-        href: "/admin/hero",
-      },
-      {
-        name: "Promotional Banners",
-        href: "/admin/banners",
-      },
-      {
-        name: "Featured Banner",
-        href: "/admin/featuredbanner",
-      },
-      {
-        name: "Full Banner",
-        href: "/admin/full-banner",
-      },
-      {
-        name: "Product Slider",
-        href: "/admin/product-slider",
-      },
-      {
-        name: "Badges",
-        href: "/admin/badges",
-      },
-      {
-        name: "Newsletter",
-        href: "/admin/newsletter",
-      },
-      {
-        name: "Vision Section",
-        href: "/admin/vision",
-      },
-      {
-        name: "About Section",
-        href: "/admin/about",
-      },
-    ],
-  },
-  {
-    name: "Categories",
-    href: "/admin/categories",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-      </svg>
-    ),
-  },
-  {
-    name: "Products",
-    href: "/admin/products",
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
       </svg>
     ),
   },
   {
     name: "Orders",
     href: "/admin/orders",
+    group: "STORE",
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
         <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
       </svg>
     ),
   },
   {
-    name: "Settings",
+    name: "Products",
+    href: "/admin/products",
+    group: "STORE",
     icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-        <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+      </svg>
+    ),
+  },
+  {
+    name: "Categories",
+    href: "/admin/categories",
+    group: "STORE",
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+      </svg>
+    ),
+  },
+  {
+    name: "My Store",
+    group: "STORE",
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
       </svg>
     ),
     subItems: [
-      {
-        name: "Company Details",
-        href: "/admin/settings",
-      },
-      {
-        name: "Countries",
-        href: "/admin/countries",
-      },
+      { name: "Hero Section", href: "/admin/hero" },
+      { name: "Promotional Banners", href: "/admin/banners" },
+      { name: "Featured Banner", href: "/admin/featuredbanner" },
+      { name: "Full Banner", href: "/admin/full-banner" },
+      { name: "Product Slider", href: "/admin/product-slider" },
+      { name: "Badges", href: "/admin/badges" },
+      { name: "Newsletter", href: "/admin/newsletter" },
+      { name: "Vision Section", href: "/admin/vision" },
+      { name: "About Section", href: "/admin/about" },
     ],
+  },
+  {
+    name: "Company Details",
+    href: "/admin/settings",
+    group: "SETTINGS",
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5" />
+      </svg>
+    ),
+  },
+  {
+    name: "Countries",
+    href: "/admin/countries",
+    group: "SETTINGS",
+    icon: (
+      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+        <circle cx="12" cy="12" r="10" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+      </svg>
+    ),
   },
 ];
 
-// Top Headbar Country Selector Button matching user design
+// Country Selector
 function AdminCountrySelector() {
   const { countries, selectedCountryCode, setSelectedCountryCode, selectedCountry } = useAdminContext();
   const [isOpen, setIsOpen] = useState(false);
@@ -138,74 +119,95 @@ function AdminCountrySelector() {
 
   return (
     <div className="relative" ref={menuRef}>
-      {/* Pill Button: [ 🌐 QATAR ∨ ] */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        style={{ backgroundColor: "#ffffff", color: "#000000", borderColor: "#ffffff" }}
-        className="admin-country-btn flex items-center gap-2 px-3.5 py-1.5 bg-white border border-white hover:bg-neutral-100 rounded-full text-xs font-bold text-black transition-all cursor-pointer shadow-sm"
+        className="admin-country-btn flex items-center gap-2 px-3 py-1.5 border rounded-full text-xs font-bold transition-all cursor-pointer"
         aria-label="Select Country"
       >
-        <svg style={{ color: "#000000" }} className="w-4 h-4 text-black flex-shrink-0" fill="none" stroke="#000000" viewBox="0 0 24 24" strokeWidth="2">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-        </svg>
-        <span style={{ color: "#000000" }} className="text-black uppercase tracking-wider text-xs">
+        {/* Flag image in pill */}
+        <span className="flex-shrink-0 overflow-hidden inline-flex" style={{ width: "20px", height: "15px", borderRadius: "2px" }}>
+          <img
+            src={`https://flagcdn.com/w40/${(selectedCountry?.code || "qa").toLowerCase()}.png`}
+            alt={selectedCountry?.code || "QA"}
+            width={20}
+            height={15}
+            style={{ width: "20px", height: "15px", objectFit: "cover", borderRadius: "2px" }}
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+          />
+        </span>
+        <span className="uppercase tracking-wider text-xs font-bold">
           {selectedCountry?.name || "QATAR"}
         </span>
         <svg
-          style={{ color: "#000000" }}
-          className={`w-3.5 h-3.5 text-black transition-transform duration-200 ${
-            isOpen ? "rotate-180" : ""
-          }`}
-          fill="none"
-          stroke="#000000"
-          viewBox="0 0 24 24"
-          strokeWidth="2.5"
+          className={`w-3 h-3 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5"
         >
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
         </svg>
       </button>
 
-      {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-56 bg-white border border-neutral-300 shadow-2xl z-50 py-1 overflow-hidden">
-          <div className="px-3.5 py-2 border-b border-neutral-200 text-[10px] uppercase font-bold tracking-wider text-neutral-600 flex items-center justify-between font-mono bg-neutral-50">
+        <div
+          style={{ backgroundColor: "var(--adm-card-bg)", borderColor: "var(--adm-border)", color: "var(--adm-text)" }}
+          className="absolute right-0 mt-2 w-52 border shadow-xl z-50 py-1 overflow-hidden animate-dropdown-luxury"
+        >
+          <div
+            style={{ borderColor: "var(--adm-border)", color: "var(--adm-text-muted)", backgroundColor: "var(--adm-thead-bg)" }}
+            className="px-3 py-2 border-b text-[10px] uppercase font-bold tracking-wider flex items-center justify-between"
+          >
             <span>Select Country</span>
-            <span className="bg-black text-white px-1.5 py-0.5 text-[9px] font-mono font-bold">{countries.length} active</span>
+            <span style={{ backgroundColor: "var(--adm-active-bg)", color: "var(--adm-active-text)" }} className="px-1.5 py-0.5 text-[9px] font-bold">
+              {countries.length} active
+            </span>
           </div>
 
-          <div className="max-h-60 overflow-y-auto py-1">
+          <div className="max-h-56 overflow-y-auto py-1">
             {countries.map((c) => {
               const isSelected = selectedCountryCode.toUpperCase() === c.code.toUpperCase();
+              const flagCode = c.code.toLowerCase();
               return (
                 <button
                   key={c.id || c.code}
                   type="button"
-                  onClick={() => {
-                    setSelectedCountryCode(c.code);
-                    setIsOpen(false);
-                  }}
-                  className={`w-full text-left px-3.5 py-2.5 text-xs flex items-center justify-between transition-colors cursor-pointer ${
-                    isSelected
-                      ? "bg-black text-white font-bold"
-                      : "text-black hover:bg-neutral-100"
+                  onClick={() => { setSelectedCountryCode(c.code); setIsOpen(false); }}
+                  style={isSelected
+                    ? { backgroundColor: "var(--adm-active-bg)", color: "var(--adm-active-text)" }
+                    : { color: "var(--adm-text)" }
+                  }
+                  className={`w-full text-left px-3 py-2 text-xs flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    !isSelected ? "hover:bg-[var(--adm-hover-bg)]" : ""
                   }`}
                 >
-                  <div className="flex items-center gap-2.5">
+                  {/* Flag image */}
+                  <span className="flex-shrink-0 overflow-hidden inline-flex" style={{ width: "22px", height: "16px", borderRadius: "2px", border: "1px solid rgba(0,0,0,0.1)" }}>
+                    <img
+                      src={`https://flagcdn.com/w40/${flagCode}.png`}
+                      alt={c.code}
+                      width={22}
+                      height={16}
+                      style={{ width: "22px", height: "16px", objectFit: "cover", display: "block" }}
+                      onError={(e) => {
+                        const el = e.currentTarget as HTMLImageElement;
+                        el.style.display = "none";
+                        const fallback = el.nextElementSibling as HTMLElement;
+                        if (fallback) fallback.style.display = "flex";
+                      }}
+                    />
                     <span
-                      className={`w-6 h-6 border flex items-center justify-center font-mono font-bold text-[10px] flex-shrink-0 ${
-                        isSelected
-                          ? "bg-neutral-900 border-neutral-700 text-white"
-                          : "bg-neutral-100 border-neutral-300 text-black"
-                      }`}
+                      style={{
+                        display: "none",
+                        width: "22px", height: "16px",
+                        backgroundColor: isSelected ? "rgba(255,255,255,0.15)" : "var(--adm-hover-bg)",
+                        fontSize: "8px", fontWeight: 700,
+                        alignItems: "center", justifyContent: "center",
+                        color: isSelected ? "var(--adm-active-text)" : "var(--adm-text)",
+                      }}
                     >
                       {c.code}
                     </span>
-                    <span className={`truncate uppercase font-bold text-xs ${isSelected ? "text-white" : "text-black"}`}>
-                      {c.name}
-                    </span>
-                  </div>
+                  </span>
+                  <span className="truncate uppercase font-semibold text-xs">{c.name}</span>
                 </button>
               );
             })}
@@ -216,30 +218,22 @@ function AdminCountrySelector() {
   );
 }
 
-function AdminLayoutContent({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { theme, toggleTheme } = useAdminContext();
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Track open state for expandable menus (My Store, Settings)
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({
-    "My Store": true,
-    "Settings": true,
+    "My Store": false,
+    "Settings": false,
   });
 
   const toggleMenu = (name: string) => {
-    setOpenMenus((prev) => ({
-      ...prev,
-      [name]: !prev[name],
-    }));
+    setOpenMenus((prev) => ({ ...prev, [name]: !prev[name] }));
   };
 
-  // Skip auth layout on login page
   const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
@@ -249,26 +243,17 @@ function AdminLayoutContent({
   }, []);
 
   useEffect(() => {
-    if (isLoginPage) {
-      setLoading(false);
-      return;
-    }
-
+    if (isLoginPage) { setLoading(false); return; }
     const checkAuth = async () => {
       const supabase = createClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
+      const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        // If not logged in, redirect to admin login
         router.push("/admin/login");
       } else {
         setUserEmail(session.user.email ?? "Admin");
         setLoading(false);
       }
     };
-
     checkAuth();
   }, [pathname, isLoginPage, router]);
 
@@ -279,35 +264,30 @@ function AdminLayoutContent({
     router.refresh();
   };
 
-  if (isLoginPage) {
-    return <>{children}</>;
-  }
+  if (isLoginPage) return <>{children}</>;
+
+  const isDark = theme === "dark";
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral-950 text-neutral-100 font-secondary flex flex-col md:flex-row animate-pulse">
-        {/* Sidebar skeleton */}
-        <aside className="w-full md:w-64 h-full bg-neutral-900 border-r border-neutral-800 flex flex-col flex-shrink-0">
-          <div className="h-16 px-6 border-b border-neutral-800 flex items-center justify-between flex-shrink-0">
-            <div className="h-6 w-28 bg-neutral-800 rounded" />
-            <div className="h-5 w-12 bg-neutral-800 rounded" />
-          </div>
-          <div className="p-4 space-y-3">
-            <div className="h-10 bg-neutral-800/80 rounded-lg" />
-            <div className="h-10 bg-neutral-800/80 rounded-lg" />
-            <div className="h-10 bg-neutral-800/80 rounded-lg" />
-            <div className="h-10 bg-neutral-800/80 rounded-lg" />
+      <div className={`admin-theme${isDark ? " admin-dark" : ""} min-h-screen flex flex-col md:flex-row animate-pulse`}
+        style={{ backgroundColor: "var(--adm-bg)" }}>
+        <aside style={{ backgroundColor: "var(--adm-sidebar-bg)", borderColor: "var(--adm-border)" }}
+          className="w-full md:w-60 h-full border-r flex flex-col flex-shrink-0">
+          <div style={{ backgroundColor: "var(--adm-logo-area-bg)" }} className="h-14 px-5 flex items-center" />
+          <div className="p-4 space-y-2">
+            {[1,2,3,4,5].map(i => (
+              <div key={i} style={{ backgroundColor: "var(--adm-hover-bg)" }} className="h-9 rounded" />
+            ))}
           </div>
         </aside>
-        {/* Main content skeleton */}
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-16 border-b border-neutral-800 bg-neutral-900/60 px-6 flex items-center justify-between">
-            <div className="h-4 w-28 bg-neutral-800 rounded" />
-            <div className="h-4 w-24 bg-neutral-800 rounded" />
-          </header>
-          <main className="p-8 space-y-6">
-            <div className="h-6 w-48 bg-neutral-800 rounded" />
-            <div className="h-32 bg-neutral-900 rounded-2xl border border-neutral-800" />
+          <div style={{ backgroundColor: "var(--adm-header-bg)", borderColor: "var(--adm-border)" }}
+            className="h-14 border-b" />
+          <main style={{ backgroundColor: "var(--adm-bg)" }} className="p-8 space-y-4 flex-1">
+            <div style={{ backgroundColor: "var(--adm-hover-bg)" }} className="h-8 w-48 rounded" />
+            <div style={{ backgroundColor: "var(--adm-card-bg)", borderColor: "var(--adm-border)" }}
+              className="h-36 border rounded-lg" />
           </main>
         </div>
       </div>
@@ -333,152 +313,260 @@ function AdminLayoutContent({
     return "Admin Portal";
   };
 
+  // Group nav items
+  const groups: { label: string; items: NavItem[] }[] = [
+    { label: "MAIN", items: ADMIN_NAV.filter(n => n.group === "MAIN") },
+    { label: "STORE", items: ADMIN_NAV.filter(n => n.group === "STORE") },
+    { label: "SETTINGS", items: ADMIN_NAV.filter(n => n.group === "SETTINGS") },
+  ];
+
+  // User initial
+  const userInitial = (userEmail?.[0] || "A").toUpperCase();
+
   return (
-    <div dir="ltr" className="admin-theme h-screen overflow-hidden bg-white text-black font-secondary flex flex-col md:flex-row">
-      {/* Sidebar */}
-      <aside className="w-full md:w-64 h-auto md:h-full bg-white border-r border-neutral-200 flex flex-col flex-shrink-0 text-black">
-        {/* Brand */}
-        <div className="admin-sidebar-brand h-16 px-6 bg-black border-b border-neutral-900 flex items-center justify-center flex-shrink-0">
+    <div
+      dir="ltr"
+      className={`admin-theme${isDark ? " admin-dark" : ""} h-screen overflow-hidden flex flex-col md:flex-row`}
+      style={{ backgroundColor: "var(--adm-bg)", color: "var(--adm-text)" }}
+    >
+      {/* ===== SIDEBAR ===== */}
+      <aside
+        className="w-full md:w-60 h-auto md:h-full flex flex-col flex-shrink-0 border-r"
+        style={{ backgroundColor: "var(--adm-sidebar-bg)", borderColor: "var(--adm-border)" }}
+      >
+        {/* Brand / Logo */}
+        <div
+          className="admin-sidebar-brand h-14 px-5 flex items-center justify-center flex-shrink-0"
+          style={{ backgroundColor: "var(--adm-logo-area-bg)", borderBottom: `1px solid var(--adm-border)` }}
+        >
           <Link href="/admin" className="flex items-center justify-center">
-            <div className="relative w-32 h-8">
-              <Image
-                src="/logo/logo.png"
-                alt="Shaz Al Oud Logo"
-                fill
-                sizes="128px"
-                className="object-contain"
-                priority
-              />
+            <div className="relative w-28 h-7">
+              <Image src="/logo/logo.png" alt="Shaz Al Oud" fill sizes="112px" className="object-contain" priority />
             </div>
           </Link>
         </div>
 
         {/* Navigation */}
-        <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
-          <nav className="space-y-1.5">
-            {ADMIN_NAV.map((item) => {
-              if (item.subItems) {
-                const isExpanded = openMenus[item.name] ?? false;
-                const isAnySubActive = item.subItems.some((sub) => pathname === sub.href);
+        <div className="flex-1 overflow-y-auto py-3 px-3">
+          <nav className="space-y-0.5">
+            {groups.map((group, gi) => (
+              <div key={group.label} className={gi > 0 ? "mt-4" : ""}>
+                {group.label !== "MAIN" && (
+                  <p
+                    className="px-3 py-1 text-[10px] font-bold uppercase tracking-widest mb-1"
+                    style={{ color: "var(--adm-section-label)" }}
+                  >
+                    {group.label}
+                  </p>
+                )}
 
-                return (
-                  <div key={item.name} className="space-y-1">
-                    <button
-                      type="button"
-                      onClick={() => toggleMenu(item.name)}
-                      className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium transition-colors cursor-pointer ${
-                        isAnySubActive
-                          ? "bg-black text-white font-bold"
-                          : "text-neutral-700 hover:text-black hover:bg-neutral-100"
-                      }`}
+                {group.items.map((item) => {
+                  if (item.subItems) {
+                    const isExpanded = openMenus[item.name] ?? false;
+                    const isAnySubActive = item.subItems.some((sub) => pathname === sub.href);
+
+                    return (
+                      <div key={item.name} className="space-y-0.5">
+                        <button
+                          type="button"
+                          onClick={() => toggleMenu(item.name)}
+                          className={`w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium transition-all cursor-pointer rounded`}
+                          style={isAnySubActive
+                            ? { backgroundColor: "var(--adm-active-bg)", color: "var(--adm-active-text)" }
+                            : { color: "var(--adm-text-muted)" }
+                          }
+                        >
+                          <div className="flex items-center gap-3">
+                            <span className="flex-shrink-0">{item.icon}</span>
+                            <span className="font-medium">{item.name}</span>
+                          </div>
+                          <svg
+                            className={`w-3.5 h-3.5 transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`}
+                            fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+
+                        {isExpanded && (
+                          <div className="pl-8 space-y-0.5 pb-1">
+                            {item.subItems.map((sub) => {
+                              const isSubActive = pathname === sub.href;
+                              return (
+                                <Link
+                                  key={sub.href}
+                                  href={sub.href}
+                                  className="flex items-center gap-2 px-3 py-2 text-xs font-medium transition-all rounded"
+                                  style={isSubActive
+                                    ? { backgroundColor: "var(--adm-active-bg)", color: "var(--adm-active-text)" }
+                                    : { color: "var(--adm-text-muted)" }
+                                  }
+                                >
+                                  <span
+                                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                                    style={{ backgroundColor: isSubActive ? "var(--adm-active-text)" : "var(--adm-border-strong)" }}
+                                  />
+                                  <span>{sub.name}</span>
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  }
+
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href!}
+                      className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-all rounded"
+                      style={isActive
+                        ? { backgroundColor: "var(--adm-active-bg)", color: "var(--adm-active-text)" }
+                        : { color: "var(--adm-text-muted)" }
+                      }
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="flex-shrink-0">{item.icon}</span>
-                        <span className={isAnySubActive ? "font-bold" : ""}>{item.name}</span>
-                      </div>
-                      <svg
-                        className={`w-4 h-4 transition-transform duration-200 ${
-                          isAnySubActive ? "text-white" : "text-neutral-500"
-                        } ${isExpanded ? "rotate-180" : ""}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-
-                    {/* Sub-items List */}
-                    {isExpanded && (
-                      <div className="pl-6 space-y-1 py-1">
-                        {item.subItems.map((sub) => {
-                          const isSubActive = pathname === sub.href;
-                          return (
-                            <Link
-                              key={sub.href}
-                              href={sub.href}
-                              className={`flex items-center gap-2.5 px-3 py-2 text-xs font-medium transition-colors ${
-                                isSubActive
-                                  ? "bg-black text-white font-bold"
-                                  : "text-neutral-600 hover:text-black hover:bg-neutral-100"
-                              }`}
-                            >
-                              <span
-                                className={`w-1.5 h-1.5 ${
-                                  isSubActive ? "bg-white" : "bg-neutral-400"
-                                }`}
-                              />
-                              <span className={isSubActive ? "font-bold" : ""}>{sub.name}</span>
-                            </Link>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              }
-
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.name}
-                  href={item.href!}
-                  className={`flex items-center gap-3 px-4 py-3 text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-black text-white font-bold"
-                      : "text-neutral-700 hover:text-black hover:bg-neutral-100"
-                  }`}
-                >
-                  <span className="flex-shrink-0">{item.icon}</span>
-                  <span className={isActive ? "font-bold" : ""}>{item.name}</span>
-                </Link>
-              );
-            })}
+                      <span className="flex-shrink-0">{item.icon}</span>
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            ))}
           </nav>
         </div>
 
-        {/* User Info & Signout */}
-        <div className="p-4 border-t border-neutral-200">
-          <div className="px-4 py-2 mb-2">
-            <p className="text-xs text-neutral-500 uppercase tracking-wider font-mono">Signed in as</p>
-            <p className="text-sm font-bold text-neutral-900 truncate font-mono">{userEmail}</p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-4 py-2.5 text-xs uppercase tracking-wider font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer"
+        {/* View Live Store + User info */}
+        <div style={{ borderColor: "var(--adm-border)" }} className="border-t">
+          {/* View Live Store */}
+          <Link
+            href="/"
+            target="_blank"
+            className="flex items-center gap-2 px-4 py-3 text-xs font-semibold transition-all"
+            style={{ color: "var(--adm-text-muted)" }}
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
-            Sign Out
-          </button>
+            <span>View Live Store</span>
+          </Link>
+
+          {/* User row */}
+          <div className="px-4 py-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              {/* Avatar */}
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                style={{ backgroundColor: "var(--adm-active-bg)", color: "var(--adm-active-text)" }}
+              >
+                {userInitial}
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold truncate" style={{ color: "var(--adm-text)" }}>
+                  Shaz Al Oud
+                </p>
+                <p className="text-[10px] truncate" style={{ color: "var(--adm-text-muted)" }}>
+                  {userEmail}
+                </p>
+              </div>
+            </div>
+
+            {/* Sign out */}
+            <button
+              onClick={handleLogout}
+              title="Sign Out"
+              className="flex-shrink-0 p-1.5 rounded transition-all cursor-pointer"
+              style={{ color: "#dc2626" }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+            </button>
+          </div>
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-slate-50">
-        <header className="h-16 flex-shrink-0 border-b border-neutral-800 bg-black px-6 flex items-center justify-between">
-          <h1 className="text-sm font-bold tracking-wider uppercase text-white font-mono">
-            {getPageTitle()}
-          </h1>
-          <div className="flex items-center gap-4">
-            {/* Country Selector in Top Headbar */}
+      {/* ===== MAIN CONTENT ===== */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        {/* Header */}
+        <header
+          className="h-14 flex-shrink-0 border-b flex items-center px-5 gap-4"
+          style={{ backgroundColor: "var(--adm-header-bg)", borderColor: "var(--adm-border)" }}
+        >
+          {/* Search bar (center) */}
+          <div className="flex-1 max-w-md">
+            <div
+              className="flex items-center gap-2 px-3 py-2 border rounded-lg text-sm"
+              style={{
+                backgroundColor: "var(--adm-hover-bg)",
+                borderColor: "var(--adm-border)",
+                color: "var(--adm-text-sub)",
+              }}
+            >
+              <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35" />
+              </svg>
+              <span className="text-xs">{getPageTitle()}</span>
+            </div>
+          </div>
+
+          {/* Right cluster */}
+          <div className="flex items-center gap-2 ml-auto">
+            {/* Country Selector */}
             <AdminCountrySelector />
 
-            <Link
-              href="/"
-              target="_blank"
-              className="text-xs text-white font-bold hover:text-amber-400 hover:underline flex items-center gap-1.5 transition-colors font-mono"
+            {/* Bell */}
+            <button
+              type="button"
+              className="w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer"
+              style={{ backgroundColor: "var(--adm-hover-bg)", color: "var(--adm-text-muted)" }}
+              title="Notifications"
             >
-              <span className="text-white font-bold">View Live Store</span>
-              <svg className="w-3.5 h-3.5 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
-            </Link>
+            </button>
+
+            {/* Dark / Light toggle */}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+              className="w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer"
+              style={{ backgroundColor: "var(--adm-hover-bg)", color: "var(--adm-text-muted)" }}
+            >
+              {isDark ? (
+                /* Sun icon */
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                  <circle cx="12" cy="12" r="5" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                </svg>
+              ) : (
+                /* Moon icon */
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+                </svg>
+              )}
+            </button>
+
+            {/* User Avatar */}
+            <div
+              className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold cursor-pointer flex-shrink-0"
+              style={{ backgroundColor: "var(--adm-active-bg)", color: "var(--adm-active-text)" }}
+              title={userEmail || ""}
+            >
+              {userInitial}
+            </div>
           </div>
         </header>
 
-        <main className="p-6 md:p-8 flex-1 overflow-y-auto bg-slate-50 text-black">
+        {/* Main */}
+        <main
+          className="p-6 md:p-8 flex-1 overflow-y-auto"
+          style={{ backgroundColor: "var(--adm-bg)", color: "var(--adm-text)" }}
+        >
           {children}
         </main>
       </div>
@@ -486,11 +574,7 @@ function AdminLayoutContent({
   );
 }
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
     <AdminProvider>
       <AdminLayoutContent>{children}</AdminLayoutContent>

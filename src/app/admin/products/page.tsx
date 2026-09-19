@@ -467,12 +467,32 @@ export default function AdminProductsPage() {
 
     try {
       const supabase = createClient();
+      
+      let baseSlug = slug.trim() || generateSlug(finalName);
+      let uniqueSlug = baseSlug;
+      let isUnique = false;
+      let counter = 1;
+
+      while (!isUnique) {
+        let query = supabase.from("products").select("id").eq("slug", uniqueSlug);
+        if (selectedId) {
+          query = query.neq("id", selectedId);
+        }
+        const { data } = await query;
+        if (!data || data.length === 0) {
+          isUnique = true;
+        } else {
+          uniqueSlug = `${baseSlug}-${counter}`;
+          counter++;
+        }
+      }
+
       const payload: any = {
         name: finalName,
         name_ar: nameAr.trim() || null,
         brand_name: brandName.trim() || null,
         our_signature: ourSignature.trim() || null,
-        slug: slug.trim() || generateSlug(finalName),
+        slug: uniqueSlug,
         category_id: categoryId ? categoryId : null,
         price: primaryVariant.price,
         original_price: primaryVariant.original_price || null,
@@ -573,9 +593,9 @@ export default function AdminProductsPage() {
   return (
     <div className="p-4 sm:p-8 max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-neutral-800 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[var(--adm-border)] pb-5">
         <div>
-          <h1 className="text-xl sm:text-2xl font-serif font-light text-white tracking-wide flex items-center gap-2.5">
+          <h1 className="text-xl sm:text-2xl font-serif font-light text-[var(--adm-text)] tracking-wide flex items-center gap-2.5">
             <span className="p-1.5 bg-amber-400/10 text-amber-400 rounded-lg border border-amber-400/20">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
@@ -583,7 +603,7 @@ export default function AdminProductsPage() {
             </span>
             Products &amp; Pricing
           </h1>
-          <p className="text-xs text-neutral-400 mt-1">
+          <p className="text-xs text-[var(--adm-text-muted)] mt-1">
             Manage fragrance inventory with 30ml, 50ml, and 100ml multi-country pricing.
           </p>
         </div>
@@ -613,7 +633,7 @@ export default function AdminProductsPage() {
           <span>{statusMsg.text}</span>
           <button
             onClick={() => setStatusMsg(null)}
-            className="text-neutral-400 hover:text-white text-xs px-2 py-1"
+            className="text-[var(--adm-text-muted)] hover:text-[var(--adm-text)] text-xs px-2 py-1"
           >
             ✕
           </button>
@@ -622,20 +642,20 @@ export default function AdminProductsPage() {
 
       {/* CREATE / EDIT FORM */}
       {isEditing && (
-        <div className="bg-neutral-950 p-6 sm:p-8 shadow-2xl space-y-8 animate-fadeIn">
-          <div className="flex items-center justify-between border-b border-neutral-800 pb-4">
+        <div className="bg-[var(--adm-card-bg)] p-6 sm:p-8 shadow-2xl space-y-8 animate-fadeIn">
+          <div className="flex items-center justify-between border-b border-[var(--adm-border)] pb-4">
             <div>
-              <h2 className="text-xl font-serif text-white">
+              <h2 className="text-xl font-serif text-[var(--adm-text)]">
                 {selectedId ? "Edit Fragrance Product" : "Create New Fragrance Product"}
               </h2>
-              <p className="text-xs text-neutral-400 mt-1">
+              <p className="text-xs text-[var(--adm-text-muted)] mt-1">
                 Configure Brand Name, Our Signature, and volume pricing per country.
               </p>
             </div>
             <button
               type="button"
               onClick={resetForm}
-              className="text-neutral-400 hover:text-white text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-lg hover:bg-neutral-900 transition-colors"
+              className="text-[var(--adm-text-muted)] hover:text-[var(--adm-text)] text-xs font-semibold uppercase tracking-wider px-3 py-1.5 rounded-lg hover:bg-[var(--adm-card-bg)] transition-colors"
             >
               Cancel
             </button>
@@ -646,21 +666,21 @@ export default function AdminProductsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Brand Name */}
               <div className="space-y-2">
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
-                  Brand Name <span className="text-neutral-500 lowercase">(optional)</span>
+                <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] font-medium">
+                  Brand Name <span className="text-[var(--adm-text-muted)] lowercase">(optional)</span>
                 </label>
                 <input
                   type="text"
                   value={brandName}
                   onChange={(e) => setBrandName(e.target.value)}
                   placeholder="e.g. Shaz Al Oud"
-                  className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm font-medium"
+                  className="w-full px-4 py-3 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm font-medium"
                 />
               </div>
 
               {/* Our Signature / Product Name */}
               <div className="space-y-2">
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+                <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] font-medium">
                   Our Signature / Fragrance Name <span className="text-amber-500">*</span>
                 </label>
                 <input
@@ -669,15 +689,15 @@ export default function AdminProductsPage() {
                   value={ourSignature}
                   onChange={(e) => handleSignatureChange(e.target.value)}
                   placeholder="e.g. Royal Amber Oud, Shaz Mix"
-                  className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm font-medium"
+                  className="w-full px-4 py-3 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm font-medium"
                 />
               </div>
 
               {/* Arabic Product Name */}
               <div className="space-y-2">
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium flex items-center justify-between">
+                <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] font-medium flex items-center justify-between">
                   <span>Arabic Name / اسم المنتج</span>
-                  <span className="text-neutral-500 lowercase font-normal">(optional)</span>
+                  <span className="text-[var(--adm-text-muted)] lowercase font-normal">(optional)</span>
                 </label>
                 <input
                   type="text"
@@ -685,19 +705,19 @@ export default function AdminProductsPage() {
                   value={nameAr}
                   onChange={(e) => setNameAr(e.target.value)}
                   placeholder="مثال: لافندر أرجواني، عود ملكي"
-                  className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm font-medium"
+                  className="w-full px-4 py-3 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm font-medium"
                 />
               </div>
 
               {/* Category */}
               <div className="space-y-2">
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+                <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] font-medium">
                   Category
                 </label>
                 <select
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-xl text-neutral-100 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                  className="w-full px-4 py-3 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] focus:outline-none focus:border-amber-500 transition-colors text-sm"
                 >
                   <option value="">Select Category (Optional)</option>
                   {categories.map((c) => (
@@ -710,15 +730,15 @@ export default function AdminProductsPage() {
 
               {/* Slug */}
               <div className="space-y-2 md:col-span-2">
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
-                  URL Slug <span className="text-neutral-500 lowercase">(auto-generated)</span>
+                <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] font-medium">
+                  URL Slug <span className="text-[var(--adm-text-muted)] lowercase">(auto-generated)</span>
                 </label>
                 <input
                   type="text"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   placeholder="e.g. royal-amber-oud"
-                  className="w-full px-4 py-3 bg-neutral-900 border border-neutral-800 rounded-xl text-neutral-400 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm font-mono"
+                  className="w-full px-4 py-3 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text-muted)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm font-mono"
                 />
               </div>
             </div>
@@ -726,14 +746,14 @@ export default function AdminProductsPage() {
             {/* ========================================================================= */}
             {/* MULTI-COUNTRY VOLUME PRICING SECTION (30ml, 50ml, 100ml) */}
             {/* ========================================================================= */}
-            <div className="bg-neutral-900/60 border border-neutral-800 rounded-2xl p-5 sm:p-6 space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-850 pb-4">
+            <div className="bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-2xl p-5 sm:p-6 space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[var(--adm-border)] pb-4">
                 <div>
-                  <h3 className="text-base font-semibold text-white flex items-center gap-2">
+                  <h3 className="text-base font-semibold text-[var(--adm-text)] flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-amber-400" />
                     Country-Specific Volume Pricing
                   </h3>
-                  <p className="text-xs text-neutral-400 mt-0.5">
+                  <p className="text-xs text-[var(--adm-text-muted)] mt-0.5">
                     Configure separate Original Price and Selling Price for each country dynamically from Country Management.
                   </p>
                 </div>
@@ -752,8 +772,8 @@ export default function AdminProductsPage() {
                         disabled={exists}
                         className={`px-3 py-1.5 text-xs font-mono font-semibold rounded-lg border transition-colors ${
                           exists
-                            ? "bg-neutral-950 text-neutral-600 border-neutral-800 cursor-default"
-                            : "bg-neutral-800 hover:bg-neutral-700 text-amber-300 border-neutral-700 cursor-pointer"
+                            ? "bg-[var(--adm-card-bg)] text-[var(--adm-text-sub)] border-[var(--adm-border)] cursor-default"
+                            : "bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] text-amber-300 border-[var(--adm-border-strong)] cursor-pointer"
                         }`}
                       >
                         {exists ? `✓ ${vol}` : `+ ${vol}`}
@@ -763,7 +783,7 @@ export default function AdminProductsPage() {
                   <button
                     type="button"
                     onClick={() => handleAddVariant("Custom")}
-                    className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-300 border border-neutral-700 text-xs rounded-lg transition-colors cursor-pointer"
+                    className="px-3 py-1.5 bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] text-[var(--adm-text)] border border-[var(--adm-border-strong)] text-xs rounded-lg transition-colors cursor-pointer"
                   >
                     + Custom
                   </button>
@@ -771,7 +791,7 @@ export default function AdminProductsPage() {
               </div>
 
               {/* Variant Tabs */}
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-neutral-300">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[var(--adm-border-strong)]">
                 {variants.map((v, idx) => (
                   <button
                     key={idx}
@@ -779,11 +799,11 @@ export default function AdminProductsPage() {
                     onClick={() => setSelectedVariantTab(idx)}
                     className={`px-4 py-2.5 text-xs font-mono transition-all border cursor-pointer flex items-center gap-2 ${
                       selectedVariantTab === idx
-                        ? "bg-black text-white font-bold border-black shadow-sm"
-                        : "bg-neutral-100 text-neutral-600 font-semibold border-neutral-300 hover:bg-neutral-200 hover:text-black"
+                        ? "bg-black text-[var(--adm-text)] font-bold border-black shadow-sm"
+                        : "bg-neutral-100 text-[var(--adm-text-sub)] font-semibold border-[var(--adm-border-strong)] hover:bg-neutral-200 hover:text-black"
                     }`}
                   >
-                    <span className={selectedVariantTab === idx ? "text-white font-bold" : "text-neutral-700 font-semibold"}>
+                    <span className={selectedVariantTab === idx ? "text-[var(--adm-text)] font-bold" : "text-[var(--adm-text-sub)] font-semibold"}>
                       {v.volume || `Volume ${idx + 1}`}
                     </span>
                     <span
@@ -799,9 +819,9 @@ export default function AdminProductsPage() {
               {variants[selectedVariantTab] && (
                 <div className="space-y-6 animate-fadeIn">
                   {/* Variant Header Settings */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-neutral-950 border border-neutral-800 rounded-xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl">
                     <div className="flex items-center gap-3">
-                      <label className="text-xs uppercase tracking-wider text-neutral-400 font-semibold">
+                      <label className="text-xs uppercase tracking-wider text-[var(--adm-text-muted)] font-semibold">
                         Variant Volume:
                       </label>
                       <input
@@ -812,7 +832,7 @@ export default function AdminProductsPage() {
                           handleUpdateVariantField(selectedVariantTab, "volume", e.target.value)
                         }
                         placeholder="e.g. 30ml, 50ml, 100ml"
-                        className="px-3 py-1.5 bg-neutral-900 border border-neutral-700 rounded-lg text-white font-mono text-xs font-semibold focus:outline-none focus:border-amber-400"
+                        className="px-3 py-1.5 bg-[var(--adm-card-bg)] border border-[var(--adm-border-strong)] rounded-lg text-[var(--adm-text)] font-mono text-xs font-semibold focus:outline-none focus:border-amber-400"
                       />
                     </div>
 
@@ -828,13 +848,13 @@ export default function AdminProductsPage() {
                               e.target.checked
                             )
                           }
-                          className="w-4 h-4 rounded text-amber-600 bg-neutral-900 border-neutral-700 focus:ring-amber-500"
+                          className="w-4 h-4 rounded text-amber-600 bg-[var(--adm-card-bg)] border-[var(--adm-border-strong)] focus:ring-amber-500"
                         />
                         <span
                           className={`text-xs font-medium ${
                             variants[selectedVariantTab].is_in_stock
                               ? "text-emerald-400"
-                              : "text-neutral-500"
+                              : "text-[var(--adm-text-muted)]"
                           }`}
                         >
                           {variants[selectedVariantTab].is_in_stock ? "In Stock" : "Out of Stock"}
@@ -856,28 +876,28 @@ export default function AdminProductsPage() {
                   {/* Per-Country Pricing Inputs */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between pb-0.5">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-neutral-300">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--adm-text)]">
                         Country Pricing ({variants[selectedVariantTab].volume})
                       </span>
-                      <span className="text-[10px] text-neutral-500">
+                      <span className="text-[10px] text-[var(--adm-text-muted)]">
                         Configured dynamically from Country Management
                       </span>
                     </div>
 
                     {displayCountries.length === 0 ? (
-                      <div className="text-center py-6 border border-dashed border-neutral-800 rounded-xl bg-neutral-950/40 text-neutral-500 text-xs">
+                      <div className="text-center py-6 border border-dashed border-[var(--adm-border)] rounded-xl bg-[var(--adm-thead-bg)] text-[var(--adm-text-muted)] text-xs">
                         No active countries configured. Please add countries in Country Management.
                       </div>
                     ) : (
-                      <div className="bg-neutral-950 border border-neutral-800 rounded-xl overflow-hidden shadow-sm">
+                      <div className="bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl overflow-hidden shadow-sm">
                         <div className="overflow-x-auto scrollbar-hide">
                           <table className="w-full text-left text-xs">
-                            <thead className="bg-neutral-900/90 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 border-b border-neutral-800">
+                            <thead className="bg-[var(--adm-card-bg)] text-[10px] font-semibold uppercase tracking-wider text-[var(--adm-text-muted)] border-b border-[var(--adm-border)]">
                               <tr>
                                 <th className="py-2.5 px-3.5">Country</th>
                                 <th className="py-2.5 px-3.5">Currency</th>
                                 <th className="py-2.5 px-3.5 w-40">Selling Price</th>
-                                <th className="py-2.5 px-3.5 w-40">Original Price <span className="text-neutral-500 text-[9px] lowercase font-normal">(optional)</span></th>
+                                <th className="py-2.5 px-3.5 w-40">Original Price <span className="text-[var(--adm-text-muted)] text-[9px] lowercase font-normal">(optional)</span></th>
                                 <th className="py-2.5 px-3.5 text-center w-28">Stock</th>
                               </tr>
                             </thead>
@@ -891,13 +911,13 @@ export default function AdminProductsPage() {
                                   };
 
                                 return (
-                                  <tr key={c.code} className="hover:bg-neutral-900/30 transition-colors">
+                                  <tr key={c.code} className="hover:bg-[var(--adm-card-bg)] transition-colors">
                                     <td className="py-2.5 px-3.5">
                                       <div className="flex items-center gap-2">
-                                        <span className="w-6 h-6 rounded bg-neutral-900 border border-neutral-800 flex items-center justify-center font-mono font-bold text-[10px] text-amber-400 flex-shrink-0">
+                                        <span className="w-6 h-6 rounded bg-[var(--adm-card-bg)] border border-[var(--adm-border)] flex items-center justify-center font-mono font-bold text-[10px] text-amber-400 flex-shrink-0">
                                           {c.code}
                                         </span>
-                                        <span className="font-medium text-white text-xs">{c.name}</span>
+                                        <span className="font-medium text-[var(--adm-text)] text-xs">{c.name}</span>
                                         {c.is_default && (
                                           <span className="text-[9px] bg-amber-400/10 text-amber-300 border border-amber-400/20 px-1.5 py-0.5 rounded-full font-semibold">
                                             Default
@@ -905,9 +925,9 @@ export default function AdminProductsPage() {
                                         )}
                                       </div>
                                     </td>
-                                    <td className="py-2.5 px-3.5 font-mono text-xs text-neutral-300">
+                                    <td className="py-2.5 px-3.5 font-mono text-xs text-[var(--adm-text)]">
                                       <span className="text-amber-400 font-semibold">{c.currency_code}</span>
-                                      <span className="text-neutral-500 text-[11px] ml-1.5">{c.currency_symbol}</span>
+                                      <span className="text-[var(--adm-text-muted)] text-[11px] ml-1.5">{c.currency_symbol}</span>
                                     </td>
                                     <td className="py-2 px-3.5">
                                       <div className="relative flex items-center">
@@ -924,9 +944,9 @@ export default function AdminProductsPage() {
                                             )
                                           }
                                           placeholder="0.00"
-                                          className="w-full pl-3 pr-12 py-1.5 bg-neutral-900 border border-neutral-800 rounded-lg text-white font-mono text-xs focus:outline-none focus:border-amber-400 transition-colors placeholder:text-neutral-600"
+                                          className="w-full pl-3 pr-12 py-1.5 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-lg text-[var(--adm-text)] font-mono text-xs focus:outline-none focus:border-amber-400 transition-colors placeholder:text-[var(--adm-text-sub)]"
                                         />
-                                        <span className="absolute right-2.5 text-[10px] font-mono text-neutral-500 pointer-events-none">
+                                        <span className="absolute right-2.5 text-[10px] font-mono text-[var(--adm-text-muted)] pointer-events-none">
                                           {c.currency_code}
                                         </span>
                                       </div>
@@ -946,9 +966,9 @@ export default function AdminProductsPage() {
                                             )
                                           }
                                           placeholder="0.00"
-                                          className="w-full pl-3 pr-12 py-1.5 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-300 font-mono text-xs focus:outline-none focus:border-amber-400 transition-colors placeholder:text-neutral-600"
+                                          className="w-full pl-3 pr-12 py-1.5 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-lg text-[var(--adm-text)] font-mono text-xs focus:outline-none focus:border-amber-400 transition-colors placeholder:text-[var(--adm-text-sub)]"
                                         />
-                                        <span className="absolute right-2.5 text-[10px] font-mono text-neutral-500 pointer-events-none">
+                                        <span className="absolute right-2.5 text-[10px] font-mono text-[var(--adm-text-muted)] pointer-events-none">
                                           {c.currency_code}
                                         </span>
                                       </div>
@@ -966,7 +986,7 @@ export default function AdminProductsPage() {
                                               e.target.checked
                                             )
                                           }
-                                          className="w-3.5 h-3.5 rounded text-amber-500 bg-neutral-900 border-neutral-700 focus:ring-amber-500 cursor-pointer"
+                                          className="w-3.5 h-3.5 rounded text-amber-500 bg-[var(--adm-card-bg)] border-[var(--adm-border-strong)] focus:ring-amber-500 cursor-pointer"
                                         />
                                         <span
                                           className={`text-[10px] font-medium ${
@@ -994,7 +1014,7 @@ export default function AdminProductsPage() {
 
             {/* Description */}
             <div>
-              <label className="block text-xs uppercase tracking-wider text-neutral-300 mb-2 font-medium">
+              <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] mb-2 font-medium">
                 Fragrance Notes &amp; Description
               </label>
               <textarea
@@ -1002,22 +1022,22 @@ export default function AdminProductsPage() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe the fragrance notes, character, and details..."
-                className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                className="w-full px-4 py-3 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm"
               />
             </div>
 
             {/* Product Images */}
-            <div className="space-y-4 pt-2 border-t border-neutral-800">
+            <div className="space-y-4 pt-2 border-t border-[var(--adm-border)]">
               <div className="flex items-center justify-between">
-                <label className="block text-xs uppercase tracking-wider text-neutral-300 font-medium">
+                <label className="block text-xs uppercase tracking-wider text-[var(--adm-text)] font-medium">
                   Product Images <span className="text-amber-500">*</span>
                 </label>
-                <span className="text-[11px] text-neutral-500">Click a thumbnail to set it as the Main Image</span>
+                <span className="text-[11px] text-[var(--adm-text-muted)]">Click a thumbnail to set it as the Main Image</span>
               </div>
 
               {/* Upload Button & URL */}
               <div className="flex flex-col sm:flex-row gap-3 items-start">
-                <label className="px-4 py-2.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors cursor-pointer border border-neutral-700 flex items-center gap-2 flex-shrink-0">
+                <label className="px-4 py-2.5 bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] text-[var(--adm-text)] text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors cursor-pointer border border-[var(--adm-border-strong)] flex items-center gap-2 flex-shrink-0">
                   <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
@@ -1036,7 +1056,7 @@ export default function AdminProductsPage() {
                     id="manual-image-url"
                     type="url"
                     placeholder="or paste image URL and press Enter"
-                    className="flex-1 px-4 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-600 focus:outline-none focus:border-amber-500 transition-colors text-sm"
+                    className="flex-1 px-4 py-2.5 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 transition-colors text-sm"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();
@@ -1055,7 +1075,7 @@ export default function AdminProductsPage() {
                         input.value = "";
                       }
                     }}
-                    className="px-3 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-neutral-200 text-xs font-semibold rounded-lg border border-neutral-600 transition-colors flex-shrink-0 cursor-pointer"
+                    className="px-3 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-[var(--adm-text)] text-xs font-semibold rounded-lg border border-neutral-600 transition-colors flex-shrink-0 cursor-pointer"
                   >
                     Add
                   </button>
@@ -1081,7 +1101,7 @@ export default function AdminProductsPage() {
                         className={`relative group rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
                           isMain
                             ? "border-amber-500 shadow-lg shadow-amber-900/30"
-                            : "border-neutral-700 hover:border-amber-500/50"
+                            : "border-[var(--adm-border-strong)] hover:border-amber-500/50"
                         }`}
                       >
                         <div
@@ -1103,7 +1123,7 @@ export default function AdminProductsPage() {
                             e.stopPropagation();
                             handleRemoveImage(url);
                           }}
-                          className="absolute top-1 right-1 w-5 h-5 bg-black/80 hover:bg-red-600 text-white rounded flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                          className="absolute top-1 right-1 w-5 h-5 bg-black/80 hover:bg-red-600 text-[var(--adm-text)] rounded flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                         >
                           ✕
                         </button>
@@ -1125,26 +1145,26 @@ export default function AdminProductsPage() {
             </div>
 
             {/* Featured Option */}
-            <div className="flex items-center gap-6 pt-4 border-t border-neutral-800">
+            <div className="flex items-center gap-6 pt-4 border-t border-[var(--adm-border)]">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={isFeatured}
                   onChange={(e) => setIsFeatured(e.target.checked)}
-                  className="w-4 h-4 rounded text-amber-600 bg-neutral-950 border-neutral-700 focus:ring-amber-500"
+                  className="w-4 h-4 rounded text-amber-600 bg-[var(--adm-card-bg)] border-[var(--adm-border-strong)] focus:ring-amber-500"
                 />
-                <span className="text-xs font-semibold text-neutral-200 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-[var(--adm-text)] uppercase tracking-wider">
                   Featured Product
                 </span>
               </label>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-neutral-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-[var(--adm-border)]">
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-6 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 text-xs font-semibold uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
+                className="px-6 py-2.5 bg-[var(--adm-card-bg)] hover:bg-[var(--adm-hover-bg)] text-[var(--adm-text)] text-xs font-semibold uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -1168,7 +1188,7 @@ export default function AdminProductsPage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center">
           <div className="relative flex-1 max-w-md">
             <svg
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--adm-text-muted)]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -1181,7 +1201,7 @@ export default function AdminProductsPage() {
               placeholder="Search by brand name, signature, or category..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-neutral-900 border border-neutral-800 rounded-xl text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500 text-xs transition-colors"
+              className="w-full pl-10 pr-4 py-2.5 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 text-xs transition-colors"
             />
           </div>
 
@@ -1189,7 +1209,7 @@ export default function AdminProductsPage() {
             <select
               value={selectedCategoryFilter}
               onChange={(e) => setSelectedCategoryFilter(e.target.value)}
-              className="px-3.5 py-2.5 bg-neutral-900 border border-neutral-800 rounded-xl text-neutral-300 text-xs focus:outline-none focus:border-amber-500 transition-colors"
+              className="px-3.5 py-2.5 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl text-[var(--adm-text)] text-xs focus:outline-none focus:border-amber-500 transition-colors"
             >
               <option value="all">All Categories</option>
               {categories.map((c) => (
@@ -1205,24 +1225,24 @@ export default function AdminProductsPage() {
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-16 bg-neutral-900/60 rounded-2xl animate-pulse border border-neutral-800" />
+              <div key={i} className="h-16 bg-[var(--adm-card-bg)] rounded-2xl animate-pulse border border-[var(--adm-border)]" />
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-16 border border-dashed border-neutral-800 rounded-3xl bg-neutral-950/40">
-            <p className="text-neutral-400 text-sm">No products found.</p>
+          <div className="text-center py-16 border border-dashed border-[var(--adm-border)] rounded-3xl bg-[var(--adm-thead-bg)]">
+            <p className="text-[var(--adm-text-muted)] text-sm">No products found.</p>
             <button
               onClick={startCreate}
-              className="mt-4 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white text-xs rounded-xl transition-colors cursor-pointer"
+              className="mt-4 px-4 py-2 bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] text-[var(--adm-text)] text-xs rounded-xl transition-colors cursor-pointer"
             >
               Add New Product
             </button>
           </div>
         ) : (
-          <div className="bg-neutral-950 border border-neutral-800 rounded-2xl overflow-hidden shadow-xl">
+          <div className="bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-2xl overflow-hidden shadow-xl">
             <div className="overflow-x-auto scrollbar-hide">
-              <table className="w-full text-left text-xs text-neutral-300">
-                <thead className="bg-neutral-900/90 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 border-b border-neutral-800">
+              <table className="w-full text-left text-xs text-[var(--adm-text)]">
+                <thead className="bg-[var(--adm-card-bg)] text-[10px] font-semibold uppercase tracking-wider text-[var(--adm-text-muted)] border-b border-[var(--adm-border)]">
                   <tr>
                     <th className="py-3 px-4">Brand Name</th>
                     <th className="py-3 px-4">Our Signature / Product</th>
@@ -1246,10 +1266,10 @@ export default function AdminProductsPage() {
                           ];
 
                     return (
-                      <tr key={p.id} className="hover:bg-neutral-50 transition-colors border-b border-neutral-100">
+                      <tr key={p.id} className="hover:bg-[var(--adm-card-hover)] transition-colors border-b border-[var(--adm-border)]">
                         {/* Brand Name */}
                         <td className="px-4 py-3">
-                          <span className="text-xs font-semibold text-neutral-900">
+                          <span className="text-xs font-semibold text-[var(--adm-text)]">
                             {p.brand_name || "Shaz Al Oud"}
                           </span>
                         </td>
@@ -1265,11 +1285,11 @@ export default function AdminProductsPage() {
                               />
                             </div>
                             <div>
-                              <p className="font-semibold text-neutral-900 text-xs">
+                              <p className="font-semibold text-[var(--adm-text)] text-xs">
                                 {p.our_signature || p.name}
                               </p>
                               {p.our_signature && p.name !== p.our_signature && (
-                                <p className="text-[10px] text-neutral-500 mt-0.5">{p.name}</p>
+                                <p className="text-[10px] text-[var(--adm-text-muted)] mt-0.5">{p.name}</p>
                               )}
                             </div>
                           </div>
@@ -1283,7 +1303,7 @@ export default function AdminProductsPage() {
                                 key={vIdx}
                                 className={`text-[11px] font-mono font-bold px-2 py-0.5 border ${
                                   v.is_in_stock !== false
-                                    ? "bg-neutral-100 border-neutral-300 text-neutral-900"
+                                    ? "bg-[var(--adm-hover-bg)] border-[var(--adm-border-strong)] text-[var(--adm-text)]"
                                     : "bg-red-50 border-red-200 text-red-600 line-through"
                                 }`}
                               >
@@ -1326,7 +1346,7 @@ export default function AdminProductsPage() {
                             <button
                               type="button"
                               onClick={() => startEdit(p)}
-                              className="px-2.5 py-1 text-[11px] font-medium text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 rounded-lg transition-colors cursor-pointer"
+                              className="px-2.5 py-1 text-[11px] font-medium text-[var(--adm-text)] hover:text-[var(--adm-text)] bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] rounded-lg transition-colors cursor-pointer"
                             >
                               Edit
                             </button>
@@ -1354,9 +1374,9 @@ export default function AdminProductsPage() {
       {/* ========================================================================= */}
       {viewingProduct && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-neutral-950 border border-neutral-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-6 max-h-[88vh] overflow-y-auto scrollbar-hide animate-fadeIn">
+          <div className="bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-6 max-h-[88vh] overflow-y-auto scrollbar-hide animate-fadeIn">
             {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-neutral-800 pb-4">
+            <div className="flex items-start justify-between border-b border-[var(--adm-border)] pb-4">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="font-mono text-[10px] font-semibold text-amber-400 bg-amber-950/40 border border-amber-800/50 px-2 py-0.5 rounded-md">
@@ -1368,7 +1388,7 @@ export default function AdminProductsPage() {
                     </span>
                   )}
                 </div>
-                <h2 className="text-xl font-serif text-white mt-1">
+                <h2 className="text-xl font-serif text-[var(--adm-text)] mt-1">
                   {viewingProduct.our_signature || viewingProduct.name}
                   {viewingProduct.name_ar && (
                     <span className="text-sm font-sans text-amber-300 font-normal ml-2">
@@ -1376,14 +1396,14 @@ export default function AdminProductsPage() {
                     </span>
                   )}
                 </h2>
-                <p className="text-xs text-neutral-400 mt-0.5">
-                  Category: <span className="text-neutral-200">{viewingProduct.category?.name || "Uncategorized"}</span>
+                <p className="text-xs text-[var(--adm-text-muted)] mt-0.5">
+                  Category: <span className="text-[var(--adm-text)]">{viewingProduct.category?.name || "Uncategorized"}</span>
                 </p>
               </div>
 
               <button
                 onClick={() => setViewingProduct(null)}
-                className="text-neutral-400 hover:text-white p-1.5 rounded-lg hover:bg-neutral-900 transition-colors cursor-pointer"
+                className="text-[var(--adm-text-muted)] hover:text-[var(--adm-text)] p-1.5 rounded-lg hover:bg-[var(--adm-card-bg)] transition-colors cursor-pointer"
               >
                 ✕
               </button>
@@ -1392,7 +1412,7 @@ export default function AdminProductsPage() {
             {/* Product Images & Info */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div className="sm:col-span-1 space-y-2">
-                <div className="w-full h-40 rounded-xl bg-[#fbf9f6] border border-neutral-800 flex items-center justify-center p-2 overflow-hidden">
+                <div className="w-full h-40 rounded-xl bg-[#fbf9f6] border border-[var(--adm-border)] flex items-center justify-center p-2 overflow-hidden">
                   <img
                     src={viewingProduct.image_url}
                     alt={viewingProduct.name}
@@ -1404,7 +1424,7 @@ export default function AdminProductsPage() {
                     {viewingProduct.images.map((img, idx) => (
                       <div
                         key={idx}
-                        className="w-10 h-10 rounded-lg bg-[#fbf9f6] border border-neutral-800 flex items-center justify-center p-0.5 overflow-hidden flex-shrink-0"
+                        className="w-10 h-10 rounded-lg bg-[#fbf9f6] border border-[var(--adm-border)] flex items-center justify-center p-0.5 overflow-hidden flex-shrink-0"
                       >
                         <img src={img} alt="" className="w-full h-full object-contain" />
                       </div>
@@ -1416,24 +1436,24 @@ export default function AdminProductsPage() {
               <div className="sm:col-span-2 space-y-3">
                 {viewingProduct.description && (
                   <div>
-                    <h4 className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 mb-1">
+                    <h4 className="text-[11px] font-semibold uppercase tracking-wider text-[var(--adm-text-muted)] mb-1">
                       Fragrance Notes &amp; Description
                     </h4>
-                    <p className="text-xs text-neutral-300 leading-relaxed bg-neutral-900/60 p-3 rounded-xl border border-neutral-800">
+                    <p className="text-xs text-[var(--adm-text)] leading-relaxed bg-[var(--adm-card-bg)] p-3 rounded-xl border border-[var(--adm-border)]">
                       {viewingProduct.description}
                     </p>
                   </div>
                 )}
 
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="bg-neutral-900/40 p-2.5 rounded-xl border border-neutral-850">
-                    <span className="text-[10px] uppercase text-neutral-500 block">URL Slug</span>
-                    <span className="font-mono text-neutral-300 text-[11px] truncate block">
+                  <div className="bg-[var(--adm-card-bg)] p-2.5 rounded-xl border border-[var(--adm-border)]">
+                    <span className="text-[10px] uppercase text-[var(--adm-text-muted)] block">URL Slug</span>
+                    <span className="font-mono text-[var(--adm-text)] text-[11px] truncate block">
                       {viewingProduct.slug || "—"}
                     </span>
                   </div>
-                  <div className="bg-neutral-900/40 p-2.5 rounded-xl border border-neutral-850">
-                    <span className="text-[10px] uppercase text-neutral-500 block">Overall Status</span>
+                  <div className="bg-[var(--adm-card-bg)] p-2.5 rounded-xl border border-[var(--adm-border)]">
+                    <span className="text-[10px] uppercase text-[var(--adm-text-muted)] block">Overall Status</span>
                     <span className={`text-[11px] font-medium ${viewingProduct.is_in_stock ? "text-emerald-400" : "text-red-400"}`}>
                       {viewingProduct.is_in_stock ? "In Stock" : "Out of Stock"}
                     </span>
@@ -1443,16 +1463,16 @@ export default function AdminProductsPage() {
             </div>
 
             {/* Volume Variants & Multi-Country Pricing Table */}
-            <div className="space-y-4 pt-3 border-t border-neutral-800">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-neutral-300 flex items-center gap-2">
+            <div className="space-y-4 pt-3 border-t border-[var(--adm-border)]">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--adm-text)] flex items-center gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
                 Volume Variants &amp; Country Pricing
               </h3>
 
               {(!viewingProduct.variants || viewingProduct.variants.length === 0) ? (
-                <div className="bg-neutral-900/50 p-4 rounded-xl border border-neutral-800 text-xs">
+                <div className="bg-[var(--adm-card-bg)] p-4 rounded-xl border border-[var(--adm-border)] text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="font-mono font-bold text-white">{viewingProduct.volume || "30ml"}</span>
+                    <span className="font-mono font-bold text-[var(--adm-text)]">{viewingProduct.volume || "30ml"}</span>
                     <span className="text-amber-400 font-mono font-semibold">{viewingProduct.price} QAR</span>
                   </div>
                 </div>
@@ -1462,10 +1482,10 @@ export default function AdminProductsPage() {
                     const hasPrices = v.prices && Object.keys(v.prices).length > 0;
 
                     return (
-                      <div key={idx} className="bg-neutral-900/40 border border-neutral-800 rounded-xl overflow-hidden">
-                        <div className="bg-neutral-900/80 px-4 py-2 border-b border-neutral-800 flex items-center justify-between">
+                      <div key={idx} className="bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl overflow-hidden">
+                        <div className="bg-[var(--adm-card-bg)] px-4 py-2 border-b border-[var(--adm-border)] flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="font-mono font-bold text-xs text-white bg-neutral-950 px-2 py-0.5 rounded border border-neutral-700">
+                            <span className="font-mono font-bold text-xs text-[var(--adm-text)] bg-[var(--adm-card-bg)] px-2 py-0.5 rounded border border-[var(--adm-border-strong)]">
                               {v.volume}
                             </span>
                             <span className={`text-[10px] font-medium ${v.is_in_stock !== false ? "text-emerald-400" : "text-red-400"}`}>
@@ -1486,7 +1506,7 @@ export default function AdminProductsPage() {
 
                           if (validPriceEntries.length === 0) {
                             return (
-                              <div className="py-3 px-4 text-xs text-neutral-500 bg-neutral-950">
+                              <div className="py-3 px-4 text-xs text-[var(--adm-text-muted)] bg-[var(--adm-card-bg)]">
                                 {countries.length === 0
                                   ? "No countries configured yet. Add countries in Country Management."
                                   : "No country-specific pricing configured for this volume."}
@@ -1496,7 +1516,7 @@ export default function AdminProductsPage() {
 
                           return (
                             <table className="w-full text-left text-xs">
-                              <thead className="bg-neutral-950 text-[10px] font-semibold uppercase tracking-wider text-neutral-500 border-b border-neutral-850">
+                              <thead className="bg-[var(--adm-card-bg)] text-[10px] font-semibold uppercase tracking-wider text-[var(--adm-text-muted)] border-b border-[var(--adm-border)]">
                                 <tr>
                                   <th className="py-2 px-4">Country</th>
                                   <th className="py-2 px-4">Currency</th>
@@ -1515,25 +1535,25 @@ export default function AdminProductsPage() {
                                   const displaySymbol = countryObj?.currency_symbol || "";
 
                                   return (
-                                    <tr key={code} className="hover:bg-neutral-900/30 transition-colors">
-                                      <td className="py-2 px-4 font-medium text-white text-xs">
+                                    <tr key={code} className="hover:bg-[var(--adm-card-bg)] transition-colors">
+                                      <td className="py-2 px-4 font-medium text-[var(--adm-text)] text-xs">
                                         <div className="flex items-center gap-2">
-                                          <span className="w-6 h-6 rounded bg-neutral-950 border border-neutral-800 flex items-center justify-center font-mono font-bold text-[10px] text-amber-400 flex-shrink-0">
+                                          <span className="w-6 h-6 rounded bg-[var(--adm-card-bg)] border border-[var(--adm-border)] flex items-center justify-center font-mono font-bold text-[10px] text-amber-400 flex-shrink-0">
                                             {countryObj?.code || code}
                                           </span>
                                           <span>{displayName}</span>
                                         </div>
                                       </td>
-                                      <td className="py-2 px-4 font-mono text-xs text-neutral-300">
+                                      <td className="py-2 px-4 font-mono text-xs text-[var(--adm-text)]">
                                         <span className="text-amber-400 font-semibold">{displayCurrency}</span>
                                         {displaySymbol && (
-                                          <span className="text-neutral-500 text-[11px] ml-1.5">{displaySymbol}</span>
+                                          <span className="text-[var(--adm-text-muted)] text-[11px] ml-1.5">{displaySymbol}</span>
                                         )}
                                       </td>
                                       <td className="py-2 px-4 font-mono text-amber-400 font-semibold text-xs">
                                         {Number(cp.price).toFixed(0)} {displayCurrency}
                                       </td>
-                                      <td className="py-2 px-4 font-mono text-neutral-500 text-xs">
+                                      <td className="py-2 px-4 font-mono text-[var(--adm-text-muted)] text-xs">
                                         {cp.original_price != null ? (
                                           <span className="line-through">{Number(cp.original_price).toFixed(0)} {displayCurrency}</span>
                                         ) : (
@@ -1566,11 +1586,11 @@ export default function AdminProductsPage() {
             </div>
 
             {/* Modal Actions */}
-            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-neutral-800">
+            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-[var(--adm-border)]">
               <button
                 type="button"
                 onClick={() => setViewingProduct(null)}
-                className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 text-xs font-semibold uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
+                className="px-4 py-2 bg-[var(--adm-card-bg)] hover:bg-[var(--adm-hover-bg)] text-[var(--adm-text)] text-xs font-semibold uppercase tracking-wider rounded-xl transition-colors cursor-pointer"
               >
                 Close
               </button>

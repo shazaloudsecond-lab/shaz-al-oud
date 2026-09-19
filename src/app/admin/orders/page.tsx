@@ -147,10 +147,10 @@ export default function AdminOrdersPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl font-medium text-white tracking-wide">
+          <h2 className="text-xl font-medium text-[var(--adm-text)] tracking-wide">
             Orders ({selectedCountry?.name || "Qatar"})
           </h2>
-          <p className="text-sm text-neutral-400">
+          <p className="text-sm text-[var(--adm-text-muted)]">
             {countryOrders.length} total order{countryOrders.length !== 1 ? "s" : ""} in {selectedCountry?.name || "Qatar"} •{" "}
             <span className="text-amber-400">{pendingCount} pending</span>
           </p>
@@ -158,7 +158,7 @@ export default function AdminOrdersPage() {
         <button
           type="button"
           onClick={fetchOrders}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors cursor-pointer border border-neutral-700"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--adm-hover-bg)] hover:bg-[var(--adm-hover-bg)] text-[var(--adm-text)] text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors cursor-pointer border border-[var(--adm-border-strong)]"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -168,56 +168,80 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Stats Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           {
-            label: "Total Orders",
+            title: "Total Orders",
             value: countryOrders.length.toString(),
-            cardClass: "admin-stat-card-blue",
-            bgColor: "#dbeafe",
-            borderColor: "#93c5fd",
-            titleColor: "#1e40af",
-            valueColor: "#1d4ed8",
+            iconBg: "#dbeafe",
+            iconColor: "#2563eb",
+            icon: (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            ),
           },
           {
-            label: `Total Revenue (${currencyLabel})`,
+            title: `Total Revenue`,
             value: `${totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencyLabel}`,
-            cardClass: "admin-stat-card-emerald",
-            bgColor: "#dcfce7",
-            borderColor: "#86efac",
-            titleColor: "#166534",
-            valueColor: "#15803d",
+            iconBg: "#dcfce7",
+            iconColor: "#16a34a",
+            icon: (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            ),
           },
           {
-            label: "Pending",
+            title: "Pending Orders",
             value: pendingCount.toString(),
-            cardClass: "admin-stat-card-amber",
-            bgColor: "#fef3c7",
-            borderColor: "#fde047",
-            titleColor: "#854d0e",
-            valueColor: "#a16207",
+            iconBg: "#fef3c7",
+            iconColor: "#d97706",
+            icon: (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            ),
           },
           {
-            label: "Completed",
+            title: "Completed Orders",
             value: completedCount.toString(),
-            cardClass: "admin-stat-card-purple",
-            bgColor: "#f3e8ff",
-            borderColor: "#d8b4fe",
-            titleColor: "#6b21a8",
-            valueColor: "#7e22ce",
+            iconBg: "#f3e8ff",
+            iconColor: "#7c3aed",
+            icon: (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            ),
           },
         ].map((stat) => (
           <div
-            key={stat.label}
-            style={{ backgroundColor: stat.bgColor, borderColor: stat.borderColor }}
-            className={`admin-stat-card ${stat.cardClass} p-4 border transition-colors shadow-sm`}
+            key={stat.title}
+            className="p-5 border flex items-center gap-4 transition-shadow hover:shadow-md"
+            style={{
+              backgroundColor: "var(--adm-card-bg)",
+              borderColor: "var(--adm-border)",
+              borderRadius: "4px",
+              boxShadow: "var(--adm-shadow)",
+            }}
           >
-            <p style={{ color: stat.titleColor }} className="text-[10px] uppercase tracking-wider font-bold">
-              {stat.label}
-            </p>
-            <p style={{ color: stat.valueColor }} className="text-xl font-extrabold mt-1.5 font-mono">
-              {stat.value}
-            </p>
+            {/* Colored icon box */}
+            <div
+              className="w-12 h-12 flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: stat.iconBg, color: stat.iconColor, borderRadius: "4px" }}
+            >
+              {stat.icon}
+            </div>
+
+            {/* Content */}
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium truncate" style={{ color: "var(--adm-text-muted)" }}>
+                {stat.title}
+              </p>
+              <p className="text-xl font-extrabold mt-0.5 font-mono leading-tight" style={{ color: "var(--adm-text)" }}>
+                {stat.value}
+              </p>
+            </div>
           </div>
         ))}
       </div>
@@ -241,12 +265,12 @@ export default function AdminOrdersPage() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={`Search ${selectedCountry?.name || "Qatar"} orders by #, customer, phone, city...`}
-          className="flex-1 px-4 py-2.5 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-100 placeholder-neutral-500 focus:outline-none focus:border-amber-500 text-sm transition-colors"
+          className="flex-1 px-4 py-2.5 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-lg text-[var(--adm-text)] placeholder-[var(--adm-text-sub)] focus:outline-none focus:border-amber-500 text-sm transition-colors"
         />
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="px-4 py-2.5 bg-neutral-900 border border-neutral-800 rounded-lg text-neutral-200 focus:outline-none focus:border-amber-500 text-sm transition-colors cursor-pointer"
+          className="px-4 py-2.5 bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-lg text-[var(--adm-text)] focus:outline-none focus:border-amber-500 text-sm transition-colors cursor-pointer"
         >
           <option value="all">All Statuses</option>
           {STATUS_OPTIONS.map((s) => (
@@ -258,17 +282,17 @@ export default function AdminOrdersPage() {
       </div>
 
       {/* Orders List */}
-      <div className="bg-neutral-900/80 border border-neutral-800/80 rounded-xl overflow-hidden">
+      <div className="bg-[var(--adm-card-bg)] border border-[var(--adm-border)] rounded-xl overflow-hidden">
         {loading ? (
-          <div className="p-10 text-center text-neutral-500 animate-pulse">
-            <svg className="w-8 h-8 mx-auto text-neutral-700 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+          <div className="p-10 text-center text-[var(--adm-text-muted)] animate-pulse">
+            <svg className="w-8 h-8 mx-auto text-[var(--adm-text-sub)] mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
             <p className="text-sm">Fetching orders...</p>
           </div>
         ) : filteredOrders.length === 0 ? (
-          <div className="p-10 text-center text-neutral-500">
-            <svg className="w-8 h-8 mx-auto text-neutral-700 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+          <div className="p-10 text-center text-[var(--adm-text-muted)]">
+            <svg className="w-8 h-8 mx-auto text-[var(--adm-text-sub)] mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
             <p className="text-sm">
@@ -279,8 +303,8 @@ export default function AdminOrdersPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-neutral-300">
-              <thead className="bg-neutral-950/60 text-[11px] uppercase tracking-wider text-neutral-400 border-b border-neutral-800">
+            <table className="w-full text-left text-sm text-[var(--adm-text)]">
+              <thead className="bg-[var(--adm-thead-bg)] text-[11px] uppercase tracking-wider text-[var(--adm-text-muted)] border-b border-[var(--adm-border)]">
                 <tr>
                   <th className="px-5 py-3.5">Order #</th>
                   <th className="px-5 py-3.5">Customer</th>
@@ -291,38 +315,38 @@ export default function AdminOrdersPage() {
                   <th className="px-5 py-3.5">Details</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-800/60">
+              <tbody className="divide-y divide-[var(--adm-border)]">
                 {filteredOrders.map((order) => (
                   <React.Fragment key={order.id}>
-                    <tr className="hover:bg-neutral-800/30 transition-colors">
+                    <tr className="hover:bg-[var(--adm-card-hover)] transition-colors">
                       <td className="px-5 py-4 font-mono text-xs text-amber-400/90 whitespace-nowrap">
                         {order.order_number}
                       </td>
                       <td className="px-5 py-4">
                         <div>
-                          <p className="font-medium text-neutral-200 text-sm">{order.customer_name}</p>
-                          <p className="text-xs text-neutral-500 mt-0.5">{order.customer_phone}</p>
+                          <p className="font-medium text-[var(--adm-text)] text-sm">{order.customer_name}</p>
+                          <p className="text-xs text-[var(--adm-text-muted)] mt-0.5">{order.customer_phone}</p>
                           {order.customer_email && (
-                            <p className="text-xs text-neutral-600 mt-0.5">{order.customer_email}</p>
+                            <p className="text-xs text-[var(--adm-text-sub)] mt-0.5">{order.customer_email}</p>
                           )}
                         </div>
                       </td>
                       <td className="px-5 py-4">
-                        <div className="font-mono font-bold text-black text-sm">
+                        <div className="font-mono font-bold text-[var(--adm-text)] text-sm">
                           {Number(order.total_amount).toFixed(2)} {order.currency_code || currencyLabel}
                         </div>
-                        <div className="text-[10px] text-neutral-600 font-mono font-medium mt-0.5 uppercase">
+                        <div className="text-[10px] text-[var(--adm-text-sub)] font-mono font-medium mt-0.5 uppercase">
                           {order.country_name || selectedCountry?.name || "Qatar"}
                         </div>
                       </td>
                       <td className="px-5 py-4">
                         <span
-                          className={`inline-flex items-center text-xs font-bold uppercase tracking-wider ${statusColors[order.status] || "text-neutral-700 font-bold"}`}
+                          className={`inline-flex items-center text-xs font-bold uppercase tracking-wider ${statusColors[order.status] || "text-[var(--adm-text-sub)] font-bold"}`}
                         >
                           {order.status}
                         </span>
                       </td>
-                      <td className="px-5 py-4 text-xs text-neutral-400 whitespace-nowrap">
+                      <td className="px-5 py-4 text-xs text-[var(--adm-text-muted)] whitespace-nowrap">
                         {new Date(order.created_at).toLocaleDateString("en-US", {
                           day: "numeric",
                           month: "short",
@@ -334,7 +358,7 @@ export default function AdminOrdersPage() {
                           value={order.status}
                           disabled={updatingId === order.id}
                           onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
-                          className="px-3 py-1.5 bg-neutral-800 border border-neutral-700 rounded-lg text-neutral-200 focus:outline-none focus:border-amber-500 text-xs cursor-pointer disabled:opacity-50 transition-colors"
+                          className="px-3 py-1.5 bg-[var(--adm-hover-bg)] border border-[var(--adm-border-strong)] rounded-lg text-[var(--adm-text)] focus:outline-none focus:border-amber-500 text-xs cursor-pointer disabled:opacity-50 transition-colors"
                         >
                           {STATUS_OPTIONS.map((s) => (
                             <option key={s} value={s}>
@@ -357,7 +381,7 @@ export default function AdminOrdersPage() {
                           <Link
                             href={`/orders/${order.order_number}`}
                             target="_blank"
-                            className="text-xs text-neutral-400 hover:text-white transition-colors"
+                            className="text-xs text-[var(--adm-text-muted)] hover:text-[var(--adm-text)] transition-colors"
                           >
                             ↗
                           </Link>
@@ -368,26 +392,26 @@ export default function AdminOrdersPage() {
                     {/* Expanded Order Row */}
                     {expandedOrderId === order.id && (
                       <tr>
-                        <td colSpan={7} className="px-5 py-5 bg-neutral-950/60 border-t border-neutral-800/60">
+                        <td colSpan={7} className="px-5 py-5 bg-[var(--adm-thead-bg)] border-t border-[var(--adm-border)]">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Items */}
                             <div>
-                              <p className="text-[10px] uppercase tracking-wider text-neutral-400 mb-3">
+                              <p className="text-[10px] uppercase tracking-wider text-[var(--adm-text-muted)] mb-3">
                                 Items Ordered ({Array.isArray(order.items) ? order.items.length : 0})
                               </p>
                               <div className="space-y-2.5">
                                 {Array.isArray(order.items) && order.items.map((item, idx) => (
-                                  <div key={idx} className="flex items-center gap-3 p-2.5 bg-neutral-900 rounded-lg border border-neutral-800/60">
+                                  <div key={idx} className="flex items-center gap-3 p-2.5 bg-[var(--adm-card-bg)] rounded-lg border border-[var(--adm-border)]">
                                     {item.image_url && (
                                       <img
                                         src={item.image_url}
                                         alt={item.name}
-                                        className="w-10 h-10 object-contain bg-neutral-800 rounded-lg p-1 flex-shrink-0"
+                                        className="w-10 h-10 object-contain bg-[var(--adm-hover-bg)] rounded-lg p-1 flex-shrink-0"
                                       />
                                     )}
                                     <div className="flex-1 min-w-0">
-                                      <p className="text-xs font-medium text-neutral-200 truncate">{item.name}</p>
-                                      <p className="text-[10px] text-neutral-500">
+                                      <p className="text-xs font-medium text-[var(--adm-text)] truncate">{item.name}</p>
+                                      <p className="text-[10px] text-[var(--adm-text-muted)]">
                                         {item.volume ? `${item.volume} • ` : ""}
                                         {item.quantity} × {Number(item.price).toFixed(2)} {order.currency_code || currencyLabel}
                                       </p>
@@ -398,9 +422,9 @@ export default function AdminOrdersPage() {
                                   </div>
                                 ))}
                               </div>
-                              <div className="flex justify-between items-center mt-3 pt-2.5 border-t border-neutral-800">
-                                <p className="text-xs text-neutral-400">Total</p>
-                                <p className="text-sm font-bold text-white font-mono">
+                              <div className="flex justify-between items-center mt-3 pt-2.5 border-t border-[var(--adm-border)]">
+                                <p className="text-xs text-[var(--adm-text-muted)]">Total</p>
+                                <p className="text-sm font-bold text-[var(--adm-text)] font-mono">
                                   {Number(order.total_amount).toFixed(2)} {order.currency_code || currencyLabel}
                                 </p>
                               </div>
@@ -408,27 +432,27 @@ export default function AdminOrdersPage() {
 
                             {/* Delivery Details */}
                             <div className="space-y-3">
-                              <p className="text-[10px] uppercase tracking-wider text-neutral-400 mb-1">
+                              <p className="text-[10px] uppercase tracking-wider text-[var(--adm-text-muted)] mb-1">
                                 Delivery Details
                               </p>
-                              <div className="p-4 bg-neutral-900 rounded-lg border border-neutral-800/60 space-y-2.5 text-xs">
+                              <div className="p-4 bg-[var(--adm-card-bg)] rounded-lg border border-[var(--adm-border)] space-y-2.5 text-xs">
                                 <div className="flex gap-3">
-                                  <span className="text-neutral-500 w-20 flex-shrink-0">Name</span>
-                                  <span className="text-neutral-200">{order.customer_name}</span>
+                                  <span className="text-[var(--adm-text-muted)] w-20 flex-shrink-0">Name</span>
+                                  <span className="text-[var(--adm-text)]">{order.customer_name}</span>
                                 </div>
                                 <div className="flex gap-3">
-                                  <span className="text-neutral-500 w-20 flex-shrink-0">Phone</span>
-                                  <span className="text-neutral-200">{order.customer_phone}</span>
+                                  <span className="text-[var(--adm-text-muted)] w-20 flex-shrink-0">Phone</span>
+                                  <span className="text-[var(--adm-text)]">{order.customer_phone}</span>
                                 </div>
                                 {order.customer_email && (
                                   <div className="flex gap-3">
-                                    <span className="text-neutral-500 w-20 flex-shrink-0">Email</span>
-                                    <span className="text-neutral-200 truncate">{order.customer_email}</span>
+                                    <span className="text-[var(--adm-text-muted)] w-20 flex-shrink-0">Email</span>
+                                    <span className="text-[var(--adm-text)] truncate">{order.customer_email}</span>
                                   </div>
                                 )}
                                 <div className="flex gap-3">
-                                  <span className="text-neutral-500 w-20 flex-shrink-0">Address</span>
-                                  <span className="text-neutral-200">
+                                  <span className="text-[var(--adm-text-muted)] w-20 flex-shrink-0">Address</span>
+                                  <span className="text-[var(--adm-text)]">
                                     {order.delivery_address}, {order.delivery_city}
                                     {order.delivery_state ? `, ${order.delivery_state}` : ""}
                                     {order.delivery_postal_code ? ` - ${order.delivery_postal_code}` : ""}
@@ -436,7 +460,7 @@ export default function AdminOrdersPage() {
                                 </div>
                                 {order.delivery_slot && (
                                   <div className="flex gap-3">
-                                    <span className="text-neutral-500 w-20 flex-shrink-0">Time Slot</span>
+                                    <span className="text-[var(--adm-text-muted)] w-20 flex-shrink-0">Time Slot</span>
                                     <span className="text-amber-400 font-mono font-medium">{order.delivery_slot}</span>
                                   </div>
                                 )}
