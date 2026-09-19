@@ -76,12 +76,68 @@ body::-webkit-scrollbar {
 }
 
 /* ==========================================================================
-   ADMIN PANEL THEME (Pure White & Pure Black, Zero Border Radius, White Sidebar)
+   ADMIN PANEL THEME — CSS Custom Properties (Light + Dark Mode)
    ========================================================================== */
+
+/* --- Light Mode Tokens (default) --- */
+.admin-theme {
+  --adm-bg:             #fafafa;
+  --adm-sidebar-bg:     #ffffff;
+  --adm-header-bg:      #ffffff;
+  --adm-card-bg:        #ffffff;
+  --adm-card-hover:     #f4f4f5;
+  --adm-text:           #18181b;
+  --adm-text-muted:     #71717a;
+  --adm-text-sub:       #a1a1aa;
+  --adm-border:         #f4f4f5;
+  --adm-border-strong:  #e4e4e7;
+  --adm-active-bg:      #18181b;
+  --adm-active-text:    #ffffff;
+  --adm-hover-bg:       #f4f4f5;
+  --adm-input-bg:       #ffffff;
+  --adm-input-text:     #18181b;
+  --adm-input-border:   #e4e4e7;
+  --adm-input-focus:    #a1a1aa;
+  --adm-thead-bg:       #fafafa;
+  --adm-section-label:  #a1a1aa;
+  --adm-logo-area-bg:   #18181b;
+  --adm-shadow:         0 1px 2px 0 rgba(0,0,0,0.04);
+  --adm-shadow-md:      0 4px 6px -1px rgba(0,0,0,0.04), 0 2px 4px -2px rgba(0,0,0,0.02);
+  --adm-radius:         8px;
+}
+
+/* --- Dark Mode Tokens --- */
+.admin-theme.admin-dark {
+  --adm-bg:             #0f172a;
+  --adm-sidebar-bg:     #1e293b;
+  --adm-header-bg:      #1e293b;
+  --adm-card-bg:        #1e293b;
+  --adm-card-hover:     #273549;
+  --adm-text:           #f1f5f9;
+  --adm-text-muted:     #94a3b8;
+  --adm-text-sub:       #64748b;
+  --adm-border:         #334155;
+  --adm-border-strong:  #475569;
+  --adm-active-bg:      #f1f5f9;
+  --adm-active-text:    #0f172a;
+  --adm-hover-bg:       #273549;
+  --adm-input-bg:       #0f172a;
+  --adm-input-text:     #f1f5f9;
+  --adm-input-border:   #334155;
+  --adm-input-focus:    #475569;
+  --adm-thead-bg:       #162032;
+  --adm-section-label:  #475569;
+  --adm-logo-area-bg:   #0f172a;
+  --adm-shadow:         0 1px 3px 0 rgba(0,0,0,0.4), 0 1px 2px -1px rgba(0,0,0,0.3);
+  --adm-shadow-md:      0 4px 6px -1px rgba(0,0,0,0.5), 0 2px 4px -2px rgba(0,0,0,0.4);
+}
+
+/* --- Reset & Base --- */
 .admin-theme,
 .admin-theme * {
-  border-radius: 0px !important;
+  border-radius: var(--adm-radius) !important;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  box-sizing: border-box;
 }
 
 .admin-theme .font-mono,
@@ -90,76 +146,62 @@ body::-webkit-scrollbar {
 }
 
 .admin-theme {
-  background-color: #ffffff !important;
-  color: #000000 !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  background-color: var(--adm-bg) !important;
+  color: var(--adm-text) !important;
 }
 
 .admin-theme main {
-  background-color: #f8fafc !important;
-  color: #000000 !important;
+  background-color: var(--adm-bg) !important;
+  color: var(--adm-text) !important;
 }
 
-/* Headings & Texts in admin */
+/* --- Headings & Text --- */
 .admin-theme h1,
 .admin-theme h2,
 .admin-theme h3,
 .admin-theme h4,
 .admin-theme h5,
 .admin-theme h6 {
-  color: #000000 !important;
+  color: var(--adm-text) !important;
 }
 
-.admin-theme p,
-.admin-theme span:not([class*="bg-black"]):not([class*="text-white"]):not([class*="text-emerald"]):not([class*="text-green"]):not([class*="text-red"]):not([class*="text-orange"]):not([class*="text-yellow"]):not([class*="text-amber"]):not([class*="text-blue"]) {
-  color: #1f2937;
-}
-
+/* --- Status / Accent Colors (preserved in both modes) --- */
 .admin-theme .text-orange-500,
-.admin-theme [class*="text-orange"] {
-  color: #f97316 !important;
-}
-
+.admin-theme [class*="text-orange"] { color: #f97316 !important; }
 .admin-theme .text-yellow-500,
-.admin-theme [class*="text-yellow"] {
-  color: #eab308 !important;
-}
-
+.admin-theme [class*="text-yellow"] { color: #eab308 !important; }
 .admin-theme .text-emerald-600,
 .admin-theme [class*="text-emerald"],
-.admin-theme [class*="text-green"] {
-  color: #059669 !important;
-}
-
+.admin-theme [class*="text-green"]  { color: #059669 !important; }
 .admin-theme .text-red-600,
-.admin-theme [class*="text-red"] {
-  color: #dc2626 !important;
-}
+.admin-theme [class*="text-red"]    { color: #dc2626 !important; }
+.admin-theme [class*="text-amber"]  { color: #d97706 !important; }
+.admin-theme [class*="text-blue"]   { color: #2563eb !important; }
+.admin-theme [class*="text-purple"] { color: #7c3aed !important; }
 
+/* --- Labels --- */
 .admin-theme label:not([class*="cursor-pointer"]):not([class*="bg-"]):not(:has(input[type="file"])) {
-  color: #000000 !important;
+  color: var(--adm-text) !important;
   font-weight: 600 !important;
 }
 
-/* Upload Buttons & File Input Action Labels across all admin components */
+/* --- Upload / File Labels --- */
 .admin-theme label:has(input[type="file"]),
 .admin-theme label[class*="bg-neutral-800"],
 .admin-theme label[class*="bg-neutral-900"],
 .admin-theme label[class*="bg-black"],
 .admin-theme label[class*="cursor-pointer"]:not(:has(input[type="checkbox"])):not(:has(input[type="radio"])) {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border-color: #000000 !important;
+  background-color: var(--adm-active-bg) !important;
+  color: var(--adm-active-text) !important;
+  border-color: var(--adm-active-bg) !important;
 }
-
 .admin-theme label:has(input[type="file"]) *,
 .admin-theme label[class*="bg-neutral-800"] *,
 .admin-theme label[class*="bg-neutral-900"] *,
 .admin-theme label[class*="bg-black"] *,
 .admin-theme label[class*="cursor-pointer"]:not(:has(input[type="checkbox"])):not(:has(input[type="radio"])) * {
-  color: #ffffff !important;
+  color: var(--adm-active-text) !important;
 }
-
 .admin-theme label:has(input[type="file"]) svg,
 .admin-theme label[class*="bg-neutral-800"] svg,
 .admin-theme label[class*="bg-neutral-900"] svg,
@@ -167,371 +209,303 @@ body::-webkit-scrollbar {
 .admin-theme label[class*="cursor-pointer"]:not(:has(input[type="checkbox"])):not(:has(input[type="radio"])) svg {
   color: #fbbf24 !important;
 }
-
 .admin-theme label:has(input[type="file"]):hover,
 .admin-theme label[class*="bg-neutral-800"]:hover,
 .admin-theme label[class*="bg-neutral-900"]:hover,
 .admin-theme label[class*="bg-black"]:hover,
 .admin-theme label[class*="cursor-pointer"]:not(:has(input[type="checkbox"])):not(:has(input[type="radio"])):hover {
-  background-color: #262626 !important;
-  color: #ffffff !important;
+  opacity: 0.88;
 }
 
-/* Sidebar styling (White background, Black selected item) */
+/* --- Sidebar --- */
 .admin-theme aside {
-  background-color: #ffffff !important;
-  border-color: #e5e7eb !important;
-  color: #000000 !important;
+  background-color: var(--adm-sidebar-bg) !important;
+  border-color: var(--adm-border) !important;
+  color: var(--adm-text) !important;
 }
 
 .admin-theme aside .admin-sidebar-brand,
 .admin-theme aside div.admin-sidebar-brand {
-  background-color: #000000 !important;
-  border-bottom-color: #171717 !important;
+  background-color: var(--adm-logo-area-bg) !important;
+  border-bottom-color: var(--adm-border) !important;
 }
 
 .admin-theme aside p,
 .admin-theme aside span,
 .admin-theme aside svg {
-  color: #374151;
+  color: var(--adm-text-muted);
 }
 
 .admin-theme aside nav a,
 .admin-theme aside nav button {
   background-color: transparent;
-  color: #374151;
+  color: var(--adm-text-muted);
 }
-
 .admin-theme aside nav a *,
 .admin-theme aside nav button * {
   background-color: transparent !important;
 }
 
-/* Inactive nav hover in sidebar */
-.admin-theme aside nav a:not([class*="bg-black"]):hover,
-.admin-theme aside nav button:not([class*="bg-black"]):hover {
-  background-color: #f3f4f6 !important;
-  color: #000000 !important;
+/* Inactive hover */
+.admin-theme aside nav a:not([class*="bg-black"]):not(.admin-nav-active):hover,
+.admin-theme aside nav button:not([class*="bg-black"]):not(.admin-nav-active):hover {
+  background-color: var(--adm-hover-bg) !important;
+  color: var(--adm-text) !important;
 }
-
-.admin-theme aside nav a:not([class*="bg-black"]):hover *,
-.admin-theme aside nav button:not([class*="bg-black"]):hover * {
+.admin-theme aside nav a:not([class*="bg-black"]):not(.admin-nav-active):hover *,
+.admin-theme aside nav button:not([class*="bg-black"]):not(.admin-nav-active):hover * {
   background-color: transparent !important;
-  color: #000000 !important;
+  color: var(--adm-text) !important;
 }
 
-/* Active black nav item in sidebar */
+/* Active nav item */
 .admin-theme aside nav a[class*="bg-black"],
-.admin-theme aside nav button[class*="bg-black"] {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border-color: #000000 !important;
+.admin-theme aside nav button[class*="bg-black"],
+.admin-theme aside nav a.admin-nav-active,
+.admin-theme aside nav button.admin-nav-active {
+  background-color: var(--adm-active-bg) !important;
+  color: var(--adm-active-text) !important;
 }
-
 .admin-theme aside nav a[class*="bg-black"] *,
-.admin-theme aside nav button[class*="bg-black"] * {
+.admin-theme aside nav button[class*="bg-black"] *,
+.admin-theme aside nav a.admin-nav-active *,
+.admin-theme aside nav button.admin-nav-active * {
   background-color: transparent !important;
-  color: #ffffff !important;
+  color: var(--adm-active-text) !important;
 }
 
-/* Pure white text on ANY black background / badge / button across entire admin */
-.admin-theme button[class*="bg-black"],
-.admin-theme a[class*="bg-black"],
-.admin-theme span[class*="bg-black"],
-.admin-theme div[class*="bg-black"] {
-  color: #ffffff !important;
-}
-
-/* Top Header (Black Background Theme) */
+/* --- Header --- */
 .admin-theme header {
-  background-color: #000000 !important;
-  border-bottom: 1px solid #262626 !important;
-  color: #ffffff !important;
+  background-color: var(--adm-header-bg) !important;
+  border-bottom: 1px solid var(--adm-border) !important;
+  color: var(--adm-text) !important;
 }
-
 .admin-theme header h1 {
-  color: #ffffff !important;
+  color: var(--adm-text) !important;
   font-weight: 700 !important;
 }
+.admin-theme header a { color: var(--adm-text) !important; }
+.admin-theme header a:hover { color: var(--adm-text-muted) !important; }
 
-.admin-theme header a,
-.admin-theme header a * {
-  color: #ffffff !important;
-}
-
-.admin-theme header a:hover,
-.admin-theme header a:hover * {
-  color: #fbbf24 !important;
-}
-
-.admin-theme aside .admin-sidebar-brand {
-  background-color: #000000 !important;
-  border-bottom: 1px solid #262626 !important;
-  border-right: 1px solid #262626 !important;
-}
-
-/* All Cards, Boxes, Panels */
+/* --- Cards / Boxes / Panels --- */
 .admin-theme div[class*="bg-neutral-900"]:not(.admin-stat-card),
 .admin-theme div[class*="bg-neutral-950"]:not(.admin-stat-card),
 .admin-theme div[class*="bg-neutral-800"]:not(.admin-stat-card),
 .admin-theme section[class*="bg-neutral-900"],
 .admin-theme section[class*="bg-neutral-950"] {
-  background-color: #ffffff !important;
-  border-color: #e5e7eb !important;
-  color: #000000 !important;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05) !important;
+  background-color: var(--adm-card-bg) !important;
+  border-color: var(--adm-border) !important;
+  color: var(--adm-text) !important;
+  box-shadow: var(--adm-shadow) !important;
 }
 
-/* Metric Stats Cards (Distinct Visible Box Colors) */
+/* --- Stat Cards --- */
 .admin-theme .admin-stat-card-emerald {
   background-color: #d1fae5 !important;
   border: 1px solid #6ee7b7 !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
 }
-.admin-theme .admin-stat-card-emerald p:first-child {
-  color: #065f46 !important;
-  font-weight: 700 !important;
+.admin-theme.admin-dark .admin-stat-card-emerald {
+  background-color: #064e3b !important;
+  border: 1px solid #065f46 !important;
 }
+.admin-theme .admin-stat-card-emerald p:first-child { color: #065f46 !important; font-weight: 700 !important; }
+.admin-theme.admin-dark .admin-stat-card-emerald p:first-child { color: #6ee7b7 !important; }
 .admin-theme .admin-stat-card-emerald p[class*="text-2xl"],
-.admin-theme .admin-stat-card-emerald p[class*="text-xl"] {
-  color: #047857 !important;
-  font-weight: 800 !important;
-}
-.admin-theme .admin-stat-card-emerald span {
-  color: #065f46 !important;
-  font-weight: 600 !important;
-}
+.admin-theme .admin-stat-card-emerald p[class*="text-xl"]  { color: #047857 !important; font-weight: 800 !important; }
+.admin-theme.admin-dark .admin-stat-card-emerald p[class*="text-2xl"],
+.admin-theme.admin-dark .admin-stat-card-emerald p[class*="text-xl"] { color: #34d399 !important; }
+.admin-theme .admin-stat-card-emerald span { color: #065f46 !important; font-weight: 600 !important; }
+.admin-theme.admin-dark .admin-stat-card-emerald span { color: #6ee7b7 !important; }
 
 .admin-theme .admin-stat-card-blue {
   background-color: #dbeafe !important;
   border: 1px solid #93c5fd !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
 }
-.admin-theme .admin-stat-card-blue p:first-child {
-  color: #1e40af !important;
-  font-weight: 700 !important;
+.admin-theme.admin-dark .admin-stat-card-blue {
+  background-color: #1e3a5f !important;
+  border: 1px solid #1e40af !important;
 }
+.admin-theme .admin-stat-card-blue p:first-child { color: #1e40af !important; font-weight: 700 !important; }
+.admin-theme.admin-dark .admin-stat-card-blue p:first-child { color: #93c5fd !important; }
 .admin-theme .admin-stat-card-blue p[class*="text-2xl"],
-.admin-theme .admin-stat-card-blue p[class*="text-xl"] {
-  color: #1d4ed8 !important;
-  font-weight: 800 !important;
-}
-.admin-theme .admin-stat-card-blue span {
-  color: #1e40af !important;
-  font-weight: 600 !important;
-}
+.admin-theme .admin-stat-card-blue p[class*="text-xl"]  { color: #1d4ed8 !important; font-weight: 800 !important; }
+.admin-theme.admin-dark .admin-stat-card-blue p[class*="text-2xl"],
+.admin-theme.admin-dark .admin-stat-card-blue p[class*="text-xl"] { color: #60a5fa !important; }
+.admin-theme .admin-stat-card-blue span { color: #1e40af !important; font-weight: 600 !important; }
+.admin-theme.admin-dark .admin-stat-card-blue span { color: #93c5fd !important; }
 
 .admin-theme .admin-stat-card-purple {
   background-color: #ede9fe !important;
   border: 1px solid #c4b5fd !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
 }
-.admin-theme .admin-stat-card-purple p:first-child {
-  color: #5b21b6 !important;
-  font-weight: 700 !important;
+.admin-theme.admin-dark .admin-stat-card-purple {
+  background-color: #2e1065 !important;
+  border: 1px solid #5b21b6 !important;
 }
+.admin-theme .admin-stat-card-purple p:first-child { color: #5b21b6 !important; font-weight: 700 !important; }
+.admin-theme.admin-dark .admin-stat-card-purple p:first-child { color: #c4b5fd !important; }
 .admin-theme .admin-stat-card-purple p[class*="text-2xl"],
-.admin-theme .admin-stat-card-purple p[class*="text-xl"] {
-  color: #6d28d9 !important;
-  font-weight: 800 !important;
-}
-.admin-theme .admin-stat-card-purple span {
-  color: #5b21b6 !important;
-  font-weight: 600 !important;
-}
+.admin-theme .admin-stat-card-purple p[class*="text-xl"]  { color: #6d28d9 !important; font-weight: 800 !important; }
+.admin-theme.admin-dark .admin-stat-card-purple p[class*="text-2xl"],
+.admin-theme.admin-dark .admin-stat-card-purple p[class*="text-xl"] { color: #a78bfa !important; }
+.admin-theme .admin-stat-card-purple span { color: #5b21b6 !important; font-weight: 600 !important; }
+.admin-theme.admin-dark .admin-stat-card-purple span { color: #c4b5fd !important; }
 
 .admin-theme .admin-stat-card-amber {
   background-color: #fef3c7 !important;
   border: 1px solid #fcd34d !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
 }
-.admin-theme .admin-stat-card-amber p:first-child {
-  color: #92400e !important;
-  font-weight: 700 !important;
+.admin-theme.admin-dark .admin-stat-card-amber {
+  background-color: #451a03 !important;
+  border: 1px solid #92400e !important;
 }
+.admin-theme .admin-stat-card-amber p:first-child { color: #92400e !important; font-weight: 700 !important; }
+.admin-theme.admin-dark .admin-stat-card-amber p:first-child { color: #fcd34d !important; }
 .admin-theme .admin-stat-card-amber p[class*="text-2xl"],
-.admin-theme .admin-stat-card-amber p[class*="text-xl"] {
-  color: #b45309 !important;
-  font-weight: 800 !important;
-}
-.admin-theme .admin-stat-card-amber span {
-  color: #92400e !important;
-  font-weight: 600 !important;
-}
+.admin-theme .admin-stat-card-amber p[class*="text-xl"]  { color: #b45309 !important; font-weight: 800 !important; }
+.admin-theme.admin-dark .admin-stat-card-amber p[class*="text-2xl"],
+.admin-theme.admin-dark .admin-stat-card-amber p[class*="text-xl"] { color: #fbbf24 !important; }
+.admin-theme .admin-stat-card-amber span { color: #92400e !important; font-weight: 600 !important; }
+.admin-theme.admin-dark .admin-stat-card-amber span { color: #fcd34d !important; }
 
-/* Link Type Segmented Tabs in Admin (Banner Click Action, etc.) */
+/* --- Tab Buttons --- */
 .admin-theme .admin-tab-btn-active,
 .admin-theme button.admin-tab-btn-active {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border-color: #000000 !important;
+  background-color: var(--adm-active-bg) !important;
+  color: var(--adm-active-text) !important;
+  border-color: var(--adm-active-bg) !important;
   font-weight: 700 !important;
 }
-
 .admin-theme .admin-tab-btn-inactive,
 .admin-theme button.admin-tab-btn-inactive {
   background-color: transparent !important;
-  color: #4b5563 !important;
+  color: var(--adm-text-muted) !important;
   border-color: transparent !important;
   font-weight: 600 !important;
 }
-
 .admin-theme .admin-tab-btn-inactive:hover,
 .admin-theme button.admin-tab-btn-inactive:hover {
-  background-color: #ffffff !important;
-  color: #000000 !important;
-  border-color: #d1d5db !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.08) !important;
+  background-color: var(--adm-hover-bg) !important;
+  color: var(--adm-text) !important;
+  border-color: var(--adm-border) !important;
   font-weight: 700 !important;
 }
 
-/* Form Inputs, Selects, Textareas */
+/* --- Form Inputs, Selects, Textareas --- */
 .admin-theme input:not([type="checkbox"]):not([type="radio"]),
 .admin-theme select,
 .admin-theme textarea {
-  background-color: #ffffff !important;
-  color: #000000 !important;
-  border-color: #d1d5db !important;
+  background-color: var(--adm-input-bg) !important;
+  color: var(--adm-input-text) !important;
+  border-color: var(--adm-input-border) !important;
 }
-
 .admin-theme input:focus,
 .admin-theme select:focus,
 .admin-theme textarea:focus {
-  border-color: #9ca3af !important;
+  border-color: var(--adm-input-focus) !important;
   outline: none !important;
   box-shadow: none !important;
-  background-color: #ffffff !important;
-  color: #000000 !important;
+  background-color: var(--adm-input-bg) !important;
+  color: var(--adm-input-text) !important;
 }
-
 .admin-theme input::placeholder,
 .admin-theme textarea::placeholder {
-  color: #9ca3af !important;
+  color: var(--adm-text-sub) !important;
 }
 
-/* Primary Action Buttons (Black Button Box) */
+/* --- Primary Action Buttons --- */
 .admin-theme button[class*="bg-amber"],
 .admin-theme a[class*="bg-amber"],
 .admin-theme button[class*="bg-black"],
 .admin-theme a[class*="bg-black"],
 .admin-theme button[type="submit"]:not(aside button) {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border-color: #000000 !important;
+  background-color: var(--adm-active-bg) !important;
+  color: var(--adm-active-text) !important;
+  border-color: var(--adm-active-bg) !important;
 }
-
 .admin-theme button[class*="bg-amber"] *,
 .admin-theme a[class*="bg-amber"] *,
 .admin-theme button[class*="bg-black"] *,
 .admin-theme a[class*="bg-black"] *,
 .admin-theme button[type="submit"]:not(aside button) * {
-  color: #ffffff !important;
+  color: var(--adm-active-text) !important;
 }
-
 .admin-theme button[class*="bg-amber"]:hover,
 .admin-theme a[class*="bg-amber"]:hover,
 .admin-theme button[class*="bg-black"]:hover,
 .admin-theme a[class*="bg-black"]:hover,
 .admin-theme button[type="submit"]:not(aside button):hover {
-  background-color: #262626 !important;
-  color: #ffffff !important;
+  opacity: 0.88;
 }
-
 .admin-theme button[class*="bg-amber"] svg,
 .admin-theme a[class*="bg-amber"] svg,
 .admin-theme button[class*="bg-black"] svg,
 .admin-theme a[class*="bg-black"] svg,
 .admin-theme button[type="submit"] svg {
-  color: #ffffff !important;
+  color: var(--adm-active-text) !important;
 }
 
-/* Secondary / Border Buttons */
+/* --- Secondary / Border Buttons --- */
 .admin-theme button[class*="border"]:not([class*="bg-amber"]):not([class*="bg-red"]):not([class*="bg-black"]):not(aside button) {
-  background-color: #ffffff !important;
-  color: #000000 !important;
-  border-color: #000000 !important;
+  background-color: var(--adm-card-bg) !important;
+  color: var(--adm-text) !important;
+  border-color: var(--adm-border-strong) !important;
 }
-
 .admin-theme button[class*="border"]:not([class*="bg-amber"]):not([class*="bg-red"]):not([class*="bg-black"]):not(aside button):hover {
-  background-color: #f3f4f6 !important;
+  background-color: var(--adm-hover-bg) !important;
 }
 
-/* Tables */
+/* --- Tables --- */
 .admin-theme table {
-  background-color: #ffffff !important;
-  color: #000000 !important;
+  background-color: var(--adm-card-bg) !important;
+  color: var(--adm-text) !important;
 }
-
 .admin-theme table thead,
 .admin-theme table thead tr,
 .admin-theme table thead th {
-  background-color: #f9fafb !important;
-  color: #111827 !important;
-  border-color: #e5e7eb !important;
+  background-color: var(--adm-thead-bg) !important;
+  color: var(--adm-text-muted) !important;
+  border-color: var(--adm-border) !important;
 }
-
 .admin-theme table tbody tr {
-  background-color: #ffffff !important;
-  border-color: #f3f4f6 !important;
-  color: #000000 !important;
+  background-color: var(--adm-card-bg) !important;
+  border-color: var(--adm-border) !important;
+  color: var(--adm-text) !important;
 }
-
 .admin-theme table tbody tr:hover {
-  background-color: #f9fafb !important;
+  background-color: var(--adm-card-hover) !important;
+}
+.admin-theme table td { color: var(--adm-text) !important; }
+
+/* --- Country Selector in header --- */
+.admin-theme header .admin-country-btn {
+  background-color: var(--adm-hover-bg) !important;
+  color: var(--adm-text) !important;
+  border-color: var(--adm-border) !important;
+}
+.admin-theme header .admin-country-btn span,
+.admin-theme header .admin-country-btn svg {
+  color: var(--adm-text) !important;
+  stroke: currentColor !important;
 }
 
-.admin-theme table td {
-  color: #000000 !important;
-}
-
-/* Country Pill Button in Admin Header */
-.admin-theme header button[aria-label="Select Country"] {
-  background-color: #000000 !important;
-  color: #ffffff !important;
-  border-color: #000000 !important;
-}
-.admin-theme header button[aria-label="Select Country"] span,
-.admin-theme header button[aria-label="Select Country"] svg {
-  color: #ffffff !important;
-}
-
-/* Modals & Popups in Admin */
+/* --- Modals & Popups --- */
 .admin-theme div[class*="fixed"][class*="inset-0"] > div[class*="bg-neutral-900"],
 .admin-theme div[class*="fixed"][class*="inset-0"] > div[class*="bg-neutral-950"] {
-  background-color: #ffffff !important;
-  border-color: #000000 !important;
-  color: #000000 !important;
+  background-color: var(--adm-card-bg) !important;
+  border-color: var(--adm-border-strong) !important;
+  color: var(--adm-text) !important;
 }
 
 /* ==========================================================================
-   ADMIN TOAST / POPUP NOTIFICATIONS (Top Slide-Down Alert with Auto-Hide)
+   ADMIN TOAST / POPUP NOTIFICATIONS
    ========================================================================== */
 @keyframes adminToastSlideInOut {
-  0% {
-    transform: translate(-50%, -35px);
-    opacity: 0;
-  }
-  8% {
-    transform: translate(-50%, 0);
-    opacity: 1;
-  }
-  88% {
-    transform: translate(-50%, 0);
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-  }
-  98% {
-    transform: translate(-50%, -35px);
-    opacity: 0;
-    visibility: visible;
-  }
-  100% {
-    transform: translate(-50%, -35px);
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
+  0%   { transform: translate(-50%, -35px); opacity: 0; }
+  8%   { transform: translate(-50%, 0);     opacity: 1; }
+  88%  { transform: translate(-50%, 0);     opacity: 1; visibility: visible; pointer-events: auto; }
+  98%  { transform: translate(-50%, -35px); opacity: 0; visibility: visible; }
+  100% { transform: translate(-50%, -35px); opacity: 0; visibility: hidden;  pointer-events: none; }
 }
 
 .admin-theme div[class*="bg-emerald-950"],
@@ -549,100 +523,31 @@ body::-webkit-scrollbar {
   gap: 16px !important;
   padding: 14px 20px !important;
   border-radius: 6px !important;
-  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.35), 0 10px 15px -5px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 20px 30px -10px rgba(0,0,0,0.35), 0 10px 15px -5px rgba(0,0,0,0.2) !important;
   animation: adminToastSlideInOut 4s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
-
 .admin-theme div[class*="bg-emerald-950"]:hover,
-.admin-theme div[class*="bg-red-950"]:hover {
-  animation-play-state: paused !important;
-}
-
-.admin-theme div[class*="bg-emerald-950"] {
-  background-color: #064e3b !important;
-  border: 1px solid #10b981 !important;
-  color: #ffffff !important;
-}
-
-.admin-theme div[class*="bg-emerald-950"] * {
-  color: #ffffff !important;
-  font-weight: 500 !important;
-}
-
-.admin-theme div[class*="bg-red-950"] {
-  background-color: #7f1d1d !important;
-  border: 1px solid #ef4444 !important;
-  color: #ffffff !important;
-}
-
-.admin-theme div[class*="bg-red-950"] * {
-  color: #ffffff !important;
-  font-weight: 500 !important;
-}
-
+.admin-theme div[class*="bg-red-950"]:hover { animation-play-state: paused !important; }
+.admin-theme div[class*="bg-emerald-950"] { background-color: #064e3b !important; border: 1px solid #10b981 !important; color: #ffffff !important; }
+.admin-theme div[class*="bg-emerald-950"] * { color: #ffffff !important; font-weight: 500 !important; }
+.admin-theme div[class*="bg-red-950"] { background-color: #7f1d1d !important; border: 1px solid #ef4444 !important; color: #ffffff !important; }
+.admin-theme div[class*="bg-red-950"] * { color: #ffffff !important; font-weight: 500 !important; }
 .admin-theme div[class*="bg-emerald-950"] button,
 .admin-theme div[class*="bg-red-950"] button {
-  background: transparent !important;
-  border: none !important;
-  color: #ffffff !important;
-  opacity: 0.8 !important;
-  cursor: pointer !important;
-  padding: 2px 6px !important;
-  font-size: 14px !important;
+  background: transparent !important; border: none !important; color: #ffffff !important;
+  opacity: 0.8 !important; cursor: pointer !important; padding: 2px 6px !important; font-size: 14px !important;
 }
-
 .admin-theme div[class*="bg-emerald-950"] button:hover,
-.admin-theme div[class*="bg-red-950"] button:hover {
-  opacity: 1 !important;
-  background-color: rgba(255, 255, 255, 0.2) !important;
-}
-
-/* ==========================================================================
-   COUNTRY SELECTOR BUTTON (Pure White Background, Solid Jet Black Text)
-   ========================================================================== */
-.admin-theme header button.admin-country-btn,
-.admin-theme header button[aria-label="Select Country"],
-html .admin-theme header button.admin-country-btn,
-html .admin-theme header .admin-country-btn {
-  background-color: #ffffff !important;
-  border: 1px solid #ffffff !important;
-  color: #000000 !important;
-}
-
-.admin-theme header button.admin-country-btn span,
-.admin-theme header button[aria-label="Select Country"] span,
-html .admin-theme header button.admin-country-btn span,
-html .admin-theme header .admin-country-btn span {
-  color: #000000 !important;
-  background-color: transparent !important;
-  font-weight: 800 !important;
-}
-
-.admin-theme header button.admin-country-btn svg,
-.admin-theme header button[aria-label="Select Country"] svg,
-html .admin-theme header button.admin-country-btn svg,
-html .admin-theme header .admin-country-btn svg {
-  color: #000000 !important;
-  stroke: #000000 !important;
-  fill: none !important;
-}
+.admin-theme div[class*="bg-red-950"] button:hover { opacity: 1 !important; background-color: rgba(255,255,255,0.2) !important; }
 
 /* ==========================================================================
    LUXURY DROPDOWN ANIMATION
    ========================================================================== */
 @keyframes luxuryDropdownIn {
-  0% {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.97);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  0%   { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  100% { opacity: 1; transform: translateY(0)   scale(1); }
 }
-
 .animate-dropdown-luxury {
   animation: luxuryDropdownIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform-origin: top;
 }
-
